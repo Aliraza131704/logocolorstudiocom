@@ -19,6 +19,7 @@ export function ThemeToggle() {
 
 const NAV = [
   { to: "/palettes", label: "Palettes" },
+  { to: "/downloads", label: "Downloads" },
   { to: "/blog", label: "Blog" },
   { to: "/about", label: "About" },
 ] as const;

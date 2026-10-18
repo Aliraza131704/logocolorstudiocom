@@ -8,7 +8,7 @@ import { AdSlot } from "./AdSlot";
 
 const COLS = [
   { title: "Tools", links: [["Logo Extractor", "/tools/logo-extractor"], ["Website Extractor", "/tools/website-extractor"], ["Palette Generator", "/palettes"], ["Contrast Checker", "/tools/contrast-checker"], ["Theme Generator", "/tools/theme-generator"], ["Export Center", "/tools/export-center"]] },
-  { title: "Company", links: [["About", "/about"], ["Contact", "/contact"], ["Blog", "/blog"], ["Changelog", "/changelog"]] },
+  { title: "Company", links: [["About", "/about"], ["Contact", "/contact"], ["Blog", "/blog"], ["Downloads", "/downloads"], ["Changelog", "/changelog"]] },
   { title: "Legal", links: [["Privacy Policy", "/privacy-policy"], ["Terms of Service", "/terms-of-service"], ["Cookie Policy", "/cookie-policy"], ["Disclaimer", "/disclaimer"]] },
 ] as const;
 
