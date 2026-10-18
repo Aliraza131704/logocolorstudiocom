@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PalettesRouteImport } from './routes/palettes'
+import { Route as PaletteSlugRouteImport } from './routes/palette.$slug'
 import { Route as ToolsIndexRouteImport } from './routes/tools.index'
 import { Route as ToolsCmsDetectorRouteImport } from './routes/tools.cms-detector'
 import { Route as ToolsContrastCheckerRouteImport } from './routes/tools.contrast-checker'
@@ -24,6 +26,16 @@ import { Route as ToolsWordpressThemeDetectorRouteImport } from './routes/tools.
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PalettesRoute = PalettesRouteImport.update({
+  id: '/palettes',
+  path: '/palettes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaletteSlugRoute = PaletteSlugRouteImport.update({
+  id: '/palette/$slug',
+  path: '/palette/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsIndexRoute = ToolsIndexRouteImport.update({
@@ -81,6 +93,8 @@ const ToolsWordpressThemeDetectorRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/palettes': typeof PalettesRoute
+  '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
@@ -94,6 +108,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/palettes': typeof PalettesRoute
+  '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
@@ -108,6 +124,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/palettes': typeof PalettesRoute
+  '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
@@ -123,6 +141,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/palettes'
+    | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
@@ -136,6 +156,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/palettes'
+    | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
@@ -149,6 +171,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/palettes'
+    | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
@@ -163,6 +187,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PalettesRoute: typeof PalettesRoute
+  PaletteSlugRoute: typeof PaletteSlugRoute
   ToolsCmsDetectorRoute: typeof ToolsCmsDetectorRoute
   ToolsContrastCheckerRoute: typeof ToolsContrastCheckerRoute
   ToolsExportCenterRoute: typeof ToolsExportCenterRoute
@@ -182,6 +208,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/palettes': {
+      id: '/palettes'
+      path: '/palettes'
+      fullPath: '/palettes'
+      preLoaderRoute: typeof PalettesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/palette/$slug': {
+      id: '/palette/$slug'
+      path: '/palette/$slug'
+      fullPath: '/palette/$slug'
+      preLoaderRoute: typeof PaletteSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/': {
@@ -259,6 +299,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PalettesRoute: PalettesRoute,
+  PaletteSlugRoute: PaletteSlugRoute,
   ToolsCmsDetectorRoute: ToolsCmsDetectorRoute,
   ToolsContrastCheckerRoute: ToolsContrastCheckerRoute,
   ToolsExportCenterRoute: ToolsExportCenterRoute,
