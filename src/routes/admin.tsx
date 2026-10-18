@@ -1,0 +1,325 @@
+import { createFileRoute, redirect, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import DOMPurify from "dompurify";
+import { toast } from "sonner";
+import { LayoutDashboard, Megaphone, FileText, FileCog, Settings, Users, Inbox, LogOut, ExternalLink, Trash2, Plus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { LogoImage } from "@/components/site/Logo";
+import { ThemeToggle } from "@/components/site/SiteHeader";
+import { RichEditor } from "@/components/admin/RichEditor";
+import { download } from "@/components/site/ui-bits";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+
+export const Route = createFileRoute("/admin")({
+  ssr: false,
+  beforeLoad: async () => {
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) throw redirect({ to: "/login" });
+    const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
+    if (!roles?.some((r) => r.role === "admin")) {
+      await supabase.auth.signOut();
+      throw redirect({ to: "/login" });
+    }
+    return { email: data.user.email };
+  },
+  head: () => ({ meta: [{ title: "Admin — LogoColorStudio" }, { name: "robots", content: "noindex, nofollow" }] }),
+  component: Admin,
+});
+
+const TABS = [
+  { id: "dash", label: "Dashboard", icon: LayoutDashboard },
+  { id: "ads", label: "Ads Manager", icon: Megaphone },
+  { id: "blog", label: "Blog", icon: FileText },
+  { id: "pages", label: "Pages", icon: FileCog },
+  { id: "settings", label: "Settings", icon: Settings },
+  { id: "subs", label: "Subscribers", icon: Users },
+  { id: "msgs", label: "Messages", icon: Inbox },
+] as const;
+type Tab = (typeof TABS)[number]["id"];
+
+const clean = (html: string) => DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+
+function Admin() {
+  const [tab, setTab] = useState<Tab>("dash");
+  const nav = useNavigate();
+  const { email } = Route.useRouteContext();
+  return (
+    <div className="min-h-screen bg-background md:grid md:grid-cols-[240px_1fr]">
+      <aside className="border-b bg-card md:min-h-screen md:border-b-0 md:border-r">
+        <div className="flex items-center justify-between p-4"><LogoImage className="h-8" /><ThemeToggle /></div>
+        <nav className="flex gap-1 overflow-x-auto px-2 pb-2 md:flex-col md:pb-0">
+          {TABS.map((t) => (
+            <button key={t.id} onClick={() => setTab(t.id)} className={cn("flex shrink-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm", tab === t.id ? "bg-primary text-primary-foreground" : "hover:bg-accent")}>
+              <t.icon className="size-4" /> {t.label}
+            </button>
+          ))}
+        </nav>
+        <div className="hidden space-y-1 p-4 text-sm md:block">
+          <p className="truncate text-muted-foreground">{email}</p>
+          <Link to="/" className="flex items-center gap-2 hover:text-primary"><ExternalLink className="size-4" /> View site</Link>
+          <button className="flex items-center gap-2 hover:text-primary" onClick={async () => { await supabase.auth.signOut(); nav({ to: "/login" }); }}><LogOut className="size-4" /> Sign out</button>
+        </div>
+      </aside>
+      <main className="p-4 sm:p-8">
+        <h1 className="mb-6 text-2xl font-bold">{TABS.find((t) => t.id === tab)?.label}</h1>
+        {tab === "dash" && <Dashboard />}
+        {tab === "ads" && <AdsManager />}
+        {tab === "blog" && <BlogManager />}
+        {tab === "pages" && <PageManager />}
+        {tab === "settings" && <SettingsPanel />}
+        {tab === "subs" && <Subscribers />}
+        {tab === "msgs" && <Messages />}
+      </main>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: number | string }) {
+  return <div className="rounded-2xl border bg-card p-5"><p className="text-sm text-muted-foreground">{label}</p><p className="mt-1 font-display text-3xl font-bold">{value}</p></div>;
+}
+
+function Dashboard() {
+  const { data } = useQuery({
+    queryKey: ["admin-stats"],
+    queryFn: async () => {
+      const since = new Date(Date.now() - 30 * 86400_000).toISOString();
+      const c = async (t: "palette_likes" | "blog_posts" | "subscribers" | "contact_messages") => (await supabase.from(t).select("*", { count: "exact", head: true })).count ?? 0;
+      const visits = (await supabase.from("events").select("*", { count: "exact", head: true }).eq("kind", "visit").gte("created_at", since)).count ?? 0;
+      const { data: tools } = await supabase.from("events").select("name").eq("kind", "tool").gte("created_at", since).limit(5000);
+      const usage: Record<string, number> = {};
+      (tools ?? []).forEach((t) => (usage[t.name] = (usage[t.name] ?? 0) + 1));
+      return { visits, likes: await c("palette_likes"), posts: await c("blog_posts"), subs: await c("subscribers"), msgs: await c("contact_messages"), usage };
+    },
+  });
+  if (!data) return <div className="h-32 animate-pulse rounded-2xl bg-muted" />;
+  const max = Math.max(1, ...Object.values(data.usage));
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <Stat label="Page views (30d)" value={data.visits} /><Stat label="Palette likes" value={data.likes} /><Stat label="Blog posts" value={data.posts} /><Stat label="Subscribers" value={data.subs} /><Stat label="Messages" value={data.msgs} />
+      </div>
+      <div className="rounded-2xl border bg-card p-6">
+        <h2 className="font-semibold">Tool usage (30 days)</h2>
+        <div className="mt-4 space-y-3">
+          {Object.entries(data.usage).sort((a, b) => b[1] - a[1]).map(([k, v]) => (
+            <div key={k}><div className="flex justify-between text-sm"><span>{k}</span><span>{v}</span></div><div className="mt-1 h-2 rounded-full bg-muted"><div className="h-full rounded-full bg-primary" style={{ width: `${(v / max) * 100}%` }} /></div></div>
+          ))}
+          {Object.keys(data.usage).length === 0 && <p className="text-sm text-muted-foreground">No tool usage yet.</p>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type Slot = { position: string; label: string; code: string; enabled: boolean; show_desktop: boolean; show_mobile: boolean };
+
+function AdsManager() {
+  const qc = useQueryClient();
+  const { data: slots } = useQuery({ queryKey: ["admin-ads"], queryFn: async () => ((await supabase.from("ad_slots").select("*").order("position")).data ?? []) as Slot[] });
+  const [edit, setEdit] = useState<Record<string, Slot>>({});
+  useEffect(() => { if (slots) setEdit(Object.fromEntries(slots.map((s) => [s.position, s]))); }, [slots]);
+  const save = async (s: Slot) => {
+    const { error } = await supabase.from("ad_slots").update({ code: s.code, enabled: s.enabled, show_desktop: s.show_desktop, show_mobile: s.show_mobile, updated_at: new Date().toISOString() }).eq("position", s.position);
+    if (error) return toast.error(error.message);
+    toast.success(`${s.label} saved`);
+    qc.invalidateQueries({ queryKey: ["ad_slots_public"] });
+  };
+  return (
+    <div className="space-y-6">
+      <SettingsFields keys={[["adsense_head", "Global AdSense head script (with your publisher ID)", true], ["ads_txt", "ads.txt content (served at /ads.txt)", true]]} />
+      <div className="grid gap-4 xl:grid-cols-2">
+        {Object.values(edit).map((s) => (
+          <div key={s.position} className="space-y-3 rounded-2xl border bg-card p-5">
+            <div className="flex items-center justify-between"><h2 className="font-semibold">{s.label}</h2><label className="flex items-center gap-2 text-sm">Enabled <Switch checked={s.enabled} onCheckedChange={(v) => setEdit({ ...edit, [s.position]: { ...s, enabled: v } })} /></label></div>
+            <Textarea rows={5} className="font-mono text-xs" placeholder="Paste ad unit code here" value={s.code} onChange={(e) => setEdit({ ...edit, [s.position]: { ...s, code: e.target.value } })} />
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              <label className="flex items-center gap-2"><Switch checked={s.show_desktop} onCheckedChange={(v) => setEdit({ ...edit, [s.position]: { ...s, show_desktop: v } })} /> Desktop</label>
+              <label className="flex items-center gap-2"><Switch checked={s.show_mobile} onCheckedChange={(v) => setEdit({ ...edit, [s.position]: { ...s, show_mobile: v } })} /> Mobile</label>
+              <Button size="sm" className="ml-auto" onClick={() => save(s)}>Save</Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SettingsFields({ keys }: { keys: [string, string, boolean?][] }) {
+  const qc = useQueryClient();
+  const { data } = useQuery({ queryKey: ["admin-settings"], queryFn: async () => Object.fromEntries(((await supabase.from("site_settings").select("key,value")).data ?? []).map((r) => [r.key, r.value])) as Record<string, string> });
+  const [v, setV] = useState<Record<string, string>>({});
+  useEffect(() => { if (data) setV(data); }, [data]);
+  const save = async () => {
+    const rows = keys.map(([k]) => ({ key: k, value: v[k] ?? "", updated_at: new Date().toISOString() }));
+    const { error } = await supabase.from("site_settings").upsert(rows);
+    if (error) return toast.error(error.message);
+    toast.success("Settings saved");
+    qc.invalidateQueries({ queryKey: ["site_settings"] });
+    qc.invalidateQueries({ queryKey: ["admin-settings"] });
+  };
+  return (
+    <div className="space-y-4 rounded-2xl border bg-card p-5">
+      {keys.map(([k, label, multi]) => (
+        <div key={k}>
+          <label htmlFor={`s-${k}`} className="text-sm font-medium">{label}</label>
+          {multi ? <Textarea id={`s-${k}`} rows={4} className="mt-1 font-mono text-xs" value={v[k] ?? ""} onChange={(e) => setV({ ...v, [k]: e.target.value })} /> : <Input id={`s-${k}`} className="mt-1" value={v[k] ?? ""} onChange={(e) => setV({ ...v, [k]: e.target.value })} />}
+        </div>
+      ))}
+      <Button onClick={save}>Save</Button>
+    </div>
+  );
+}
+
+function SettingsPanel() {
+  return (
+    <div className="space-y-6">
+      <SettingsFields keys={[["site_title", "Site title"], ["site_description", "Site description", true], ["contact_email", "Contact email"]]} />
+      <SettingsFields keys={[["social_twitter", "X / Twitter URL"], ["social_instagram", "Instagram URL"], ["social_github", "GitHub URL"], ["social_dribbble", "Dribbble URL"]]} />
+      <SettingsFields keys={[["header_scripts", "Custom header scripts (Google Analytics, Search Console verification meta)", true], ["footer_scripts", "Custom footer scripts", true], ["robots_extra", "Extra robots.txt rules", true]]} />
+      <p className="text-sm text-muted-foreground">Logos: the light and dark logos are built into the site. Sitemap is generated automatically at /sitemap.xml.</p>
+    </div>
+  );
+}
+
+type Post = { id?: string; slug: string; title: string; excerpt: string; content: string; cover_image: string; category: string; tags: string[]; author: string; status: string; published_at: string; seo_title: string; meta_description: string; canonical: string; og_image: string };
+const EMPTY: Post = { slug: "", title: "", excerpt: "", content: "<p></p>", cover_image: "", category: "Guides", tags: [], author: "LogoColorStudio Team", status: "draft", published_at: new Date().toISOString(), seo_title: "", meta_description: "", canonical: "", og_image: "" };
+
+function BlogManager() {
+  const qc = useQueryClient();
+  const { data: posts } = useQuery({ queryKey: ["admin-posts"], queryFn: async () => ((await supabase.from("blog_posts").select("*").order("published_at", { ascending: false })).data ?? []) as Post[] });
+  const [p, setP] = useState<Post | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const save = async () => {
+    if (!p) return;
+    const slug = (p.slug || p.title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 120);
+    if (!p.title.trim() || !slug) return toast.error("Title is required");
+    const row = { ...p, slug, content: clean(p.content), title: p.title.slice(0, 200), excerpt: p.excerpt.slice(0, 400) };
+    const { error } = p.id ? await supabase.from("blog_posts").update(row).eq("id", p.id) : await supabase.from("blog_posts").insert(row);
+    if (error) return toast.error(error.message);
+    toast.success("Post saved");
+    setP(null);
+    qc.invalidateQueries({ queryKey: ["admin-posts"] });
+  };
+  const del = async (id: string) => {
+    if (!confirm("Delete this post?")) return;
+    await supabase.from("blog_posts").delete().eq("id", id);
+    qc.invalidateQueries({ queryKey: ["admin-posts"] });
+  };
+  const uploadCover = async (file?: File) => {
+    if (!file || !p) return;
+    setUploading(true);
+    const path = `${Date.now()}-${file.name.replace(/[^a-z0-9.]/gi, "-")}`;
+    const { error } = await supabase.storage.from("blog").upload(path, file);
+    setUploading(false);
+    if (error) return toast.error(error.message);
+    setP({ ...p, cover_image: supabase.storage.from("blog").getPublicUrl(path).data.publicUrl });
+  };
+
+  if (p) {
+    const set = (k: keyof Post, val: string | string[]) => setP({ ...p, [k]: val });
+    return (
+      <div className="grid gap-6 xl:grid-cols-[1fr_340px]">
+        <div className="space-y-4">
+          <Input placeholder="Post title" className="h-12 text-lg" value={p.title} onChange={(e) => set("title", e.target.value)} />
+          <Textarea placeholder="Excerpt" rows={2} value={p.excerpt} onChange={(e) => set("excerpt", e.target.value)} />
+          <RichEditor value={p.content} onChange={(h) => set("content", h)} />
+        </div>
+        <div className="space-y-3 rounded-2xl border bg-card p-5 text-sm">
+          <label className="block">Status<Select value={p.status} onValueChange={(v) => set("status", v)}><SelectTrigger className="mt-1"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="published">Published</SelectItem></SelectContent></Select></label>
+          <label className="block">Publish date (future = scheduled)<Input type="datetime-local" className="mt-1" value={p.published_at.slice(0, 16)} onChange={(e) => set("published_at", new Date(e.target.value).toISOString())} /></label>
+          <label className="block">Slug<Input className="mt-1" value={p.slug} onChange={(e) => set("slug", e.target.value)} /></label>
+          <label className="block">Category<Input className="mt-1" value={p.category} onChange={(e) => set("category", e.target.value)} /></label>
+          <label className="block">Tags (comma separated)<Input className="mt-1" value={p.tags.join(", ")} onChange={(e) => set("tags", e.target.value.split(",").map((t) => t.trim()).filter(Boolean))} /></label>
+          <label className="block">Author<Input className="mt-1" value={p.author} onChange={(e) => set("author", e.target.value)} /></label>
+          <label className="block">Cover image URL<Input className="mt-1" value={p.cover_image} onChange={(e) => set("cover_image", e.target.value)} /></label>
+          <input type="file" accept="image/*" aria-label="Upload cover" onChange={(e) => uploadCover(e.target.files?.[0])} disabled={uploading} className="text-xs" />
+          {p.cover_image && <img src={p.cover_image} alt="" className="rounded-lg" />}
+          <label className="block">SEO title<Input className="mt-1" maxLength={60} value={p.seo_title} onChange={(e) => set("seo_title", e.target.value)} /></label>
+          <label className="block">Meta description<Textarea className="mt-1" maxLength={160} value={p.meta_description} onChange={(e) => set("meta_description", e.target.value)} /></label>
+          <label className="block">Canonical URL<Input className="mt-1" value={p.canonical} onChange={(e) => set("canonical", e.target.value)} /></label>
+          <label className="block">OG image URL<Input className="mt-1" value={p.og_image} onChange={(e) => set("og_image", e.target.value)} /></label>
+          <div className="flex gap-2 pt-2"><Button onClick={save}>Save post</Button><Button variant="outline" onClick={() => setP(null)}>Cancel</Button></div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-4">
+      <Button onClick={() => setP({ ...EMPTY, published_at: new Date().toISOString() })}><Plus /> New post</Button>
+      <div className="divide-y rounded-2xl border bg-card">
+        {(posts ?? []).map((x) => (
+          <div key={x.id} className="flex flex-wrap items-center gap-3 p-4">
+            <div className="min-w-0 flex-1"><p className="font-medium">{x.title}</p><p className="text-xs text-muted-foreground">/{x.slug} · {new Date(x.published_at).toLocaleDateString()} · {x.category}</p></div>
+            <span className={cn("rounded-full px-2.5 py-0.5 text-xs", x.status === "published" ? "bg-brand-green/15 text-brand-green" : "bg-muted")}>{x.status === "published" && new Date(x.published_at) > new Date() ? "scheduled" : x.status}</span>
+            <Button size="sm" variant="outline" onClick={() => setP(x)}>Edit</Button>
+            <Button size="icon" variant="ghost" aria-label="Delete" onClick={() => del(x.id!)}><Trash2 /></Button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PageManager() {
+  const { data: pages, refetch } = useQuery({ queryKey: ["admin-pages"], queryFn: async () => (await supabase.from("pages").select("*").order("slug")).data ?? [] });
+  const [sel, setSel] = useState<{ slug: string; title: string; content: string } | null>(null);
+  const save = async () => {
+    if (!sel) return;
+    const { error } = await supabase.from("pages").update({ title: sel.title, content: clean(sel.content), updated_at: new Date().toISOString() }).eq("slug", sel.slug);
+    if (error) return toast.error(error.message);
+    toast.success("Page saved"); refetch();
+  };
+  return (
+    <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+      <div className="space-y-1">{(pages ?? []).map((p) => <button key={p.slug} onClick={() => setSel(p)} className={cn("block w-full rounded-lg px-3 py-2 text-left text-sm", sel?.slug === p.slug ? "bg-primary text-primary-foreground" : "hover:bg-accent")}>{p.title}</button>)}</div>
+      {sel ? (
+        <div className="space-y-4">
+          <Input value={sel.title} onChange={(e) => setSel({ ...sel, title: e.target.value })} />
+          <RichEditor value={sel.content} onChange={(h) => setSel({ ...sel, content: h })} />
+          <Button onClick={save}>Save page</Button>
+        </div>
+      ) : <p className="text-muted-foreground">Choose a page to edit.</p>}
+    </div>
+  );
+}
+
+function Subscribers() {
+  const { data, refetch } = useQuery({ queryKey: ["admin-subs"], queryFn: async () => (await supabase.from("subscribers").select("*").order("created_at", { ascending: false })).data ?? [] });
+  const csv = () => download("subscribers.csv", "email,subscribed_at\n" + (data ?? []).map((s) => `${s.email},${s.created_at}`).join("\n"), "text/csv");
+  return (
+    <div className="space-y-4">
+      <Button variant="outline" onClick={csv}>Export CSV ({data?.length ?? 0})</Button>
+      <div className="divide-y rounded-2xl border bg-card">
+        {(data ?? []).map((s) => (
+          <div key={s.id} className="flex items-center gap-3 p-3 text-sm"><span className="flex-1">{s.email}</span><span className="text-muted-foreground">{new Date(s.created_at).toLocaleDateString()}</span>
+            <Button size="icon" variant="ghost" aria-label="Delete" onClick={async () => { await supabase.from("subscribers").delete().eq("id", s.id); refetch(); }}><Trash2 /></Button></div>
+        ))}
+        {data?.length === 0 && <p className="p-4 text-sm text-muted-foreground">No subscribers yet.</p>}
+      </div>
+    </div>
+  );
+}
+
+function Messages() {
+  const { data, refetch } = useQuery({ queryKey: ["admin-msgs"], queryFn: async () => (await supabase.from("contact_messages").select("*").order("created_at", { ascending: false })).data ?? [] });
+  return (
+    <div className="space-y-3">
+      {(data ?? []).map((m) => (
+        <div key={m.id} className="rounded-2xl border bg-card p-5">
+          <div className="flex flex-wrap items-center gap-2"><p className="font-semibold">{m.name}</p><a href={`mailto:${m.email}`} className="text-sm text-primary">{m.email}</a><span className="ml-auto text-xs text-muted-foreground">{new Date(m.created_at).toLocaleString()}</span>
+            <Button size="icon" variant="ghost" aria-label="Delete" onClick={async () => { await supabase.from("contact_messages").delete().eq("id", m.id); refetch(); }}><Trash2 /></Button></div>
+          {m.subject && <p className="mt-1 text-sm font-medium">{m.subject}</p>}
+          <p className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">{m.message}</p>
+        </div>
+      ))}
+      {data?.length === 0 && <p className="text-sm text-muted-foreground">No messages yet.</p>}
+    </div>
+  );
+}
