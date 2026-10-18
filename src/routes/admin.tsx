@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -28,13 +29,14 @@ export const Route = createFileRoute("/admin")({
     }
     return { email: data.user.email };
   },
-  head: () => ({ meta: [{ title: "Admin — LogoColorStudio" }, { name: "robots", content: "noindex, nofollow" }] }),
+  head: () => pageHead({ title: "Admin — LogoColorStudio", description: "Owner management for LogoColorStudio content, advertising and downloads.", path: "/admin", noindex: true }),
   component: Admin,
 });
 
 const TABS = [
   { id: "dash", label: "Dashboard", icon: LayoutDashboard },
   { id: "ads", label: "Ads Manager", icon: Megaphone },
+  { id: "downloads", label: "Downloads", icon: FileCog },
   { id: "blog", label: "Blog", icon: FileText },
   { id: "pages", label: "Pages", icon: FileCog },
   { id: "settings", label: "Settings", icon: Settings },
@@ -70,6 +72,7 @@ function Admin() {
         <h1 className="mb-6 text-2xl font-bold">{TABS.find((t) => t.id === tab)?.label}</h1>
         {tab === "dash" && <Dashboard />}
         {tab === "ads" && <AdsManager />}
+        {tab === "downloads" && <DownloadSettings />}
         {tab === "blog" && <BlogManager />}
         {tab === "pages" && <PageManager />}
         {tab === "settings" && <SettingsPanel />}
@@ -148,6 +151,14 @@ function AdsManager() {
       </div>
     </div>
   );
+}
+
+function DownloadSettings() {
+  return <div className="space-y-5">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-5"><div><h2 className="font-semibold">WoodMart 8.5.7</h2><p className="mt-1 text-sm text-muted-foreground">ZIP · 31.4 MB · Available after a completed sponsor video</p></div><Button variant="outline" asChild><Link to="/downloads"><ExternalLink /> View downloads</Link></Button></div>
+    <SettingsFields keys={[["download_video_enabled", "Enable sponsored downloads (on / off)"], ["download_video_url", "Sponsor video URL (HTTPS MP4 or hosted video URL)"]]} />
+    <p className="text-sm text-muted-foreground">Use your own or an authorized sponsor's video. Do not paste AdSense or Google rewarded-ad code here: a downloadable ZIP is transferable and is not an eligible Google reward. Downloads stay locked until a video is configured. This page does not generate ad-network revenue or verify ad impressions.</p>
+  </div>;
 }
 
 function SettingsFields({ keys }: { keys: [string, string, boolean?][] }) {

@@ -17,6 +17,7 @@ import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PalettesRouteImport } from './routes/palettes'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
@@ -75,6 +76,11 @@ const CookiePolicyRoute = CookiePolicyRouteImport.update({
 const DisclaimerRoute = DisclaimerRouteImport.update({
   id: '/disclaimer',
   path: '/disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/downloads': typeof DownloadsRoute
   '/login': typeof LoginRoute
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -213,6 +220,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/downloads': typeof DownloadsRoute
   '/login': typeof LoginRoute
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -243,6 +251,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/downloads': typeof DownloadsRoute
   '/login': typeof LoginRoute
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -274,6 +283,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookie-policy'
     | '/disclaimer'
+    | '/downloads'
     | '/login'
     | '/palettes'
     | '/privacy-policy'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookie-policy'
     | '/disclaimer'
+    | '/downloads'
     | '/login'
     | '/palettes'
     | '/privacy-policy'
@@ -332,6 +343,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookie-policy'
     | '/disclaimer'
+    | '/downloads'
     | '/login'
     | '/palettes'
     | '/privacy-policy'
@@ -362,6 +374,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
   DisclaimerRoute: typeof DisclaimerRoute
+  DownloadsRoute: typeof DownloadsRoute
   LoginRoute: typeof LoginRoute
   PalettesRoute: typeof PalettesRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
@@ -439,6 +452,13 @@ declare module '@tanstack/react-router' {
       path: '/disclaimer'
       fullPath: '/disclaimer'
       preLoaderRoute: typeof DisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -586,6 +606,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
   DisclaimerRoute: DisclaimerRoute,
+  DownloadsRoute: DownloadsRoute,
   LoginRoute: LoginRoute,
   PalettesRoute: PalettesRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,

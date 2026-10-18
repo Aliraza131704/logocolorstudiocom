@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LogoImage } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/SiteHeader";
+import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Admin sign in — LogoColorStudio" }, { name: "robots", content: "noindex, nofollow" }] }),
+  head: () => pageHead({ title: "Admin sign in — LogoColorStudio", description: "Sign in to the LogoColorStudio owner panel.", path: "/login", noindex: true }),
   component: Page,
 });
 
