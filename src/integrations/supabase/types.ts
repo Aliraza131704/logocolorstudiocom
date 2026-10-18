@@ -14,16 +14,279 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ad_slots: {
+        Row: {
+          code: string
+          enabled: boolean
+          label: string
+          position: string
+          show_desktop: boolean
+          show_mobile: boolean
+          updated_at: string
+        }
+        Insert: {
+          code?: string
+          enabled?: boolean
+          label: string
+          position: string
+          show_desktop?: boolean
+          show_mobile?: boolean
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          enabled?: boolean
+          label?: string
+          position?: string
+          show_desktop?: boolean
+          show_mobile?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author: string
+          canonical: string
+          category: string
+          content: string
+          cover_image: string
+          created_at: string
+          excerpt: string
+          id: string
+          meta_description: string
+          og_image: string
+          published_at: string
+          seo_title: string
+          slug: string
+          status: string
+          tags: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string
+          canonical?: string
+          category?: string
+          content?: string
+          cover_image?: string
+          created_at?: string
+          excerpt?: string
+          id?: string
+          meta_description?: string
+          og_image?: string
+          published_at?: string
+          seo_title?: string
+          slug: string
+          status?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          canonical?: string
+          category?: string
+          content?: string
+          cover_image?: string
+          created_at?: string
+          excerpt?: string
+          id?: string
+          meta_description?: string
+          og_image?: string
+          published_at?: string
+          seo_title?: string
+          slug?: string
+          status?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          subject?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          subject?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          created_at: string
+          id: number
+          kind: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          kind: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          kind?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      pages: {
+        Row: {
+          content: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      palette_likes: {
+        Row: {
+          created_at: string
+          id: string
+          palette_slug: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          palette_slug: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          palette_slug?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          created_at: string
+          id: number
+          ip: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          ip: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          ip?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      palette_like_counts: {
+        Row: {
+          likes: number | null
+          palette_slug: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +413,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
