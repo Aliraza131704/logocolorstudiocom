@@ -32,19 +32,51 @@ export async function rateLimit(limit = 20) {
 
 export type Fetched = { url: string; status: number; html: string; headers: Record<string, string>; ms: number; bytes: number };
 
+const BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36";
+const BROWSER_HEADERS = {
+  accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+  "accept-language": "en-US,en;q=0.9",
+  "cache-control": "no-cache",
+  "upgrade-insecure-requests": "1",
+};
+
 export async function fetchPage(u: URL | string, max = 2_000_000): Promise<Fetched> {
   const t = Date.now();
-  let res: Response;
-  try {
-    res = await fetch(u.toString(), { headers: { "user-agent": UA, accept: "text/html,*/*" }, redirect: "follow", signal: AbortSignal.timeout(12000) });
-  } catch {
-    throw new Error("We couldn't reach that website. Check the address and try again.");
+  const attempts = [
+    { "user-agent": BROWSER_UA, ...BROWSER_HEADERS },
+    { "user-agent": UA, accept: "text/html,*/*" },
+  ];
+  let last: Fetched | null = null;
+  for (const h of attempts) {
+    let res: Response;
+    try {
+      res = await fetch(u.toString(), { headers: h, redirect: "follow", signal: AbortSignal.timeout(12000) });
+    } catch {
+      continue;
+    }
+    const buf = await res.arrayBuffer();
+    const html = new TextDecoder().decode(buf.slice(0, max));
+    const headers: Record<string, string> = {};
+    res.headers.forEach((v, k) => (headers[k] = v));
+    last = { url: res.url || u.toString(), status: res.status, html, headers, ms: Date.now() - t, bytes: buf.byteLength };
+    if (res.status < 400 && html.length > 200) return last;
   }
-  const buf = await res.arrayBuffer();
-  const html = new TextDecoder().decode(buf.slice(0, max));
-  const headers: Record<string, string> = {};
-  res.headers.forEach((v, k) => (headers[k] = v));
-  return { url: res.url || u.toString(), status: res.status, html, headers, ms: Date.now() - t, bytes: buf.byteLength };
+  if (!last) throw new Error("We couldn't reach that website. Check the address and try again.");
+  return last;
+}
+
+export function isBlocked(p: Fetched) {
+  return p.status === 403 || p.status === 429 || p.status === 503 || /cf-browser-verification|challenge-platform|Just a moment\.\.\.|Attention Required! \| Cloudflare|captcha-delivery/i.test(p.html.slice(0, 20000));
+}
+
+export async function fetchJson<T = unknown>(url: string): Promise<T | null> {
+  try {
+    const r = await fetch(url, { headers: { "user-agent": BROWSER_UA, accept: "application/json" }, redirect: "follow", signal: AbortSignal.timeout(7000) });
+    if (!r.ok || !(r.headers.get("content-type") ?? "").includes("json")) return null;
+    return (await r.json()) as T;
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchText(url: string, max = 400_000): Promise<{ ok: boolean; status: number; text: string }> {
