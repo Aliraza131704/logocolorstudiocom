@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { LogoImage } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/SiteHeader";
 import { RichEditor } from "@/components/admin/RichEditor";
+import { DownloadManager } from '@/components/admin/DownloadManager';
 import { download } from "@/components/site/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -155,7 +156,8 @@ function AdsManager() {
 
 function DownloadSettings() {
   return <div className="space-y-5">
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-5"><div><h2 className="font-semibold">WoodMart 8.5.7</h2><p className="mt-1 text-sm text-muted-foreground">ZIP · 31.4 MB · Available after a completed sponsor video</p></div><Button variant="outline" asChild><Link to="/downloads"><ExternalLink /> View downloads</Link></Button></div>
+    <DownloadManager />
+    <h2 className="border-t pt-6 font-semibold">Shared sponsor video</h2>
     <SettingsFields keys={[["download_video_enabled", "Enable sponsored downloads (on / off)"], ["download_video_url", "Sponsor video URL (HTTPS MP4 or hosted video URL)"]]} />
     <p className="text-sm text-muted-foreground">Use your own or an authorized sponsor's video. Do not paste AdSense or Google rewarded-ad code here: a downloadable ZIP is transferable and is not an eligible Google reward. Downloads stay locked until a video is configured. This page does not generate ad-network revenue or verify ad impressions.</p>
   </div>;

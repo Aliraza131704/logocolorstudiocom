@@ -1,16 +1,21 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useRef, useState } from 'react';
-import { Download, Play, Package, CheckCircle2, LockKeyhole, Loader2 } from 'lucide-react';
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { listDownloadAssets } from '@/lib/content.functions';
+import { filterAssets, type DownloadAsset } from '@/lib/download-catalog';
+import { Download, Play, Package, LockKeyhole } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useConsent } from '@/components/site/consent';
 import { useSettings } from '@/lib/site-data';
 import { pageHead } from '@/lib/seo';
 import { rewardEarned, watchedProgress, safeSponsorVideo } from '@/lib/download-reward';
-import archive from '@/assets/woodmart.zip.asset.json';
-import preview from '@/assets/woodmart-preview.png.asset.json';
+const catalogQuery = queryOptions({ queryKey: ['download-catalog'], queryFn: () => listDownloadAssets(), staleTime: 30_000 });
 
 export const Route = createFileRoute('/downloads')({
+  loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
   head: () => pageHead({ title: 'Asset Downloads — LogoColorStudio', description: 'Browse website assets including the WoodMart WordPress theme, with sponsored-video download access.', path: '/downloads' }),
   component: Downloads,
 });
@@ -19,18 +24,24 @@ function Downloads() {
   const { data: settings, isPending } = useSettings();
   const { consent, open: openConsent } = useConsent();
   const [show, setShow] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
+  const { data: items } = useSuspenseQuery(catalogQuery);
+  const [selected, setSelected] = useState<DownloadAsset | null>(null);
+  const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('all');
+  const filtered = filterAssets(items, search, category);
+  const categories = [...new Set(items.map(a => a.category))].sort();
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
   const video = useRef<HTMLVideoElement>(null);
   const watched = useRef(0);
   const lastTick = useRef(0);
-  const source = safeSponsorVideo(settings?.download_video_url);
-  const ready = !!source && settings?.download_video_enabled === 'on';
+  const source = safeSponsorVideo(selected?.video_url || settings?.download_video_url);
 
-  const start = () => {
+  const start = (asset: DownloadAsset) => {
     if (!consent.ads) { openConsent(); return; }
-    if (!ready) return;
+    if (!safeSponsorVideo(asset.video_url || settings?.download_video_url) || settings?.download_video_enabled !== 'on') return;
+    setSelected(asset);
     watched.current = 0; lastTick.current = performance.now();
     setProgress(0); setError(''); setShow(true);
   };
@@ -49,33 +60,37 @@ function Downloads() {
       <div className="flex items-center gap-2 text-sm font-semibold text-brand-green"><Package className="size-4" /> Website resources</div>
       <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Asset downloads</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">Themes and resources for your next website.</p>
-      <div className="mt-9 grid items-start gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]">
-        <article className="overflow-hidden rounded-lg border bg-card">
-          <img src={preview.url} alt="WoodMart theme preview showing its furniture shop layouts" className="aspect-[4/3] w-full object-contain bg-muted" />
-          <div className="p-5 sm:p-6">
-            <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-semibold uppercase text-brand-green">WordPress theme</p><h2 className="mt-2 text-2xl font-bold">WoodMart</h2></div><span className="rounded-md border px-3 py-1 font-mono text-xs">v8.5.7</span></div>
-            <p className="mt-3 text-sm text-muted-foreground">WoodMart theme archive by XTemos. Requires WordPress and PHP 7.4 or newer.</p>
-            <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 border-y py-3 text-xs text-muted-foreground"><span>ZIP archive</span><span>{(archive.size / 1024 / 1024).toFixed(1)} MB</span><span>Author: XTemos</span></div>
-            <div className="mt-5">
-              {unlocked ? <Button asChild className="w-full sm:w-auto"><a href={archive.url} download="woodmart-8.5.7.zip"><Download /> Download WoodMart</a></Button> : <Button onClick={start} disabled={isPending || !ready} className="w-full sm:w-auto">{isPending ? <Loader2 className="animate-spin" /> : <Play />} Watch sponsor video &amp; download</Button>}
-              <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">{unlocked ? 'Your download is unlocked for this page visit.' : !ready && !isPending ? 'Downloads open when a sponsor video is available.' : 'Complete one sponsor video to unlock this ZIP. No ad click required.'}</p>
-            </div>
-          </div>
-        </article>
-        <aside className="space-y-6 py-2">
-          <div className="flex items-center gap-3"><LockKeyhole className="size-5 text-brand-blue" /><h2 className="font-semibold">Sponsored access</h2></div>
-          <p className="text-sm leading-relaxed text-muted-foreground">Choose to watch a sponsor video in exchange for this download. You can close the video at any time; incomplete viewing will not unlock the file.</p>
-          <div className="border-t pt-5"><h2 className="font-semibold">Before you install</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">This archive is supplied by the site owner. Vendor support, automatic updates and a purchase code are not included or promised. Review its license and scan the ZIP before installing.</p></div>
-          {unlocked && <p className="flex items-center gap-2 text-sm text-brand-green"><CheckCircle2 className="size-4" /> Ready to download</p>}
-        </aside>
+      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <Input aria-label="Search assets" placeholder="Search themes, plugins, resources…" value={search} onChange={e => setSearch(e.target.value)} className="sm:max-w-md" />
+        <Select value={category} onValueChange={setCategory}><SelectTrigger aria-label="Filter category" className="w-full sm:w-60"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All categories</SelectItem>{categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
+        <p className="self-center text-sm text-muted-foreground">{filtered.length} assets</p>
       </div>
+      <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {filtered.map(asset => {
+          const earned = unlocked.has(asset.id);
+          const available = settings?.download_video_enabled === 'on' && !!safeSponsorVideo(asset.video_url || settings?.download_video_url);
+          return <article key={asset.id} className="flex flex-col overflow-hidden rounded-lg border bg-card">
+            {asset.preview_url ? <img src={asset.preview_url} alt={`${asset.title} preview`} className="aspect-[4/3] w-full object-contain bg-muted" /> : <div className="flex aspect-[4/3] items-center justify-center bg-muted"><Package className="size-16 text-muted-foreground" /></div>}
+            <div className="flex flex-1 flex-col p-5">
+              <p className="text-xs font-semibold text-brand-green">{asset.category}</p>
+              <div className="mt-2 flex flex-wrap items-start justify-between gap-2"><h2 className="break-words text-xl font-bold">{asset.title}</h2>{asset.version && <span className="rounded-md border px-2 py-1 font-mono text-xs">v{asset.version}</span>}</div>
+              <p className="mt-3 break-words text-sm text-muted-foreground">{asset.description}</p>
+              <div className="mt-4 flex flex-wrap gap-3 border-y py-3 text-xs text-muted-foreground">{asset.size_mb > 0 && <span>{asset.size_mb.toFixed(1)} MB</span>}{asset.author && <span>{asset.author}</span>}</div>
+              <div className="mt-auto pt-5">{earned ? <Button asChild className="w-full"><a href={asset.file_url} download={asset.filename} target={asset.file_url.startsWith('/') ? undefined : '_blank'} rel="noopener noreferrer"><Download /> Download {asset.title}</a></Button> : <Button onClick={() => start(asset)} disabled={isPending || !available} className="w-full"><Play /> Watch &amp; download</Button>}
+              <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">{earned ? 'Unlocked for this page visit.' : !available && !isPending ? 'Waiting for a sponsor video.' : 'Complete one sponsor video for this asset. No ad click required.'}</p></div>
+            </div>
+          </article>;
+        })}
+      </div>
+      {filtered.length === 0 && <p className="py-16 text-center text-muted-foreground">{items.length ? 'No assets match your search.' : 'New resources are coming soon.'}</p>}
+      <aside className="mt-10 space-y-3 border-t pt-6 text-sm text-muted-foreground"><h2 className="flex items-center gap-2 font-semibold text-foreground"><LockKeyhole className="size-4 text-brand-blue" /> Sponsored access</h2><p>Watch a sponsor video for each asset you choose. You can cancel at any time; incomplete viewing will not unlock a file.</p><p>Files are supplied by the site owner. Review licenses and scan files before installing. Vendor support, purchase codes and automatic updates are not promised.</p></aside>
       <Dialog open={show} onOpenChange={(v) => { setShow(v); if (!v) video.current?.pause(); }}>
         <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-lg">
           <DialogTitle>Advertisement</DialogTitle>
-          <DialogDescription>Complete this sponsor video to unlock WoodMart 8.5.7.</DialogDescription>
+          <DialogDescription>Complete this sponsor video to unlock {selected?.title}.</DialogDescription>
           {source && consent.ads && <video ref={video} src={source} controls playsInline preload="metadata" className="aspect-video w-full rounded-md bg-muted" controlsList="nodownload noplaybackrate" disablePictureInPicture onPlay={() => { lastTick.current = performance.now(); }} onTimeUpdate={tick} onSeeking={() => { const v = video.current; if (v && v.currentTime > watched.current + 0.5) v.currentTime = watched.current; }} onRateChange={() => { const v = video.current; if (v) v.playbackRate = 1; }} onEnded={() => {
             const v = video.current;
-            if (v && rewardEarned(watched.current, v.duration, v.ended)) { setUnlocked(true); setShow(false); }
+            if (v && rewardEarned(watched.current, v.duration, v.ended)) { if (selected) setUnlocked(previous => new Set([...previous, selected.id])); setShow(false); }
             else setError('The video was not completed. Please replay it to unlock the download.');
           }} onError={() => setError('The sponsor video could not load. Please try again later.')} />}
           <progress aria-label="Sponsor video progress" value={progress} max={100} className="h-2 w-full accent-primary" />

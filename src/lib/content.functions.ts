@@ -52,3 +52,11 @@ export const getPublicSetting = createServerFn({ method: "GET" })
     const { data: r } = await sb.from("site_settings").select("value").eq("key", data.key).maybeSingle();
     return (r?.value as string | undefined) ?? "";
   });
+
+export const listDownloadAssets = createServerFn({ method: 'GET' }).handler(async () => {
+  const sb = await pub();
+  const { CATALOG_KEY, parseCatalog } = await import('./download-catalog');
+  const { data, error } = await sb.from('site_settings').select('value').eq('key', CATALOG_KEY).maybeSingle();
+  if (error) throw new Error('Could not load downloads');
+  return parseCatalog(data?.value ?? '').filter(a => a.published);
+});

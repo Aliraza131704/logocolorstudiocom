@@ -16,3 +16,4 @@
 - Ad slots render admin-pasted code via AdSlot; keep reserved min-heights to avoid layout shift.
 - Asset downloads use a voluntary first-party sponsor video and only unlock after continuous playback completion; never tie transferable ZIP rewards to Google rewarded ads because those rewards do not meet its non-transferability rules.
 - Download ZIPs and previews use Lovable Assets pointers; this is a browser-level access flow, not DRM or a private-file security boundary, because CDN files are publicly accessible.
+- The editable download catalog is validated JSON in the existing owner-write site_settings table; public SSR lists through content.functions.ts and owner CRUD uses browser RLS. Each asset has its own playback unlock, with optional video override and a shared sponsor fallback.
