@@ -135,94 +135,27 @@ export const auditWebsite = createServerFn({ method: "POST" })
     return { url: page.url, status: page.status, score: score(), groups, checks, checkedAt: new Date().toISOString() };
   });
 
-/* ---------------- CMS detector ---------------- */
-const CMS: { name: string; tests: (h: string, hd: Record<string, string>) => number }[] = [
-  { name: "WordPress", tests: (h, hd) => (/wp-content\//.test(h) ? 50 : 0) + (/wp-includes\//.test(h) ? 30 : 0) + (/generator["'][^>]*WordPress/i.test(h) ? 40 : 0) + (/wp-json/.test(h) || /wp-json/.test(hd.link ?? "") ? 20 : 0) },
-  { name: "Shopify", tests: (h, hd) => (/cdn\.shopify\.com|\/cdn\/shop\//.test(h) ? 50 : 0) + (/Shopify\.theme/.test(h) ? 40 : 0) + (hd["x-shopid"] || hd["x-shopify-stage"] ? 40 : 0) },
-  { name: "Wix", tests: (h, hd) => (/static\.wixstatic\.com|parastorage\.com/.test(h) ? 60 : 0) + (/generator["'][^>]*Wix/i.test(h) ? 40 : 0) + (hd["x-wix-request-id"] ? 40 : 0) },
-  { name: "Squarespace", tests: (h) => (/static1\.squarespace\.com|squarespace-cdn\.com/.test(h) ? 60 : 0) + (/Squarespace/i.test(h) ? 20 : 0) },
-  { name: "Webflow", tests: (h) => (/data-wf-page|data-wf-site/.test(h) ? 60 : 0) + (/generator["'][^>]*Webflow/i.test(h) ? 40 : 0) + (/website-files\.com|webflow\.com/.test(h) ? 20 : 0) },
-  { name: "Joomla", tests: (h) => (/generator["'][^>]*Joomla/i.test(h) ? 60 : 0) + (/\/media\/jui\/|\/components\/com_/.test(h) ? 40 : 0) },
-  { name: "Drupal", tests: (h, hd) => (/generator["'][^>]*Drupal/i.test(h) ? 60 : 0) + (/\/sites\/default\/files|drupal-settings-json|Drupal\.settings/.test(h) ? 40 : 0) + (hd["x-drupal-cache"] || hd["x-generator"]?.includes("Drupal") ? 30 : 0) },
-  { name: "Magento", tests: (h, hd) => (/Mage\.Cookies|mage\/cookies|\/static\/version\d+\/frontend\//.test(h) ? 60 : 0) + (/text\/x-magento-init/.test(h) ? 40 : 0) + (hd["x-magento-cache-debug"] ? 30 : 0) },
-  { name: "Ghost", tests: (h) => (/generator["'][^>]*Ghost/i.test(h) ? 70 : 0) + (/ghost-portal|\/ghost\/api\//.test(h) ? 30 : 0) },
-  { name: "BigCommerce", tests: (h) => (/cdn\d*\.bigcommerce\.com|stencil-utils/.test(h) ? 70 : 0) },
-  { name: "PrestaShop", tests: (h) => (/prestashop/i.test(h) ? 60 : 0) },
-  { name: "HubSpot CMS", tests: (h) => (/hs-scripts\.com|hubspot\.net\/hub/.test(h) ? 50 : 0) + (/generator["'][^>]*HubSpot/i.test(h) ? 40 : 0) },
-  { name: "Framer", tests: (h) => (/framerusercontent\.com|data-framer/.test(h) ? 70 : 0) },
-  { name: "Next.js", tests: (h) => (/__NEXT_DATA__|\/_next\/static/.test(h) ? 50 : 0) },
-  { name: "Weebly", tests: (h) => (/weebly\.com|editmysite\.com/.test(h) ? 70 : 0) },
-];
-
+/* ---------------- CMS / theme detectors (logic in detect.server.ts) ---------------- */
 export const detectCms = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => input.parse(d))
   .handler(async ({ data }) => {
     const { m, page } = await load(data.url);
-    const results = CMS.map((c) => ({ name: c.name, confidence: Math.min(100, c.tests(page.html, page.headers)) })).filter((r) => r.confidence > 0).sort((a, b) => b.confidence - a.confidence);
-    const generator = m.metaContent(page.html, "generator");
-    return { url: page.url, generator, server: page.headers["server"] ?? null, poweredBy: page.headers["x-powered-by"] ?? null, results };
+    const d = await import("./detect.server");
+    return d.runCms(m, page);
   });
 
-/* ---------------- Shopify theme detector ---------------- */
 export const detectShopify = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => input.parse(d))
   .handler(async ({ data }) => {
-    const { page } = await load(data.url);
-    const h = page.html;
-    const isShopify = /cdn\.shopify\.com|\/cdn\/shop\/|Shopify\.theme|myshopify\.com/.test(h) || !!page.headers["x-shopid"];
-    if (!isShopify) return { url: page.url, isShopify: false as const };
-    const themeObj = h.match(/Shopify\.theme\s*=\s*(\{[^;]*?\});/);
-    let theme: Record<string, unknown> = {};
-    if (themeObj) { try { theme = JSON.parse(themeObj[1]); } catch { /* ignore */ } }
-    const schemaName = h.match(/"schema_name"\s*:\s*"([^"]+)"/)?.[1] ?? (theme.schema_name as string | undefined);
-    const schemaVer = h.match(/"schema_version"\s*:\s*"([^"]+)"/)?.[1] ?? (theme.schema_version as string | undefined);
-    const storeId = h.match(/"theme_store_id"\s*:\s*(\d+)/)?.[1] ?? (theme.theme_store_id ? String(theme.theme_store_id) : undefined);
-    const shop = h.match(/Shopify\.shop\s*=\s*"([^"]+)"/)?.[1] ?? null;
-    const APPS: [string, RegExp][] = [["Klaviyo", /klaviyo/i], ["Judge.me Reviews", /judge\.me|judgeme/i], ["Yotpo", /yotpo/i], ["Loox Reviews", /loox\.io/i], ["Privy", /privy\.com/i], ["ReCharge Subscriptions", /rechargecdn|rechargepayments/i], ["Gorgias", /gorgias/i], ["Omnisend", /omnisend/i], ["Hotjar", /hotjar/i], ["Google Analytics", /googletagmanager|google-analytics/i], ["Meta Pixel", /connect\.facebook\.net/i], ["TikTok Pixel", /analytics\.tiktok\.com/i], ["Shop Pay", /shop_pay|shopify-pay/i], ["PageFly", /pagefly/i], ["GemPages", /gempages/i], ["Stamped.io", /stamped\.io/i], ["Smile.io Rewards", /smile\.io/i], ["Tidio Chat", /tidio/i], ["Afterpay", /afterpay/i], ["Klarna", /klarna/i]];
-    const apps = APPS.filter(([, r]) => r.test(h)).map(([n]) => n);
-    return {
-      url: page.url,
-      isShopify: true as const,
-      shop,
-      themeName: (theme.name as string | undefined) ?? schemaName ?? null,
-      themeId: theme.id ? String(theme.id) : null,
-      role: (theme.role as string | undefined) ?? null,
-      schemaName: schemaName ?? null,
-      version: schemaVer ?? null,
-      themeStoreId: storeId ?? null,
-      themeStoreLink: storeId ? `https://themes.shopify.com/themes?q=${encodeURIComponent(schemaName ?? "")}` : schemaName ? `https://themes.shopify.com/themes?q=${encodeURIComponent(schemaName)}` : null,
-      apps,
-    };
+    const { m, page } = await load(data.url);
+    const d = await import("./detect.server");
+    return d.runShopify(m, page);
   });
 
-/* ---------------- WordPress theme detector ---------------- */
 export const detectWordpress = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => input.parse(d))
   .handler(async ({ data }) => {
     const { m, page } = await load(data.url);
-    const h = page.html;
-    const isWp = /wp-content\/|wp-includes\//.test(h);
-    if (!isWp) return { url: page.url, isWordPress: false as const };
-    const themeSlugs = [...new Set([...h.matchAll(/wp-content\/themes\/([a-zA-Z0-9_.-]+)\//g)].map((x) => x[1]))];
-    const plugins = [...new Set([...h.matchAll(/wp-content\/plugins\/([a-zA-Z0-9_.-]+)\//g)].map((x) => x[1]))].slice(0, 40);
-    const base = new URL(page.url).origin;
-    const parseHeader = (css: string) => {
-      const block = css.match(/\/\*([\s\S]*?)\*\//)?.[1] ?? "";
-      const get = (k: string) => block.match(new RegExp(`^\\s*\\*?\\s*${k}\\s*:\\s*(.+)$`, "im"))?.[1]?.trim() ?? null;
-      return { name: get("Theme Name"), version: get("Version"), author: get("Author"), authorUri: get("Author URI"), themeUri: get("Theme URI"), description: get("Description"), template: get("Template"), license: get("License") };
-    };
-    const themes = await Promise.all(themeSlugs.slice(0, 3).map(async (slug) => {
-      const r = await m.fetchText(`${base}/wp-content/themes/${slug}/style.css`, 20_000);
-      return { slug, ...(r.ok ? parseHeader(r.text) : {}), screenshot: `${base}/wp-content/themes/${slug}/screenshot.png` };
-    }));
-    const child = themes.find((t) => "template" in t && t.template);
-    const wpVer = m.metaContent(h, "generator")?.match(/WordPress\s*([\d.]+)/i)?.[1] ?? h.match(/ver=(\d+\.\d+(?:\.\d+)?)['"&][^>]*wp-includes/)?.[1] ?? null;
-    return {
-      url: page.url,
-      isWordPress: true as const,
-      wpVersion: wpVer,
-      themes,
-      parentTheme: child && "template" in child ? child.template : null,
-      plugins: plugins.map((p) => ({ slug: p, url: `https://wordpress.org/plugins/${p}/` })),
-    };
+    const d = await import("./detect.server");
+    return d.runWordpress(m, page);
   });

@@ -8,7 +8,7 @@ import { detectCms } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
 
 const FAQS: Faq[] = [
-  { q: "Which platforms can be detected?", a: "WordPress, Shopify, Wix, Squarespace, Webflow, Joomla, Drupal, Magento, Ghost, BigCommerce, PrestaShop, HubSpot CMS, Framer, Weebly and Next.js." },
+  { q: "Which platforms can be detected?", a: "WordPress, Shopify, Wix, Squarespace, Webflow, Joomla, Drupal, Magento, Ghost, BigCommerce, PrestaShop, WooCommerce, OpenCart, Ecwid, HubSpot CMS, Framer, Weebly, Duda, Tilda, Blogger, TYPO3, headless CMSs like Contentful and Sanity, plus 40+ frameworks, analytics tools, hosts and page builders." },
   { q: "What does the confidence score mean?", a: "It reflects how many independent fingerprints matched, such as generator tags, asset paths and server headers. 80%+ is a very strong match." },
   { q: "Why is nothing detected?", a: "The site may be custom-built, use a headless setup, or hide its platform signals." },
   { q: "Is it legal to check a site's CMS?", a: "Yes. We only read the same public HTML and headers your browser receives." },
@@ -54,8 +54,9 @@ function Page() {
                 <div className="mt-6 space-y-4">
                   {res.results.map((r) => (
                     <div key={r.name}>
-                      <div className="flex justify-between text-sm"><span>{r.name}</span><span className="font-semibold">{r.confidence}%</span></div>
+                      <div className="flex justify-between text-sm"><span className="font-medium">{r.name}</span><span className="font-semibold">{r.confidence}%</span></div>
                       <div className="mt-1 h-2 rounded-full bg-muted"><div className="h-full rounded-full bg-brand-gradient" style={{ width: `${r.confidence}%` }} /></div>
+                      <p className="mt-1 text-xs text-muted-foreground">{r.category} · {r.evidence.join(" · ")}</p>
                     </div>
                   ))}
                 </div>
@@ -66,10 +67,24 @@ function Page() {
           </div>
           <dl className="space-y-3 rounded-2xl border bg-card p-6 text-sm">
             <div><dt className="text-muted-foreground">URL</dt><dd className="break-all">{res.url}</dd></div>
+            <div><dt className="text-muted-foreground">Page title</dt><dd>{res.title ?? "—"}</dd></div>
+            <div><dt className="text-muted-foreground">Status / speed / size</dt><dd>{res.status} · {res.responseMs} ms · {res.sizeKb} KB</dd></div>
+            <div><dt className="text-muted-foreground">Language</dt><dd>{res.lang ?? "—"}</dd></div>
             <div><dt className="text-muted-foreground">Generator tag</dt><dd>{res.generator ?? "—"}</dd></div>
             <div><dt className="text-muted-foreground">Server</dt><dd>{res.server ?? "—"}</dd></div>
             <div><dt className="text-muted-foreground">X-Powered-By</dt><dd>{res.poweredBy ?? "—"}</dd></div>
           </dl>
+          <div className="rounded-2xl border bg-card p-6 lg:col-span-2">
+            <h2 className="font-semibold">Technology stack ({res.tech.length})</h2>
+            {res.tech.length === 0 ? <p className="mt-3 text-sm text-muted-foreground">No extra technologies detected.</p> : (
+              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {[...new Set(res.tech.map((t) => t.category))].map((c) => (
+                  <div key={c}><p className="text-xs uppercase tracking-wide text-muted-foreground">{c}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">{res.tech.filter((t) => t.category === c).map((t) => <span key={t.name} className="rounded-full border px-3 py-1 text-sm">{t.name}</span>)}</div></div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </ToolLayout>
