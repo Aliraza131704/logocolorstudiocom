@@ -10,33 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsContrastCheckerRouteImport } from './routes/tools.contrast-checker'
+import { Route as ToolsExportCenterRouteImport } from './routes/tools.export-center'
+import { Route as ToolsLogoExtractorRouteImport } from './routes/tools.logo-extractor'
+import { Route as ToolsThemeGeneratorRouteImport } from './routes/tools.theme-generator'
+import { Route as ToolsWebsiteExtractorRouteImport } from './routes/tools.website-extractor'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsContrastCheckerRoute = ToolsContrastCheckerRouteImport.update({
+  id: '/tools/contrast-checker',
+  path: '/tools/contrast-checker',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsExportCenterRoute = ToolsExportCenterRouteImport.update({
+  id: '/tools/export-center',
+  path: '/tools/export-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsLogoExtractorRoute = ToolsLogoExtractorRouteImport.update({
+  id: '/tools/logo-extractor',
+  path: '/tools/logo-extractor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsThemeGeneratorRoute = ToolsThemeGeneratorRouteImport.update({
+  id: '/tools/theme-generator',
+  path: '/tools/theme-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsWebsiteExtractorRoute = ToolsWebsiteExtractorRouteImport.update({
+  id: '/tools/website-extractor',
+  path: '/tools/website-extractor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
+  '/tools/export-center': typeof ToolsExportCenterRoute
+  '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
+  '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
+  '/tools/export-center': typeof ToolsExportCenterRoute
+  '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
+  '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
+  '/tools/export-center': typeof ToolsExportCenterRoute
+  '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
+  '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/tools/contrast-checker'
+    | '/tools/export-center'
+    | '/tools/logo-extractor'
+    | '/tools/theme-generator'
+    | '/tools/website-extractor'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/tools/contrast-checker'
+    | '/tools/export-center'
+    | '/tools/logo-extractor'
+    | '/tools/theme-generator'
+    | '/tools/website-extractor'
+  id:
+    | '__root__'
+    | '/'
+    | '/tools/contrast-checker'
+    | '/tools/export-center'
+    | '/tools/logo-extractor'
+    | '/tools/theme-generator'
+    | '/tools/website-extractor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ToolsContrastCheckerRoute: typeof ToolsContrastCheckerRoute
+  ToolsExportCenterRoute: typeof ToolsExportCenterRoute
+  ToolsLogoExtractorRoute: typeof ToolsLogoExtractorRoute
+  ToolsThemeGeneratorRoute: typeof ToolsThemeGeneratorRoute
+  ToolsWebsiteExtractorRoute: typeof ToolsWebsiteExtractorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +117,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/contrast-checker': {
+      id: '/tools/contrast-checker'
+      path: '/tools/contrast-checker'
+      fullPath: '/tools/contrast-checker'
+      preLoaderRoute: typeof ToolsContrastCheckerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/export-center': {
+      id: '/tools/export-center'
+      path: '/tools/export-center'
+      fullPath: '/tools/export-center'
+      preLoaderRoute: typeof ToolsExportCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/logo-extractor': {
+      id: '/tools/logo-extractor'
+      path: '/tools/logo-extractor'
+      fullPath: '/tools/logo-extractor'
+      preLoaderRoute: typeof ToolsLogoExtractorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/theme-generator': {
+      id: '/tools/theme-generator'
+      path: '/tools/theme-generator'
+      fullPath: '/tools/theme-generator'
+      preLoaderRoute: typeof ToolsThemeGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/website-extractor': {
+      id: '/tools/website-extractor'
+      path: '/tools/website-extractor'
+      fullPath: '/tools/website-extractor'
+      preLoaderRoute: typeof ToolsWebsiteExtractorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ToolsContrastCheckerRoute: ToolsContrastCheckerRoute,
+  ToolsExportCenterRoute: ToolsExportCenterRoute,
+  ToolsLogoExtractorRoute: ToolsLogoExtractorRoute,
+  ToolsThemeGeneratorRoute: ToolsThemeGeneratorRoute,
+  ToolsWebsiteExtractorRoute: ToolsWebsiteExtractorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
