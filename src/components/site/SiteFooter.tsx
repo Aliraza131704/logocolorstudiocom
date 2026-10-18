@@ -50,7 +50,10 @@ export function SiteFooter() {
         </div>
         <div className="flex flex-col items-center justify-between gap-3 border-t py-6 text-sm text-muted-foreground sm:flex-row">
           <p>© 2026 LogoColorStudio. All rights reserved.</p>
-          <button onClick={open} className="hover:text-primary">Cookie settings</button>
+          <div className="flex gap-4">
+            <button onClick={open} className="hover:text-primary">Cookie settings</button>
+            <Link to="/admin" className="hover:text-primary">Owner login</Link>
+          </div>
         </div>
       </div>
     </footer>

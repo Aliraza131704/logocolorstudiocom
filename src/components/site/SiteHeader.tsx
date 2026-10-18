@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, Moon, Sun, X, ChevronDown } from "lucide-react";
+import { Menu, Moon, Sun, X, ChevronDown, LayoutDashboard } from "lucide-react";
+import { useIsAdmin } from "@/lib/use-is-admin";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme";
@@ -24,6 +25,7 @@ const NAV = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const isAdmin = useIsAdmin();
   return (
     <header className="sticky top-0 z-50 border-b glass">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
@@ -51,6 +53,11 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-1">
+          {isAdmin && (
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/admin"><LayoutDashboard /> Admin</Link>
+            </Button>
+          )}
           <ThemeToggle />
           <Button variant="hero" className="hidden sm:inline-flex" asChild>
             <Link to="/tools/logo-extractor">Start free</Link>
