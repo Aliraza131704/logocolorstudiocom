@@ -45,3 +45,7 @@ export function sponsorReady(asset: DownloadAsset, sharedVideo?: string, enabled
   if (asset.sponsor_type === 'website') return !!asset.sponsor_url;
   return enabled === 'on' && !!(asset.video_url || sharedVideo);
 }
+export function canContinueSponsor(asset: DownloadAsset, websiteOpened: boolean): boolean {
+  if (asset.sponsor_type === 'website') return !!asset.sponsor_url && websiteOpened;
+  return asset.sponsor_type === 'banner' || asset.sponsor_type === 'adsense';
+}

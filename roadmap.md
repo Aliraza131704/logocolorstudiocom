@@ -1,4 +1,5 @@
 # Asset downloads
+- [ ] Require website sponsor opening before download; verify blocked and opened states.
 - [x] Add banner, website and AdSense sponsor formats; format rules tested and real owner website-sponsor save/continue verified.
 - [x] Expand catalog for multiple assets with owner add/edit/delete/publish and public search/categories (real owner CRUD and public read verified).
 - [x] Add separate WoodMart downloads page and navigation.
