@@ -50,10 +50,9 @@ function Downloads() {
   };
   const visitWebsite = () => {
     if (!selected?.sponsor_url || !consent.ads) return;
-    const tab = window.open('about:blank', '_blank');
+    const tab = window.open(selected.sponsor_url, '_blank');
     if (!tab) { setError('Allow new tabs for this site, then try Visit sponsor again.'); return; }
     tab.opener = null;
-    tab.location.href = selected.sponsor_url;
     setWebsiteOpened(true);
     setError('');
   };
