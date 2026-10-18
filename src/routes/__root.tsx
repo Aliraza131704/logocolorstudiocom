@@ -20,6 +20,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { AdSlot, GlobalScripts } from "@/components/site/AdSlot";
 import { Toaster } from "@/components/ui/sonner";
 import { logEvent } from "@/lib/site-data";
+import { PromoPopup } from "@/components/site/PromoPopup";
 
 function NotFoundComponent() {
   return (
@@ -147,6 +148,7 @@ function RootComponent() {
               </main>
               <SiteFooter />
               <div className="fixed inset-x-0 bottom-0 z-40 bg-background/95 md:hidden"><AdSlot position="mobile_sticky" className="my-1" /></div>
+              <PromoPopup />
             </div>
           )}
           <GlobalScripts />
