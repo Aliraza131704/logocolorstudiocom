@@ -52,7 +52,13 @@ function Page() {
               <div><dt className="text-muted-foreground">Based on</dt><dd>{res.schemaName ?? "—"}</dd></div>
               <div><dt className="text-muted-foreground">Version</dt><dd>{res.version ?? "—"}</dd></div>
               <div><dt className="text-muted-foreground">Theme ID</dt><dd>{res.themeId ?? "—"}</dd></div>
-              <div><dt className="text-muted-foreground">Theme Store ID</dt><dd>{res.themeStoreId ?? "Custom"}</dd></div>
+              <div><dt className="text-muted-foreground">Theme Store ID</dt><dd>{res.themeStoreId ?? (res.isCustom ? "Custom theme" : "—")}</dd></div>
+              <div><dt className="text-muted-foreground">Role</dt><dd>{res.role ?? "—"}</dd></div>
+              <div><dt className="text-muted-foreground">Architecture</dt><dd>{res.headless ? "Headless (Hydrogen)" : res.onlineStore2 ? "Online Store 2.0" : "Classic"}</dd></div>
+              <div><dt className="text-muted-foreground">Store name</dt><dd>{res.storeName ?? "—"}</dd></div>
+              <div><dt className="text-muted-foreground">Products</dt><dd>{res.productsCount ?? "—"}</dd></div>
+              <div><dt className="text-muted-foreground">Currency</dt><dd>{res.currency ?? "—"}</dd></div>
+              <div><dt className="text-muted-foreground">Locale / country</dt><dd>{[res.locale, res.country].filter(Boolean).join(" / ") || "—"}</dd></div>
               <div className="col-span-2"><dt className="text-muted-foreground">Store</dt><dd className="break-all">{res.shop ?? res.url}</dd></div>
             </dl>
             {res.themeStoreLink && <a href={res.themeStoreLink} target="_blank" rel="noopener noreferrer" className="mt-6 inline-block text-primary underline">View on Shopify Theme Store</a>}
