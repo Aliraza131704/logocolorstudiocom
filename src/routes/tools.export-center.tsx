@@ -2,11 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { ToolLayout } from "@/components/site/ToolLayout";
-import { ExportBox, loadPalette, savePalette } from "@/components/site/tool-parts";
-import { download, faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
+import { ExportBox, loadPalette, savePalette, paletteToPng } from "@/components/site/tool-parts";
+import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { normalizeHex, randomHex, readableOn } from "@/lib/color";
+import { normalizeHex, randomHex } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
 
 const FAQS: Faq[] = [
@@ -26,19 +26,6 @@ export const Route = createFileRoute("/tools/export-center")({
     }),
   component: Page,
 });
-
-export function paletteToPng(colors: string[], name = "palette") {
-  const c = document.createElement("canvas");
-  c.width = 1600; c.height = 900;
-  const ctx = c.getContext("2d")!;
-  const w = c.width / colors.length;
-  colors.forEach((col, i) => {
-    ctx.fillStyle = col; ctx.fillRect(i * w, 0, w + 1, c.height);
-    ctx.fillStyle = readableOn(col); ctx.font = "bold 40px monospace";
-    ctx.fillText(col, i * w + 30, c.height - 50);
-  });
-  c.toBlob((b) => b && download(`${name}.png`, b));
-}
 
 function Page() {
   const [colors, setColors] = useState<string[]>(["#0A8CFF", "#4CC53F", "#FFB11A", "#FF3B4E", "#0F1B3D"]);

@@ -11,12 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdsDottxtRouteImport } from './routes/ads[.]txt'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as PalettesRouteImport } from './routes/palettes'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -40,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdsDottxtRoute = AdsDottxtRouteImport.update({
+  id: '/ads.txt',
+  path: '/ads.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChangelogRoute = ChangelogRouteImport.update({
@@ -70,6 +78,16 @@ const PalettesRoute = PalettesRouteImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
@@ -148,12 +166,15 @@ const ToolsWordpressThemeDetectorRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ads.txt': typeof AdsDottxtRoute
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/disclaimer': typeof DisclaimerRoute
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
@@ -172,12 +193,15 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ads.txt': typeof AdsDottxtRoute
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/disclaimer': typeof DisclaimerRoute
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
@@ -197,12 +221,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ads.txt': typeof AdsDottxtRoute
   '/changelog': typeof ChangelogRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/disclaimer': typeof DisclaimerRoute
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
@@ -223,12 +250,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/ads.txt'
     | '/changelog'
     | '/contact'
     | '/cookie-policy'
     | '/disclaimer'
     | '/palettes'
     | '/privacy-policy'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
     | '/palette/$slug'
@@ -247,12 +277,15 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/ads.txt'
     | '/changelog'
     | '/contact'
     | '/cookie-policy'
     | '/disclaimer'
     | '/palettes'
     | '/privacy-policy'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
     | '/palette/$slug'
@@ -271,12 +304,15 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/ads.txt'
     | '/changelog'
     | '/contact'
     | '/cookie-policy'
     | '/disclaimer'
     | '/palettes'
     | '/privacy-policy'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
     | '/palette/$slug'
@@ -296,12 +332,15 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdsDottxtRoute: typeof AdsDottxtRoute
   ChangelogRoute: typeof ChangelogRoute
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
   DisclaimerRoute: typeof DisclaimerRoute
   PalettesRoute: typeof PalettesRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
   PaletteSlugRoute: typeof PaletteSlugRoute
@@ -332,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ads.txt': {
+      id: '/ads.txt'
+      path: '/ads.txt'
+      fullPath: '/ads.txt'
+      preLoaderRoute: typeof AdsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/changelog': {
@@ -374,6 +420,20 @@ declare module '@tanstack/react-router' {
       path: '/privacy-policy'
       fullPath: '/privacy-policy'
       preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms-of-service': {
@@ -480,12 +540,15 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdsDottxtRoute: AdsDottxtRoute,
   ChangelogRoute: ChangelogRoute,
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
   DisclaimerRoute: DisclaimerRoute,
   PalettesRoute: PalettesRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
   PaletteSlugRoute: PaletteSlugRoute,
