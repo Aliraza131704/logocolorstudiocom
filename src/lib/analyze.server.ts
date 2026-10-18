@@ -81,7 +81,7 @@ export async function fetchJson<T = unknown>(url: string): Promise<T | null> {
 
 export async function fetchText(url: string, max = 400_000): Promise<{ ok: boolean; status: number; text: string }> {
   try {
-    const r = await fetch(url, { headers: { "user-agent": UA }, redirect: "follow", signal: AbortSignal.timeout(8000) });
+    const r = await fetch(url, { headers: { "user-agent": BROWSER_UA }, redirect: "follow", signal: AbortSignal.timeout(8000) });
     const text = r.ok ? (await r.text()).slice(0, max) : "";
     return { ok: r.ok, status: r.status, text };
   } catch {
