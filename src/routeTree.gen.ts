@@ -10,15 +10,126 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdsDottxtRouteImport } from './routes/ads[.]txt'
+import { Route as ChangelogRouteImport } from './routes/changelog'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PalettesRouteImport } from './routes/palettes'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as PaletteSlugRouteImport } from './routes/palette.$slug'
+import { Route as ToolsIndexRouteImport } from './routes/tools.index'
+import { Route as ToolsCmsDetectorRouteImport } from './routes/tools.cms-detector'
 import { Route as ToolsContrastCheckerRouteImport } from './routes/tools.contrast-checker'
 import { Route as ToolsExportCenterRouteImport } from './routes/tools.export-center'
 import { Route as ToolsLogoExtractorRouteImport } from './routes/tools.logo-extractor'
+import { Route as ToolsShopifyThemeDetectorRouteImport } from './routes/tools.shopify-theme-detector'
 import { Route as ToolsThemeGeneratorRouteImport } from './routes/tools.theme-generator'
+import { Route as ToolsWebsiteAuditorRouteImport } from './routes/tools.website-auditor'
 import { Route as ToolsWebsiteExtractorRouteImport } from './routes/tools.website-extractor'
+import { Route as ToolsWordpressThemeDetectorRouteImport } from './routes/tools.wordpress-theme-detector'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdsDottxtRoute = AdsDottxtRouteImport.update({
+  id: '/ads.txt',
+  path: '/ads.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangelogRoute = ChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiePolicyRoute = CookiePolicyRouteImport.update({
+  id: '/cookie-policy',
+  path: '/cookie-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PalettesRoute = PalettesRouteImport.update({
+  id: '/palettes',
+  path: '/palettes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaletteSlugRoute = PaletteSlugRouteImport.update({
+  id: '/palette/$slug',
+  path: '/palette/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsIndexRoute = ToolsIndexRouteImport.update({
+  id: '/tools/',
+  path: '/tools/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsCmsDetectorRoute = ToolsCmsDetectorRouteImport.update({
+  id: '/tools/cms-detector',
+  path: '/tools/cms-detector',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsContrastCheckerRoute = ToolsContrastCheckerRouteImport.update({
@@ -36,9 +147,20 @@ const ToolsLogoExtractorRoute = ToolsLogoExtractorRouteImport.update({
   path: '/tools/logo-extractor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsShopifyThemeDetectorRoute =
+  ToolsShopifyThemeDetectorRouteImport.update({
+    id: '/tools/shopify-theme-detector',
+    path: '/tools/shopify-theme-detector',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ToolsThemeGeneratorRoute = ToolsThemeGeneratorRouteImport.update({
   id: '/tools/theme-generator',
   path: '/tools/theme-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsWebsiteAuditorRoute = ToolsWebsiteAuditorRouteImport.update({
+  id: '/tools/website-auditor',
+  path: '/tools/website-auditor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsWebsiteExtractorRoute = ToolsWebsiteExtractorRouteImport.update({
@@ -46,66 +168,219 @@ const ToolsWebsiteExtractorRoute = ToolsWebsiteExtractorRouteImport.update({
   path: '/tools/website-extractor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsWordpressThemeDetectorRoute =
+  ToolsWordpressThemeDetectorRouteImport.update({
+    id: '/tools/wordpress-theme-detector',
+    path: '/tools/wordpress-theme-detector',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/ads.txt': typeof AdsDottxtRoute
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/login': typeof LoginRoute
+  '/palettes': typeof PalettesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/palette/$slug': typeof PaletteSlugRoute
+  '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
   '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/shopify-theme-detector': typeof ToolsShopifyThemeDetectorRoute
   '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
+  '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
+  '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
+  '/blog/': typeof BlogIndexRoute
+  '/tools/': typeof ToolsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/ads.txt': typeof AdsDottxtRoute
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/login': typeof LoginRoute
+  '/palettes': typeof PalettesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/palette/$slug': typeof PaletteSlugRoute
+  '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
   '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/shopify-theme-detector': typeof ToolsShopifyThemeDetectorRoute
   '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
+  '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
+  '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
+  '/blog': typeof BlogIndexRoute
+  '/tools': typeof ToolsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
+  '/ads.txt': typeof AdsDottxtRoute
+  '/changelog': typeof ChangelogRoute
+  '/contact': typeof ContactRoute
+  '/cookie-policy': typeof CookiePolicyRoute
+  '/disclaimer': typeof DisclaimerRoute
+  '/login': typeof LoginRoute
+  '/palettes': typeof PalettesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/palette/$slug': typeof PaletteSlugRoute
+  '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
   '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/shopify-theme-detector': typeof ToolsShopifyThemeDetectorRoute
   '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
+  '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
+  '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
+  '/blog/': typeof BlogIndexRoute
+  '/tools/': typeof ToolsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/admin'
+    | '/ads.txt'
+    | '/changelog'
+    | '/contact'
+    | '/cookie-policy'
+    | '/disclaimer'
+    | '/login'
+    | '/palettes'
+    | '/privacy-policy'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/terms-of-service'
+    | '/blog/$slug'
+    | '/palette/$slug'
+    | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
     | '/tools/logo-extractor'
+    | '/tools/shopify-theme-detector'
     | '/tools/theme-generator'
+    | '/tools/website-auditor'
     | '/tools/website-extractor'
+    | '/tools/wordpress-theme-detector'
+    | '/blog/'
+    | '/tools/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/admin'
+    | '/ads.txt'
+    | '/changelog'
+    | '/contact'
+    | '/cookie-policy'
+    | '/disclaimer'
+    | '/login'
+    | '/palettes'
+    | '/privacy-policy'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/terms-of-service'
+    | '/blog/$slug'
+    | '/palette/$slug'
+    | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
     | '/tools/logo-extractor'
+    | '/tools/shopify-theme-detector'
     | '/tools/theme-generator'
+    | '/tools/website-auditor'
     | '/tools/website-extractor'
+    | '/tools/wordpress-theme-detector'
+    | '/blog'
+    | '/tools'
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/admin'
+    | '/ads.txt'
+    | '/changelog'
+    | '/contact'
+    | '/cookie-policy'
+    | '/disclaimer'
+    | '/login'
+    | '/palettes'
+    | '/privacy-policy'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/terms-of-service'
+    | '/blog/$slug'
+    | '/palette/$slug'
+    | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
     | '/tools/logo-extractor'
+    | '/tools/shopify-theme-detector'
     | '/tools/theme-generator'
+    | '/tools/website-auditor'
     | '/tools/website-extractor'
+    | '/tools/wordpress-theme-detector'
+    | '/blog/'
+    | '/tools/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRoute
+  AdsDottxtRoute: typeof AdsDottxtRoute
+  ChangelogRoute: typeof ChangelogRoute
+  ContactRoute: typeof ContactRoute
+  CookiePolicyRoute: typeof CookiePolicyRoute
+  DisclaimerRoute: typeof DisclaimerRoute
+  LoginRoute: typeof LoginRoute
+  PalettesRoute: typeof PalettesRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  PaletteSlugRoute: typeof PaletteSlugRoute
+  ToolsCmsDetectorRoute: typeof ToolsCmsDetectorRoute
   ToolsContrastCheckerRoute: typeof ToolsContrastCheckerRoute
   ToolsExportCenterRoute: typeof ToolsExportCenterRoute
   ToolsLogoExtractorRoute: typeof ToolsLogoExtractorRoute
+  ToolsShopifyThemeDetectorRoute: typeof ToolsShopifyThemeDetectorRoute
   ToolsThemeGeneratorRoute: typeof ToolsThemeGeneratorRoute
+  ToolsWebsiteAuditorRoute: typeof ToolsWebsiteAuditorRoute
   ToolsWebsiteExtractorRoute: typeof ToolsWebsiteExtractorRoute
+  ToolsWordpressThemeDetectorRoute: typeof ToolsWordpressThemeDetectorRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  ToolsIndexRoute: typeof ToolsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -115,6 +390,132 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ads.txt': {
+      id: '/ads.txt'
+      path: '/ads.txt'
+      fullPath: '/ads.txt'
+      preLoaderRoute: typeof AdsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/changelog': {
+      id: '/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof ChangelogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookie-policy': {
+      id: '/cookie-policy'
+      path: '/cookie-policy'
+      fullPath: '/cookie-policy'
+      preLoaderRoute: typeof CookiePolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/palettes': {
+      id: '/palettes'
+      path: '/palettes'
+      fullPath: '/palettes'
+      preLoaderRoute: typeof PalettesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/palette/$slug': {
+      id: '/palette/$slug'
+      path: '/palette/$slug'
+      fullPath: '/palette/$slug'
+      preLoaderRoute: typeof PaletteSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/': {
+      id: '/tools/'
+      path: '/tools'
+      fullPath: '/tools/'
+      preLoaderRoute: typeof ToolsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/cms-detector': {
+      id: '/tools/cms-detector'
+      path: '/tools/cms-detector'
+      fullPath: '/tools/cms-detector'
+      preLoaderRoute: typeof ToolsCmsDetectorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/contrast-checker': {
@@ -138,11 +539,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsLogoExtractorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/shopify-theme-detector': {
+      id: '/tools/shopify-theme-detector'
+      path: '/tools/shopify-theme-detector'
+      fullPath: '/tools/shopify-theme-detector'
+      preLoaderRoute: typeof ToolsShopifyThemeDetectorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/theme-generator': {
       id: '/tools/theme-generator'
       path: '/tools/theme-generator'
       fullPath: '/tools/theme-generator'
       preLoaderRoute: typeof ToolsThemeGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/website-auditor': {
+      id: '/tools/website-auditor'
+      path: '/tools/website-auditor'
+      fullPath: '/tools/website-auditor'
+      preLoaderRoute: typeof ToolsWebsiteAuditorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/website-extractor': {
@@ -152,16 +567,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsWebsiteExtractorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/wordpress-theme-detector': {
+      id: '/tools/wordpress-theme-detector'
+      path: '/tools/wordpress-theme-detector'
+      fullPath: '/tools/wordpress-theme-detector'
+      preLoaderRoute: typeof ToolsWordpressThemeDetectorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AdminRoute: AdminRoute,
+  AdsDottxtRoute: AdsDottxtRoute,
+  ChangelogRoute: ChangelogRoute,
+  ContactRoute: ContactRoute,
+  CookiePolicyRoute: CookiePolicyRoute,
+  DisclaimerRoute: DisclaimerRoute,
+  LoginRoute: LoginRoute,
+  PalettesRoute: PalettesRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  PaletteSlugRoute: PaletteSlugRoute,
+  ToolsCmsDetectorRoute: ToolsCmsDetectorRoute,
   ToolsContrastCheckerRoute: ToolsContrastCheckerRoute,
   ToolsExportCenterRoute: ToolsExportCenterRoute,
   ToolsLogoExtractorRoute: ToolsLogoExtractorRoute,
+  ToolsShopifyThemeDetectorRoute: ToolsShopifyThemeDetectorRoute,
   ToolsThemeGeneratorRoute: ToolsThemeGeneratorRoute,
+  ToolsWebsiteAuditorRoute: ToolsWebsiteAuditorRoute,
   ToolsWebsiteExtractorRoute: ToolsWebsiteExtractorRoute,
+  ToolsWordpressThemeDetectorRoute: ToolsWordpressThemeDetectorRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  ToolsIndexRoute: ToolsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

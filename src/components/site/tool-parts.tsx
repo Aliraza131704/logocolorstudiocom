@@ -93,3 +93,17 @@ export function savePalette(colors: string[]) {
 export function loadPalette(): string[] | null {
   try { return JSON.parse(localStorage.getItem("lcs-current-palette") ?? "null"); } catch { return null; }
 }
+
+export function paletteToPng(colors: string[], name = "palette") {
+  const c = document.createElement("canvas");
+  c.width = 1600; c.height = 900;
+  const ctx = c.getContext("2d")!;
+  const w = c.width / colors.length;
+  colors.forEach((col, i) => {
+    ctx.fillStyle = col; ctx.fillRect(i * w, 0, w + 1, c.height);
+    ctx.fillStyle = readableOn(col); ctx.font = "bold 40px monospace";
+    ctx.fillText(col, i * w + 30, c.height - 50);
+  });
+  c.toBlob((b) => b && download(`${name}.png`, b));
+}
+

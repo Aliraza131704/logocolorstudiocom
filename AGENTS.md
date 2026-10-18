@@ -8,3 +8,9 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Project rules
+- URL-based tools fetch sites in `createServerFn` handlers (src/lib/analyze.functions.ts) with URL validation + IP rate limiting; never fetch third-party sites from the browser (CORS).
+- Public SSR reads (blog, pages, settings) go through src/lib/content.functions.ts using a publishable server client; admin writes use the browser client under RLS (`has_role` admin).
+- The 1,000 gallery palettes are generated deterministically in src/lib/palettes.ts (no DB rows); only likes live in the database, keyed by slug — never change the generator seed or slugs break.
+- Ad slots render admin-pasted code via AdSlot; keep reserved min-heights to avoid layout shift.

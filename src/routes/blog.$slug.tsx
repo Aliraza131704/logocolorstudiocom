@@ -1,0 +1,94 @@
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Twitter, Linkedin, Facebook, Link2 } from "lucide-react";
+import { getPost, listPosts } from "@/lib/content.functions";
+import { Breadcrumbs, breadcrumbLd, copyText } from "@/components/site/ui-bits";
+import { AdSlot } from "@/components/site/AdSlot";
+import { LogoImage } from "@/components/site/Logo";
+import { pageHead } from "@/lib/seo";
+
+export const Route = createFileRoute("/blog/$slug")({
+  loader: async ({ params }) => {
+    const [post, all] = await Promise.all([getPost({ data: { slug: params.slug } }), listPosts()]);
+    if (!post) throw notFound();
+    const related = all.filter((p) => p.slug !== post.slug).sort((a, b) => Number(b.category === post.category) - Number(a.category === post.category)).slice(0, 3);
+    return { post, related };
+  },
+  head: ({ loaderData, params }) => {
+    if (!loaderData) return { meta: [{ title: "Article unavailable" }, { name: "robots", content: "noindex" }] };
+    const p = loaderData.post;
+    const path = `/blog/${params.slug}`;
+    const h = pageHead({
+      title: (p.seo_title || p.title).slice(0, 60),
+      description: (p.meta_description || p.excerpt).slice(0, 160),
+      path: p.canonical || path,
+      type: "article",
+      image: p.og_image || undefined,
+      jsonLd: [
+        { "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.excerpt, datePublished: p.published_at, dateModified: p.updated_at, author: { "@type": "Organization", name: p.author }, publisher: { "@type": "Organization", name: "LogoColorStudio" }, image: p.cover_image },
+        breadcrumbLd([{ label: "Blog", to: "/blog" }, { label: p.title }], path),
+      ],
+    });
+    return h;
+  },
+  component: Page,
+});
+
+function slugify(s: string) { return s.toLowerCase().replace(/<[^>]+>/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+
+function Page() {
+  const { post, related } = Route.useLoaderData();
+  const toc: { id: string; text: string }[] = [];
+  const html = post.content.replace(/<h2>(.*?)<\/h2>/g, (_, t: string) => { const id = slugify(t); toc.push({ id, text: t.replace(/<[^>]+>/g, "") }); return `<h2 id="${id}">${t}</h2>`; });
+  const words = post.content.replace(/<[^>]+>/g, " ").split(/\s+/).length;
+  const share = typeof window !== "undefined" ? window.location.href : "";
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <Breadcrumbs items={[{ label: "Blog", to: "/blog" }, { label: post.title }]} />
+      <header className="mx-auto max-w-3xl">
+        <p className="text-sm font-semibold uppercase tracking-widest text-primary">{post.category}</p>
+        <h1 className="mt-2 text-3xl font-extrabold leading-tight sm:text-5xl">{post.title}</h1>
+        <p className="mt-4 text-muted-foreground">By {post.author} · {new Date(post.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {Math.max(1, Math.round(words / 220))} min read</p>
+      </header>
+      {post.cover_image && <img src={post.cover_image} alt={post.title} width={1200} height={630} className="mx-auto mt-8 aspect-[1200/630] w-full max-w-4xl rounded-3xl border object-cover" />}
+      <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_240px]">
+        <div className="min-w-0">
+          <article className="prose-content mx-auto max-w-3xl" dangerouslySetInnerHTML={{ __html: html }} />
+          <AdSlot position="in_content" className="mx-auto max-w-3xl" />
+          <div className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center gap-2">
+            <span className="text-sm font-medium">Share:</span>
+            <a className="rounded-full border p-2" aria-label="Share on X" target="_blank" rel="noopener noreferrer" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(share)}&text=${encodeURIComponent(post.title)}`}><Twitter className="size-4" /></a>
+            <a className="rounded-full border p-2" aria-label="Share on LinkedIn" target="_blank" rel="noopener noreferrer" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(share)}`}><Linkedin className="size-4" /></a>
+            <a className="rounded-full border p-2" aria-label="Share on Facebook" target="_blank" rel="noopener noreferrer" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(share)}`}><Facebook className="size-4" /></a>
+            <button className="rounded-full border p-2" aria-label="Copy link" onClick={() => copyText(window.location.href, "Link copied")}><Link2 className="size-4" /></button>
+            <div className="ml-auto flex flex-wrap gap-1">{post.tags.map((t) => <span key={t} className="rounded-full bg-muted px-3 py-1 text-xs">#{t}</span>)}</div>
+          </div>
+          <div className="mx-auto mt-8 flex max-w-3xl items-center gap-4 rounded-2xl border bg-card p-5">
+            <LogoImage className="h-8" />
+            <div><p className="font-semibold">{post.author}</p><p className="text-sm text-muted-foreground">We build free tools and guides for brand colors and better websites.</p></div>
+          </div>
+        </div>
+        {toc.length > 0 && (
+          <aside className="hidden lg:block">
+            <nav aria-label="Table of contents" className="sticky top-24 rounded-2xl border bg-card p-5 text-sm">
+              <p className="font-semibold">On this page</p>
+              <ol className="mt-3 space-y-2">{toc.map((t) => <li key={t.id}><a href={`#${t.id}`} className="text-muted-foreground hover:text-primary">{t.text}</a></li>)}</ol>
+            </nav>
+          </aside>
+        )}
+      </div>
+      {related.length > 0 && (
+        <section className="mt-16">
+          <h2 className="text-2xl font-bold">Related articles</h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-3">
+            {related.map((r) => (
+              <Link key={r.slug} to="/blog/$slug" params={{ slug: r.slug }} className="card-hover overflow-hidden rounded-2xl border bg-card">
+                {r.cover_image && <img src={r.cover_image} alt="" width={1200} height={630} loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
+                <p className="p-4 font-semibold">{r.title}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
