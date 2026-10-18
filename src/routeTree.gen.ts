@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PalettesRouteImport } from './routes/palettes'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as PaletteSlugRouteImport } from './routes/palette.$slug'
 import { Route as ToolsIndexRouteImport } from './routes/tools.index'
 import { Route as ToolsCmsDetectorRouteImport } from './routes/tools.cms-detector'
@@ -31,6 +33,16 @@ const IndexRoute = IndexRouteImport.update({
 const PalettesRoute = PalettesRouteImport.update({
   id: '/palettes',
   path: '/palettes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PaletteSlugRoute = PaletteSlugRouteImport.update({
@@ -94,6 +106,7 @@ const ToolsWordpressThemeDetectorRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/palettes': typeof PalettesRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
@@ -104,11 +117,13 @@ export interface FileRoutesByFullPath {
   '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
+  '/blog/': typeof BlogIndexRoute
   '/tools/': typeof ToolsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/palettes': typeof PalettesRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
@@ -119,12 +134,14 @@ export interface FileRoutesByTo {
   '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
+  '/blog': typeof BlogIndexRoute
   '/tools': typeof ToolsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/palettes': typeof PalettesRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
@@ -135,6 +152,7 @@ export interface FileRoutesById {
   '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
+  '/blog/': typeof BlogIndexRoute
   '/tools/': typeof ToolsIndexRoute
 }
 export interface FileRouteTypes {
@@ -142,6 +160,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/palettes'
+    | '/blog/$slug'
     | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
@@ -152,11 +171,13 @@ export interface FileRouteTypes {
     | '/tools/website-auditor'
     | '/tools/website-extractor'
     | '/tools/wordpress-theme-detector'
+    | '/blog/'
     | '/tools/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/palettes'
+    | '/blog/$slug'
     | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
@@ -167,11 +188,13 @@ export interface FileRouteTypes {
     | '/tools/website-auditor'
     | '/tools/website-extractor'
     | '/tools/wordpress-theme-detector'
+    | '/blog'
     | '/tools'
   id:
     | '__root__'
     | '/'
     | '/palettes'
+    | '/blog/$slug'
     | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
@@ -182,12 +205,14 @@ export interface FileRouteTypes {
     | '/tools/website-auditor'
     | '/tools/website-extractor'
     | '/tools/wordpress-theme-detector'
+    | '/blog/'
     | '/tools/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PalettesRoute: typeof PalettesRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   PaletteSlugRoute: typeof PaletteSlugRoute
   ToolsCmsDetectorRoute: typeof ToolsCmsDetectorRoute
   ToolsContrastCheckerRoute: typeof ToolsContrastCheckerRoute
@@ -198,6 +223,7 @@ export interface RootRouteChildren {
   ToolsWebsiteAuditorRoute: typeof ToolsWebsiteAuditorRoute
   ToolsWebsiteExtractorRoute: typeof ToolsWebsiteExtractorRoute
   ToolsWordpressThemeDetectorRoute: typeof ToolsWordpressThemeDetectorRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
 }
 
@@ -215,6 +241,20 @@ declare module '@tanstack/react-router' {
       path: '/palettes'
       fullPath: '/palettes'
       preLoaderRoute: typeof PalettesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/palette/$slug': {
@@ -300,6 +340,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PalettesRoute: PalettesRoute,
+  BlogSlugRoute: BlogSlugRoute,
   PaletteSlugRoute: PaletteSlugRoute,
   ToolsCmsDetectorRoute: ToolsCmsDetectorRoute,
   ToolsContrastCheckerRoute: ToolsContrastCheckerRoute,
@@ -310,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsWebsiteAuditorRoute: ToolsWebsiteAuditorRoute,
   ToolsWebsiteExtractorRoute: ToolsWebsiteExtractorRoute,
   ToolsWordpressThemeDetectorRoute: ToolsWordpressThemeDetectorRoute,
+  BlogIndexRoute: BlogIndexRoute,
   ToolsIndexRoute: ToolsIndexRoute,
 }
 export const routeTree = rootRouteImport
