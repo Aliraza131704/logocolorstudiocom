@@ -194,7 +194,6 @@ function BlogManager() {
   const qc = useQueryClient();
   const { data: posts } = useQuery({ queryKey: ["admin-posts"], queryFn: async () => ((await supabase.from("blog_posts").select("*").order("published_at", { ascending: false })).data ?? []) as Post[] });
   const [p, setP] = useState<Post | null>(null);
-  const [uploading, setUploading] = useState(false);
 
   const save = async () => {
     if (!p) return;
@@ -212,16 +211,6 @@ function BlogManager() {
     await supabase.from("blog_posts").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: ["admin-posts"] });
   };
-  const uploadCover = async (file?: File) => {
-    if (!file || !p) return;
-    setUploading(true);
-    const path = `${Date.now()}-${file.name.replace(/[^a-z0-9.]/gi, "-")}`;
-    const { error } = await supabase.storage.from("blog").upload(path, file);
-    setUploading(false);
-    if (error) return toast.error(error.message);
-    setP({ ...p, cover_image: supabase.storage.from("blog").getPublicUrl(path).data.publicUrl });
-  };
-
   if (p) {
     const set = (k: keyof Post, val: string | string[]) => setP({ ...p, [k]: val });
     return (
@@ -239,7 +228,6 @@ function BlogManager() {
           <label className="block">Tags (comma separated)<Input className="mt-1" value={p.tags.join(", ")} onChange={(e) => set("tags", e.target.value.split(",").map((t) => t.trim()).filter(Boolean))} /></label>
           <label className="block">Author<Input className="mt-1" value={p.author} onChange={(e) => set("author", e.target.value)} /></label>
           <label className="block">Cover image URL<Input className="mt-1" value={p.cover_image} onChange={(e) => set("cover_image", e.target.value)} /></label>
-          <input type="file" accept="image/*" aria-label="Upload cover" onChange={(e) => uploadCover(e.target.files?.[0])} disabled={uploading} className="text-xs" />
           {p.cover_image && <img src={p.cover_image} alt="" className="rounded-lg" />}
           <label className="block">SEO title<Input className="mt-1" maxLength={60} value={p.seo_title} onChange={(e) => set("seo_title", e.target.value)} /></label>
           <label className="block">Meta description<Textarea className="mt-1" maxLength={160} value={p.meta_description} onChange={(e) => set("meta_description", e.target.value)} /></label>
