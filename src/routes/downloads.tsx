@@ -4,7 +4,7 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { listDownloadAssets } from '@/lib/content.functions';
-import { filterAssets, sponsorReady, type DownloadAsset } from '@/lib/download-catalog';
+import { filterAssets, sponsorReady, canContinueSponsor, type DownloadAsset } from '@/lib/download-catalog';
 import { DownloadAd } from '@/components/site/DownloadAd';
 import { Download, Play, Package, LockKeyhole } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,7 @@ function Downloads() {
   const { data: items } = useSuspenseQuery(catalogQuery);
   const [selected, setSelected] = useState<DownloadAsset | null>(null);
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
+  const [websiteOpened, setWebsiteOpened] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const filtered = filterAssets(items, search, category);
@@ -40,11 +41,20 @@ function Downloads() {
   const source = safeSponsorVideo(selected?.video_url || settings?.download_video_url);
 
   const start = (asset: DownloadAsset) => {
-    if (asset.sponsor_type === 'video' && !consent.ads) { openConsent(); return; }
+    if ((asset.sponsor_type === 'video' || asset.sponsor_type === 'website') && !consent.ads) { openConsent(); return; }
     if (!sponsorReady(asset, settings?.download_video_url, settings?.download_video_enabled)) return;
     setSelected(asset);
+    setWebsiteOpened(false);
     watched.current = 0; lastTick.current = performance.now();
     setProgress(0); setError(''); setShow(true);
+  };
+  const visitWebsite = () => {
+    if (!selected?.sponsor_url || !consent.ads) return;
+    const tab = window.open(selected.sponsor_url, '_blank');
+    if (!tab) { setError('Allow new tabs for this site, then try Visit sponsor again.'); return; }
+    tab.opener = null;
+    setWebsiteOpened(true);
+    setError('');
   };
   const tick = () => {
     const v = video.current;
@@ -78,19 +88,19 @@ function Downloads() {
               <p className="mt-3 break-words text-sm text-muted-foreground">{asset.description}</p>
               <div className="mt-4 flex flex-wrap gap-3 border-y py-3 text-xs text-muted-foreground">{asset.size_mb > 0 && <span>{asset.size_mb.toFixed(1)} MB</span>}{asset.author && <span>{asset.author}</span>}</div>
               <div className="mt-auto pt-5">{earned ? <Button asChild className="w-full"><a href={asset.file_url} download={asset.filename} target={asset.file_url.startsWith('/') ? undefined : '_blank'} rel="noopener noreferrer"><Download /> Download {asset.title}</a></Button> : <Button onClick={() => start(asset)} disabled={isPending || !available} className="w-full"><Play /> {asset.sponsor_type === 'video' ? 'Watch & download' : 'Get download'}</Button>}
-              <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">{earned ? 'Unlocked for this page visit.' : !available && !isPending ? 'Waiting for sponsor details.' : asset.sponsor_type === 'video' ? 'Complete one sponsor video for this asset. No ad click required.' : 'Sponsor visits are optional.'}</p></div>
+              <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">{earned ? 'Unlocked for this page visit.' : !available && !isPending ? 'Waiting for sponsor details.' : asset.sponsor_type === 'video' ? 'Complete one sponsor video for this asset. No ad click required.' : asset.sponsor_type === 'website' ? 'Visit the sponsor website to unlock this asset.' : 'Sponsor visits are optional.'}</p></div>
             </div>
           </article>;
         })}
       </div>
       {filtered.length === 0 && <p className="py-16 text-center text-muted-foreground">{items.length ? 'No assets match your search.' : 'New resources are coming soon.'}</p>}
       {items.filter(a => a.sponsor_type === 'adsense').map(a => <DownloadAd key={a.id} code={a.sponsor_code} />)}
-      <aside className="mt-10 space-y-3 border-t pt-6 text-sm text-muted-foreground"><h2 className="flex items-center gap-2 font-semibold text-foreground"><LockKeyhole className="size-4 text-brand-blue" /> Sponsored access</h2><p>Video sponsors require completed viewing. Banner and website sponsors can be skipped without a click. AdSense does not restrict downloads.</p><p>Files are supplied by the site owner. Review licenses and scan files before installing. Vendor support, purchase codes and automatic updates are not promised.</p></aside>
+      <aside className="mt-10 space-y-3 border-t pt-6 text-sm text-muted-foreground"><h2 className="flex items-center gap-2 font-semibold text-foreground"><LockKeyhole className="size-4 text-brand-blue" /> Sponsored access</h2><p>Video sponsors require completed viewing. Website sponsors require opening their website. Banner visits are optional. AdSense does not restrict downloads.</p><p>Files are supplied by the site owner. Review licenses and scan files before installing. Vendor support, purchase codes and automatic updates are not promised.</p></aside>
       <Dialog open={show} onOpenChange={(v) => { setShow(v); if (!v) video.current?.pause(); }}>
         <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-lg">
           <DialogTitle>Advertisement</DialogTitle>
-          <DialogDescription>{selected?.sponsor_type === 'video' ? `Complete this sponsor video to unlock ${selected.title}.` : `Sponsored download: ${selected?.title}. Visiting the sponsor is optional.`}</DialogDescription>
-          {selected?.sponsor_type !== 'video' && <>{consent.ads ? <div className="space-y-4">{selected?.sponsor_type === 'banner' && selected.banner_url && <img src={selected.banner_url} alt={selected.sponsor_title || 'Sponsor banner'} className="max-h-72 w-full object-contain" />}{selected?.sponsor_title && <p className="font-semibold">{selected.sponsor_title}</p>}{selected?.sponsor_url && <Button variant="outline" asChild><a href={selected.sponsor_url} target="_blank" rel="noopener noreferrer sponsored">Visit sponsor</a></Button>}</div> : <p className="text-sm text-muted-foreground">Sponsor content is hidden because advertising consent is off.</p>}<Button onClick={() => { if (selected) setUnlocked(previous => new Set([...previous, selected.id])); setShow(false); }}>Continue to download</Button></>}
+          <DialogDescription>{selected?.sponsor_type === 'video' ? `Complete this sponsor video to unlock ${selected.title}.` : selected?.sponsor_type === 'website' ? `Visit the sponsor website to unlock ${selected.title}.` : `Sponsored download: ${selected?.title}. Visiting the sponsor is optional.`}</DialogDescription>
+          {selected?.sponsor_type !== 'video' && <>{consent.ads ? <div className="space-y-4">{selected?.sponsor_type === 'banner' && selected.banner_url && <img src={selected.banner_url} alt={selected.banner_url ? selected.sponsor_title || 'Sponsor banner' : ''} className="max-h-72 w-full object-contain" />}{selected?.sponsor_title && <p className="font-semibold">{selected.sponsor_title}</p>}{selected?.sponsor_url && (selected.sponsor_type === 'website' ? <Button variant="outline" onClick={visitWebsite}>Visit sponsor</Button> : <Button variant="outline" asChild><a href={selected.sponsor_url} target="_blank" rel="noopener noreferrer sponsored">Visit sponsor</a></Button>)}</div> : <><p className="text-sm text-muted-foreground">Sponsor content is hidden because advertising consent is off.</p>{selected?.sponsor_type === 'website' && <Button variant="outline" onClick={openConsent}>Cookie settings</Button>}</>}<Button disabled={!selected || !canContinueSponsor(selected, websiteOpened) || (selected.sponsor_type === 'website' && !consent.ads)} onClick={() => { if (!selected || !canContinueSponsor(selected, websiteOpened) || (selected.sponsor_type === 'website' && !consent.ads)) return; setUnlocked(previous => new Set([...previous, selected.id])); setShow(false); }}>Continue to download</Button></>}
           {selected?.sponsor_type === 'video' && source && consent.ads && <video ref={video} src={source} controls playsInline preload="metadata" className="aspect-video w-full rounded-md bg-muted" controlsList="nodownload noplaybackrate" disablePictureInPicture onPlay={() => { lastTick.current = performance.now(); }} onTimeUpdate={tick} onSeeking={() => { const v = video.current; if (v && v.currentTime > watched.current + 0.5) v.currentTime = watched.current; }} onRateChange={() => { const v = video.current; if (v) v.playbackRate = 1; }} onEnded={() => {
             const v = video.current;
             if (v && rewardEarned(watched.current, v.duration, v.ended)) { if (selected) setUnlocked(previous => new Set([...previous, selected.id])); setShow(false); }
