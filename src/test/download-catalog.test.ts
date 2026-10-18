@@ -1,6 +1,18 @@
 import { describe, it, expect } from 'vitest';
-import { INITIAL_CATALOG, parseCatalog, filterAssets, assetSchema } from '@/lib/download-catalog';
+import { INITIAL_CATALOG, parseCatalog, filterAssets, assetSchema, sponsorReady } from '@/lib/download-catalog';
 describe('Multiple download assets', () => {
+  it('keeps AdSense downloads independent of ad configuration', () => {
+    const first = INITIAL_CATALOG[0];
+    if (!first) throw new Error('Missing initial asset');
+    expect(sponsorReady({ ...first, sponsor_type: 'adsense' }, '', 'off')).toBe(true);
+  });
+  it('supports banner and website without requiring video', () => {
+    const first = INITIAL_CATALOG[0];
+    if (!first) throw new Error('Missing initial asset');
+    expect(sponsorReady({ ...first, sponsor_type: 'banner', banner_url: 'https://example.com/banner.png' }, '', 'off')).toBe(true);
+    expect(sponsorReady({ ...first, sponsor_type: 'website', sponsor_url: 'https://example.com' }, '', 'off')).toBe(true);
+    expect(sponsorReady({ ...first, sponsor_type: 'banner', banner_url: '' }, '', 'off')).toBe(false);
+  });
   it('keeps an intentionally empty library empty', () => { expect(parseCatalog('[]')).toEqual([]); });
   it('lists multiple published items and excludes drafts', () => {
     const first = INITIAL_CATALOG[0];
