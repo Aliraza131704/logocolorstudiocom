@@ -10,6 +10,8 @@
 <!-- LOVABLE:END -->
 
 ## Project rules
+- Website Auditor uses a bounded static-HTML engine with its own DNS-screened, manual-redirect fetcher and atomic request limit; unsupported rendered checks never affect scores. This prevents invented measurements and unsafe secondary fetches without altering other tools.
+- Auditor report history is explicitly browser-local (maximum ten reports), not account-backed; CSV escapes spreadsheet formulas and PDF exports carry coverage and evidence so reports remain portable and honest.
 - Palette indexing is governed by a stable editorial selection separate from the generator; use that same selection for page robots tags and sitemap inclusion so existing slugs never change.
 - Palette presentation chooses a readable foreground separately from color-generation algorithms; keep brand colors unchanged while satisfying text contrast.
 - Keep the generator implementation in the shared PaletteGenerator component and the gallery at /palettes; existing color algorithms remain unchanged.

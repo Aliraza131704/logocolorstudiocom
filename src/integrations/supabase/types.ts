@@ -277,6 +277,7 @@ export type Database = {
       }
     }
     Functions: {
+      consume_audit_request: { Args: { _ip: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

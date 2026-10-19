@@ -145,14 +145,14 @@ function blockedError(m: M, page: Fetched) {
     throw new Error("This website blocks automated visitors (bot protection), so it couldn't be scanned. Try another page of the site or a different address.");
 }
 
-export async function runCms(m: M, page: Fetched) {
+export async function runCms(m: M, page: Fetched, secondaryProbes = true) {
   blockedError(m, page);
   const h = page.html, hd = page.headers;
   const origin = new URL(page.url).origin;
   // Secondary probes for stronger evidence.
   const [wpJson, shopMeta] = await Promise.all([
-    /wp-|wordpress/i.test(h) || !/shopify/i.test(h) ? m.fetchJson<{ name?: string; namespaces?: string[] }>(`${origin}/wp-json/`) : null,
-    /shopify/i.test(h) ? m.fetchJson<{ myshopify_domain?: string }>(`${origin}/meta.json`) : null,
+    secondaryProbes && (/wp-|wordpress/i.test(h) || !/shopify/i.test(h)) ? m.fetchJson<{ name?: string; namespaces?: string[] }>(`${origin}/wp-json/`) : null,
+    secondaryProbes && /shopify/i.test(h) ? m.fetchJson<{ myshopify_domain?: string }>(`${origin}/meta.json`) : null,
   ]);
   const results = PLATFORMS.map((p) => {
     const evidence = p.sigs.filter((s) => { try { return s.t(h, hd); } catch { return false; } });
