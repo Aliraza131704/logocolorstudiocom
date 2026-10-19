@@ -177,6 +177,7 @@
   & li { margin: 0.35rem 0; }
   & a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
   & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-muted); padding: 0.1rem 0.35rem; border-radius: 6px; }
+  & [aria-label="Example colors"] code { color: var(--foreground); }
   & pre { background: var(--color-muted); padding: 1rem; border-radius: 12px; overflow-x: auto; }
   & img { border-radius: 14px; margin: 1.25rem 0; }
   & table { display: block; overflow-x: auto; width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
