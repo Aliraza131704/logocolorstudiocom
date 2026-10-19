@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ToolLayout } from "@/components/site/ToolLayout";
 import { loadPalette } from "@/components/site/tool-parts";
 import { CopyButton, faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { adjust, contrastRatio, hexToHsl, hslToHex, normalizeHex, readableOn } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
 
@@ -59,9 +59,10 @@ function Page() {
               </div>
             </div>
           ))}
-          <Tabs value={mode} onValueChange={(v) => setMode(v as "light" | "dark")}>
-            <TabsList className="w-full"><TabsTrigger value="light" className="flex-1">Light</TabsTrigger><TabsTrigger value="dark" className="flex-1">Dark</TabsTrigger></TabsList>
-          </Tabs>
+          <div role="group" aria-label="Theme preview mode" className="flex gap-1">
+            <Button className="flex-1" variant={mode === "light" ? "secondary" : "ghost"} aria-pressed={mode === "light"} onClick={() => setMode("light")}>Light</Button>
+            <Button className="flex-1" variant={mode === "dark" ? "secondary" : "ghost"} aria-pressed={mode === "dark"} onClick={() => setMode("dark")}>Dark</Button>
+          </div>
           <ul className="space-y-1.5 text-sm">
             {Object.entries(t).map(([k, v]) => (
               <li key={k} className="flex items-center gap-2">
@@ -101,7 +102,7 @@ function Page() {
           </div>
           <div className="rounded-2xl border bg-card">
             <div className="flex items-center justify-between border-b p-3"><span className="text-sm font-medium">CSS variables (light + dark)</span><CopyButton text={css} label="Copy" size="sm" /></div>
-            <pre className="max-h-72 overflow-auto p-4 font-mono text-xs">{css}</pre>
+            <pre tabIndex={0} aria-label="Theme CSS variables" className="max-h-72 overflow-auto p-4 font-mono text-xs">{css}</pre>
           </div>
         </div>
       </div>

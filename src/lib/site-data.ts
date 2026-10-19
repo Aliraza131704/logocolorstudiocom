@@ -35,6 +35,8 @@ export function getVisitorId() {
 
 export async function logEvent(kind: "visit" | "tool", name: string) {
   try {
+    const consent = JSON.parse(localStorage.getItem("lcs-consent") ?? "null");
+    if (!consent?.analytics) return;
     const key = `lcs-ev-${kind}-${name}`;
     if (sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, "1");

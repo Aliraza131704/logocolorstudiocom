@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Loader2, Lock, LockOpen, X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CopyButton, download } from "./ui-bits";
 import { exportPalette, fmtHsl, fmtRgb, readableOn, type ExportFormat } from "@/lib/color";
 import { cn } from "@/lib/utils";
+import { paletteTextColor } from "@/lib/palette-presentation";
 
 export function UrlForm({ onSubmit, loading, placeholder = "example.com", cta = "Analyze" }: { onSubmit: (url: string) => void; loading: boolean; placeholder?: string; cta?: string }) {
   const [url, setUrl] = useState("");
@@ -27,12 +27,12 @@ export function UrlForm({ onSubmit, loading, placeholder = "example.com", cta = 
 }
 
 export function ColorCard({ hex, locked, onLock, onRemove, sub, className }: { hex: string; locked?: boolean; onLock?: () => void; onRemove?: () => void; sub?: string; className?: string }) {
-  const fg = readableOn(hex);
+  const fg = paletteTextColor(hex);
   return (
     <div className={cn("group overflow-hidden rounded-2xl border bg-card", className)}>
       <div className="relative flex h-28 items-end p-3" style={{ backgroundColor: hex, color: fg }}>
         <span className="font-mono text-sm font-semibold">{hex}</span>
-        {sub && <span className="ml-auto text-xs opacity-80">{sub}</span>}
+        {sub && <span className="ml-auto text-xs">{sub}</span>}
       </div>
       <div className="space-y-0.5 p-3 font-mono text-xs text-muted-foreground">
         <p>{fmtRgb(hex)}</p>
@@ -55,20 +55,15 @@ export function ExportBox({ colors, name = "brand" }: { colors: string[]; name?:
   return (
     <div className="rounded-2xl border bg-card">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b p-3">
-        <Tabs value={fmt} onValueChange={(v) => setFmt(v as ExportFormat)}>
-          <TabsList>
-            <TabsTrigger value="css">CSS</TabsTrigger>
-            <TabsTrigger value="tailwind">Tailwind</TabsTrigger>
-            <TabsTrigger value="scss">SCSS</TabsTrigger>
-            <TabsTrigger value="json">JSON</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div role="group" aria-label="Export format" className="flex flex-wrap gap-1">
+          {(["css", "tailwind", "scss", "json"] as ExportFormat[]).map(format => <Button key={format} variant={fmt === format ? "secondary" : "ghost"} size="sm" aria-pressed={fmt === format} onClick={() => setFmt(format)}>{format === "tailwind" ? "Tailwind" : format.toUpperCase()}</Button>)}
+        </div>
         <div className="flex gap-1">
           <CopyButton text={code} label="Copy" size="sm" />
           <Button variant="outline" size="sm" onClick={() => download(`${name}-palette.${ext}`, code)}>Download</Button>
         </div>
       </div>
-      <pre className="max-h-80 overflow-auto p-4 font-mono text-xs leading-relaxed"><code>{code}</code></pre>
+      <pre tabIndex={0} aria-label="Palette export code" className="max-h-80 overflow-auto p-4 font-mono text-xs leading-relaxed"><code>{code}</code></pre>
     </div>
   );
 }
@@ -97,11 +92,12 @@ export function loadPalette(): string[] | null {
 export function paletteToPng(colors: string[], name = "palette") {
   const c = document.createElement("canvas");
   c.width = 1600; c.height = 900;
-  const ctx = c.getContext("2d")!;
+  const ctx = c.getContext("2d");
+  if (!ctx) return;
   const w = c.width / colors.length;
   colors.forEach((col, i) => {
     ctx.fillStyle = col; ctx.fillRect(i * w, 0, w + 1, c.height);
-    ctx.fillStyle = readableOn(col); ctx.font = "bold 40px monospace";
+    ctx.fillStyle = paletteTextColor(col); ctx.font = "bold 40px monospace";
     ctx.fillText(col, i * w + 30, c.height - 50);
   });
   c.toBlob((b) => b && download(`${name}.png`, b));

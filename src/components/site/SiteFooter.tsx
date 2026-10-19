@@ -5,9 +5,11 @@ import { Newsletter } from "./Newsletter";
 import { useConsent } from "./consent";
 import { useSettings } from "@/lib/site-data";
 import { AdSlot } from "./AdSlot";
+import { TOOLS } from "@/lib/tools";
+import { Button } from "@/components/ui/button";
 
 const COLS = [
-  { title: "Tools", links: [["Logo Extractor", "/tools/logo-extractor"], ["Website Extractor", "/tools/website-extractor"], ["Palette Generator", "/palettes"], ["Contrast Checker", "/tools/contrast-checker"], ["Theme Generator", "/tools/theme-generator"], ["Export Center", "/tools/export-center"]] },
+  { title: "Tools", links: TOOLS.map(t => [t.name, t.path]) },
   { title: "Company", links: [["About", "/about"], ["Contact", "/contact"], ["Blog", "/blog"], ["Downloads", "/downloads"], ["Changelog", "/changelog"]] },
   { title: "Legal", links: [["Privacy Policy", "/privacy-policy"], ["Terms of Service", "/terms-of-service"], ["Cookie Policy", "/cookie-policy"], ["Disclaimer", "/disclaimer"]] },
 ] as const;
@@ -51,8 +53,7 @@ export function SiteFooter() {
         <div className="flex flex-col items-center justify-between gap-3 border-t py-6 text-sm text-muted-foreground sm:flex-row">
           <p>© 2026 LogoColorStudio. All rights reserved.</p>
           <div className="flex gap-4">
-            <button onClick={open} className="hover:text-primary">Cookie settings</button>
-            <Link to="/admin" className="hover:text-primary">Owner login</Link>
+            <Button variant="link" onClick={open}>Cookie settings</Button>
           </div>
         </div>
       </div>

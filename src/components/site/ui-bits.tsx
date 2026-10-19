@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 import { Check, Copy, ChevronRight } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { absoluteUrl } from "@/lib/seo";
 
 export function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.5, delay }} className={className}>
+    <motion.div initial={{ y: 18 }} whileInView={{ y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.5, delay }} className={className}>
       {children}
     </motion.div>
   );
@@ -63,7 +63,7 @@ export function breadcrumbLd(items: Crumb[], path: string) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: all.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.label, item: c.to ?? path })),
+    itemListElement: all.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.label, item: absoluteUrl(c.to ?? path) })),
   };
 }
 
@@ -81,14 +81,14 @@ export function FaqList({ faqs, title = "Frequently asked questions" }: { faqs: 
   return (
     <section className="mx-auto max-w-3xl">
       <h2 className="text-center text-3xl font-bold">{title}</h2>
-      <Accordion type="single" collapsible className="mt-8">
+      <div className="mt-8">
         {faqs.map((f) => (
-          <AccordionItem key={f.q} value={f.q}>
-            <AccordionTrigger className="text-left text-base">{f.q}</AccordionTrigger>
-            <AccordionContent className="text-muted-foreground">{f.a}</AccordionContent>
-          </AccordionItem>
+          <details key={f.q} className="border-b py-4">
+            <summary className="cursor-pointer text-base font-medium">{f.q}</summary>
+            <p className="pt-3 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
+          </details>
         ))}
-      </Accordion>
+      </div>
     </section>
   );
 }

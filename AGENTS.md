@@ -10,6 +10,12 @@
 <!-- LOVABLE:END -->
 
 ## Project rules
+- Palette indexing is governed by a stable editorial selection separate from the generator; use that same selection for page robots tags and sitemap inclusion so existing slugs never change.
+- Palette presentation chooses a readable foreground separately from color-generation algorithms; keep brand colors unchanged while satisfying text contrast.
+- Keep the generator implementation in the shared PaletteGenerator component and the gallery at /palettes; existing color algorithms remain unchanged.
+- Canonical, sharing and sitemap origins come from SITE_URL in seo.ts; page-specific revision dates are editorial records, never build timestamps.
+- Blog content lives in the owner-editable content table; shared placeholder identities live in editorial-config.ts to avoid inventing real authors.
+- Enrolled owner MFA is challenged before panel rendering and enforced by has_role in database policies so low-assurance sessions cannot bypass the screen.
 - URL-based tools fetch sites in `createServerFn` handlers (src/lib/analyze.functions.ts) with URL validation + IP rate limiting; never fetch third-party sites from the browser (CORS).
 - Public SSR reads (blog, pages, settings) go through src/lib/content.functions.ts using a publishable server client; admin writes use the browser client under RLS (`has_role` admin).
 - The 1,000 gallery palettes are generated deterministically in src/lib/palettes.ts (no DB rows); only likes live in the database, keyed by slug — never change the generator seed or slugs break.

@@ -34,12 +34,12 @@ function Page() {
       <p className="mt-3 text-lg text-muted-foreground">Guides on brand colors, accessibility and building better websites.</p>
       <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap gap-2">
-          {[null, ...cats].map((c) => <button key={c ?? "all"} onClick={() => { setCat(c); setPage(1); }} className={cn("rounded-full border px-4 py-1.5 text-sm", cat === c && "border-primary bg-primary text-primary-foreground")}>{c ?? "All"}</button>)}
+          {[null, ...cats].map((c) => <Button variant={cat === c ? "default" : "outline"} key={c ?? "all"} onClick={() => { setCat(c); setPage(1); }}>{c ?? "All"}</Button>)}
         </div>
         <div className="relative"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input aria-label="Search articles" placeholder="Search articles" value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} className="w-64 pl-9" /></div>
       </div>
       <div className="mt-3 flex flex-wrap gap-2 text-xs">
-        {tags.map((t) => <button key={t} onClick={() => setTag(tag === t ? null : t)} className={cn("rounded-full bg-muted px-3 py-1", tag === t && "bg-primary text-primary-foreground")}>#{t}</button>)}
+        {tags.map((t) => <Button size="sm" variant={tag === t ? "default" : "secondary"} key={t} onClick={() => setTag(tag === t ? null : t)}>#{t}</Button>)}
       </div>
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((p, i) => (
@@ -50,7 +50,7 @@ function Page() {
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary">{p.category}</p>
                 <h2 className="mt-2 text-lg font-bold leading-snug">{p.title}</h2>
                 <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{p.excerpt}</p>
-                <p className="mt-4 text-xs text-muted-foreground">{new Date(p.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · {Math.max(1, Math.round(p.words / 220))} min read</p>
+                <p className="mt-4 text-xs text-muted-foreground">{new Date(p.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · {Math.max(1, Math.ceil(p.words / 220))} min read</p>
               </div>
             </Link>
           </Reveal>

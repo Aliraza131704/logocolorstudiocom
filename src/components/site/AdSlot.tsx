@@ -51,7 +51,7 @@ export function GlobalScripts() {
   const { consent } = useConsent();
   const loc = useLocation();
   const done = useRef<Set<string>>(new Set());
-  const isAdmin = loc.pathname.startsWith("/admin");
+  const isAdmin = loc.pathname.startsWith("/admin") || loc.pathname.startsWith("/login");
 
   useEffect(() => {
     if (!s || isAdmin) return;

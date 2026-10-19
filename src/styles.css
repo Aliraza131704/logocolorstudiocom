@@ -22,6 +22,9 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-action: var(--action);
+  --color-action-foreground: var(--action-foreground);
+  --color-link: var(--link);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -73,6 +76,9 @@
   --popover-foreground: oklch(0.24 0.07 266);
   --primary: var(--brand-blue);
   --primary-foreground: oklch(1 0 0);
+  --action: oklch(0.45 0.17 252);
+  --action-foreground: oklch(1 0 0);
+  --link: oklch(0.45 0.17 252);
   --secondary: oklch(0.95 0.01 260);
   --secondary-foreground: oklch(0.24 0.07 266);
   --muted: oklch(0.955 0.008 260);
@@ -95,6 +101,7 @@
 }
 
 .dark {
+  --link: oklch(0.78 0.12 252);
   --background: oklch(0.16 0.035 266);
   --foreground: oklch(0.97 0.005 260);
   --card: oklch(0.2 0.04 266);
@@ -117,6 +124,8 @@
 
 @layer base {
   * { border-color: var(--color-border); }
+  :is(a, button, input, textarea, select, summary, [tabindex]):focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+  .text-primary { color: var(--link); }
   html { scroll-behavior: smooth; }
   body {
     background-color: var(--color-background);
@@ -124,8 +133,13 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: 0; }
 }
+
+/* Text roles use the accessible neutral/link variants; brand swatches and
+   icons retain their original identity colors. */
+.text-primary:not(svg), .hover\:text-primary:hover:not(svg) { color: var(--link); }
+.text-brand-green:not(svg) { color: var(--foreground); }
 
 @utility glass {
   background: var(--glass);
@@ -161,11 +175,19 @@
   & ul { list-style: disc; }
   & ol { list-style: decimal; }
   & li { margin: 0.35rem 0; }
-  & a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+  & a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
   & code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-muted); padding: 0.1rem 0.35rem; border-radius: 6px; }
   & pre { background: var(--color-muted); padding: 1rem; border-radius: 12px; overflow-x: auto; }
   & img { border-radius: 14px; margin: 1.25rem 0; }
+  & table { display: block; overflow-x: auto; width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+  & th, & td { text-align: left; border-bottom: 1px solid var(--border); padding: 0.75rem; }
+  & figure { margin: 1.5rem 0; }
+  & figcaption { font-size: 0.875rem; color: var(--muted-foreground); }
   & blockquote { border-left: 3px solid var(--color-primary); padding-left: 1rem; color: var(--color-muted-foreground); }
 }
 
 .ProseMirror { min-height: 320px; outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

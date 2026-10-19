@@ -21,6 +21,7 @@ import { AdSlot, GlobalScripts } from "@/components/site/AdSlot";
 import { Toaster } from "@/components/ui/sonner";
 import { logEvent } from "@/lib/site-data";
 import { PromoPopup } from "@/components/site/PromoPopup";
+import { absoluteUrl } from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -68,16 +69,16 @@ const ORG_LD = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "LogoColorStudio",
-  url: "/",
-  logo: "/apple-touch-icon.png",
+  url: absoluteUrl("/"),
+  logo: absoluteUrl("/apple-touch-icon.png"),
   email: "apwebventures01@gmail.com",
 };
 const SITE_LD = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "LogoColorStudio",
-  url: "/",
-  potentialAction: { "@type": "SearchAction", target: "/palettes?q={search_term_string}", "query-input": "required name=search_term_string" },
+  url: absoluteUrl("/"),
+  potentialAction: { "@type": "SearchAction", target: `${absoluteUrl("/palettes")}?q={search_term_string}`, "query-input": "required name=search_term_string" },
 };
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({

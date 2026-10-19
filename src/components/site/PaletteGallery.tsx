@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { getAllPalettes, PALETTE_TAGS } from "@/lib/palettes";
 import { getVisitorId } from "@/lib/site-data";
+import { paletteTextColor } from "@/lib/palette-presentation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -83,9 +84,9 @@ export function PaletteGallery() {
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
         {[null, ...PALETTE_TAGS].map((t) => (
-          <button key={t ?? "all"} onClick={() => { setTag(t); setPage(1); }} className={cn("rounded-full border px-4 py-1.5 text-sm transition", tag === t ? "border-primary bg-primary text-primary-foreground" : "hover:border-primary")}>
+          <Button variant={tag === t ? "default" : "outline"} key={t ?? "all"} onClick={() => { setTag(t); setPage(1); }}>
             {t ?? "All"}
-          </button>
+          </Button>
         ))}
       </div>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -95,8 +96,8 @@ export function PaletteGallery() {
             <article className="card-hover overflow-hidden rounded-2xl border bg-card">
               <div className="flex h-28">
                 {p.colors.map((c) => (
-                  <button key={c} onClick={() => copyText(c, `Copied ${c}`)} className="group relative flex-1 transition-[flex] hover:flex-[1.6]" style={{ backgroundColor: c }} aria-label={`Copy ${c}`}>
-                    <span className="absolute inset-x-0 bottom-1 hidden text-center font-mono text-[10px] font-bold mix-blend-difference text-primary-foreground group-hover:block">{c.slice(1)}</span>
+                  <button key={c} onClick={() => copyText(c, `Copied ${c}`)} className="group relative flex-1 transition-[flex] hover:flex-[1.6]" style={{ backgroundColor: c, color: paletteTextColor(c) }} aria-label={`Copy ${c}`}>
+                    <span className="absolute inset-x-0 bottom-1 hidden text-center font-mono text-[10px] font-bold group-hover:block">{c.slice(1)}</span>
                   </button>
                 ))}
               </div>

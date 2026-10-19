@@ -32,6 +32,7 @@ import { Route as ToolsCmsDetectorRouteImport } from './routes/tools.cms-detecto
 import { Route as ToolsContrastCheckerRouteImport } from './routes/tools.contrast-checker'
 import { Route as ToolsExportCenterRouteImport } from './routes/tools.export-center'
 import { Route as ToolsLogoExtractorRouteImport } from './routes/tools.logo-extractor'
+import { Route as ToolsPaletteGeneratorRouteImport } from './routes/tools.palette-generator'
 import { Route as ToolsShopifyThemeDetectorRouteImport } from './routes/tools.shopify-theme-detector'
 import { Route as ToolsThemeGeneratorRouteImport } from './routes/tools.theme-generator'
 import { Route as ToolsWebsiteAuditorRouteImport } from './routes/tools.website-auditor'
@@ -153,6 +154,11 @@ const ToolsLogoExtractorRoute = ToolsLogoExtractorRouteImport.update({
   path: '/tools/logo-extractor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsPaletteGeneratorRoute = ToolsPaletteGeneratorRouteImport.update({
+  id: '/tools/palette-generator',
+  path: '/tools/palette-generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsShopifyThemeDetectorRoute =
   ToolsShopifyThemeDetectorRouteImport.update({
     id: '/tools/shopify-theme-detector',
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
   '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/palette-generator': typeof ToolsPaletteGeneratorRoute
   '/tools/shopify-theme-detector': typeof ToolsShopifyThemeDetectorRoute
   '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
   '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByTo {
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
   '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/palette-generator': typeof ToolsPaletteGeneratorRoute
   '/tools/shopify-theme-detector': typeof ToolsShopifyThemeDetectorRoute
   '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
   '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
@@ -264,6 +272,7 @@ export interface FileRoutesById {
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
   '/tools/logo-extractor': typeof ToolsLogoExtractorRoute
+  '/tools/palette-generator': typeof ToolsPaletteGeneratorRoute
   '/tools/shopify-theme-detector': typeof ToolsShopifyThemeDetectorRoute
   '/tools/theme-generator': typeof ToolsThemeGeneratorRoute
   '/tools/website-auditor': typeof ToolsWebsiteAuditorRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/tools/contrast-checker'
     | '/tools/export-center'
     | '/tools/logo-extractor'
+    | '/tools/palette-generator'
     | '/tools/shopify-theme-detector'
     | '/tools/theme-generator'
     | '/tools/website-auditor'
@@ -326,6 +336,7 @@ export interface FileRouteTypes {
     | '/tools/contrast-checker'
     | '/tools/export-center'
     | '/tools/logo-extractor'
+    | '/tools/palette-generator'
     | '/tools/shopify-theme-detector'
     | '/tools/theme-generator'
     | '/tools/website-auditor'
@@ -356,6 +367,7 @@ export interface FileRouteTypes {
     | '/tools/contrast-checker'
     | '/tools/export-center'
     | '/tools/logo-extractor'
+    | '/tools/palette-generator'
     | '/tools/shopify-theme-detector'
     | '/tools/theme-generator'
     | '/tools/website-auditor'
@@ -387,6 +399,7 @@ export interface RootRouteChildren {
   ToolsContrastCheckerRoute: typeof ToolsContrastCheckerRoute
   ToolsExportCenterRoute: typeof ToolsExportCenterRoute
   ToolsLogoExtractorRoute: typeof ToolsLogoExtractorRoute
+  ToolsPaletteGeneratorRoute: typeof ToolsPaletteGeneratorRoute
   ToolsShopifyThemeDetectorRoute: typeof ToolsShopifyThemeDetectorRoute
   ToolsThemeGeneratorRoute: typeof ToolsThemeGeneratorRoute
   ToolsWebsiteAuditorRoute: typeof ToolsWebsiteAuditorRoute
@@ -559,6 +572,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsLogoExtractorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/palette-generator': {
+      id: '/tools/palette-generator'
+      path: '/tools/palette-generator'
+      fullPath: '/tools/palette-generator'
+      preLoaderRoute: typeof ToolsPaletteGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/shopify-theme-detector': {
       id: '/tools/shopify-theme-detector'
       path: '/tools/shopify-theme-detector'
@@ -619,6 +639,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsContrastCheckerRoute: ToolsContrastCheckerRoute,
   ToolsExportCenterRoute: ToolsExportCenterRoute,
   ToolsLogoExtractorRoute: ToolsLogoExtractorRoute,
+  ToolsPaletteGeneratorRoute: ToolsPaletteGeneratorRoute,
   ToolsShopifyThemeDetectorRoute: ToolsShopifyThemeDetectorRoute,
   ToolsThemeGeneratorRoute: ToolsThemeGeneratorRoute,
   ToolsWebsiteAuditorRoute: ToolsWebsiteAuditorRoute,
