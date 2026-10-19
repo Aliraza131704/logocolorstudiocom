@@ -1,19 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, X, AlertTriangle } from "lucide-react";
+import { Loader2, Search, SlidersHorizontal, History, Trash2, RotateCcw, ArrowRight, Globe } from "lucide-react";
 import { ToolLayout } from "@/components/site/ToolLayout";
-import { ErrorNote, ResultSkeleton, UrlForm } from "@/components/site/tool-parts";
-import { download, faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
+import { ErrorNote } from "@/components/site/tool-parts";
+import { AuditResults } from "@/components/site/AuditResults";
+import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { auditWebsite } from "@/lib/analyze.functions";
+import { AUDIT_HISTORY_KEY, readAuditHistory } from "@/lib/audit-report";
+import type { AuditReport } from "@/lib/audit-types";
 import { pageHead } from "@/lib/seo";
 
 const FAQS: Faq[] = [
-  { q: "What does the Website Auditor check?", a: "Title, meta description, H1, canonical, robots, sitemap, schema, Open Graph, viewport, HTTPS, HSTS, image alt text, lazy loading, response time, page size, compression, scripts and a sample of broken links." },
-  { q: "How is the score calculated?", a: "Each check is worth one point; warnings count half. The overall and group scores are the percentage of points earned." },
-  { q: "Is this the same as Google Lighthouse?", a: "No. It is a fast HTML-based audit. Use it alongside Lighthouse and Google Search Console for a full picture." },
-  { q: "Can I download the report?", a: "Yes, as a PDF (via print) or as JSON." },
+  { q: "What does the Website Auditor test?", a: "It fetches up to three public pages and checks SEO, static accessibility signals, security headers, HTML size, images, forms, navigation, schema, common English typos and CMS fingerprints. Link and image availability checks sample permitted same-origin URLs." },
+  { q: "How are the score and coverage calculated?", a: "Passed checks earn one point, warnings half and failed checks zero. Not Tested checks are excluded from scores and included in the coverage denominator. Scores reflect the tested sample, not overall business or website quality." },
+  { q: "Does it capture screenshots or execute JavaScript?", a: "Not currently. Browser rendering, layout overlaps, mobile interaction, JavaScript errors, complete grammar analysis and Core Web Vitals are explicitly marked Not Tested. No metrics are invented." },
+  { q: "Can I download reports and save scans?", a: "Yes. Download actual PDF, CSV and JSON reports with evidence and recommendations. Up to ten reports are saved only in this browser for history, URL reuse and score comparisons. They are not synced to an account." },
+  { q: "Are scheduled scans and email alerts available?", a: "Not currently. Scans run when you start them. Background schedules, email delivery and public auditor accounts are not connected. Existing owner access is unchanged." },
 ];
 
 export const Route = createFileRoute("/tools/website-auditor")({
@@ -27,60 +32,58 @@ export const Route = createFileRoute("/tools/website-auditor")({
   component: Page,
 });
 
-type Res = Awaited<ReturnType<typeof auditWebsite>>;
-const tone = (s: number) => (s >= 85 ? "text-brand-green" : s >= 60 ? "text-brand-orange" : "text-brand-red");
-
 function Page() {
   const fn = useServerFn(auditWebsite);
-  const [res, setRes] = useState<Res | null>(null);
+  const [url, setUrl] = useState("");
+  const [competitorUrl, setCompetitorUrl] = useState("");
+  const [maxPages, setMaxPages] = useState(1);
+  const [checkLinks, setCheckLinks] = useState(true);
+  const [checkImages, setCheckImages] = useState(true);
+  const [settings, setSettings] = useState(false);
+  const [res, setRes] = useState<AuditReport | null>(null);
+  const [competitor, setCompetitor] = useState<AuditReport | null>(null);
+  const [history, setHistory] = useState<AuditReport[]>([]);
   const [err, setErr] = useState("");
+  const [storageNote, setStorageNote] = useState("");
   const [loading, setLoading] = useState(false);
-  const run = async (url: string) => {
-    setLoading(true); setErr(""); setRes(null);
-    try { setRes(await fn({ data: { url } })); } catch (e) { setErr(e instanceof Error ? e.message : "Audit failed."); }
-    setLoading(false);
+  const [stage, setStage] = useState("");
+  useEffect(() => { try { setHistory(readAuditHistory(localStorage.getItem(AUDIT_HISTORY_KEY))); } catch { setStorageNote("Browser history storage is unavailable."); } }, []);
+  const remember = (report: AuditReport) => {
+    setHistory(old => {
+      const next = [report, ...old.filter(r => r.checkedAt !== report.checkedAt)].slice(0, 10);
+      try { localStorage.setItem(AUDIT_HISTORY_KEY, JSON.stringify(next)); } catch { setStorageNote("This report could not be saved in your browser. Download it to keep a copy."); }
+      return next;
+    });
   };
+  const run = async (address = url) => {
+    if (loading || !address.trim()) return;
+    setLoading(true); setErr(""); setRes(null); setCompetitor(null);
+    setStage("Fetching permitted pages and evaluating evidence…");
+    try {
+      const report = await fn({ data: { url: address.trim(), maxPages, checkLinks, checkImages } });
+      setRes(report); remember(report);
+      if (competitorUrl.trim()) {
+        setStage("Auditing the competitor with the same settings…");
+        try { setCompetitor(await fn({ data: { url: competitorUrl.trim(), maxPages, checkLinks, checkImages } })); }
+        catch (error) { setErr(`Your report is ready. Competitor scan: ${error instanceof Error ? error.message : "Unavailable"}`); }
+      }
+    } catch (error) { setErr(error instanceof Error ? error.message : "Audit unavailable. Please try again."); }
+    finally { setLoading(false); setStage(""); }
+  };
+  const previous = res ? history.find(r => r.url === res.url && r.checkedAt !== res.checkedAt) : undefined;
   return (
-    <ToolLayout slug="website-auditor" title="Website Auditor" intro="Get an instant SEO, mobile, security and performance report with clear fix suggestions." faqs={FAQS} about={<About />}>
-      <UrlForm onSubmit={run} loading={loading} cta="Run audit" />
-      {loading && <ResultSkeleton />}
+    <ToolLayout slug="website-auditor" title="Website Auditor" intro="Inspect your website. Find the evidence. Prioritize what matters." faqs={FAQS} about={<About />}>
+      <div className="mb-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground"><span className="flex items-center gap-2"><Globe className="size-4 text-primary" /> Public websites</span><span>17 audit categories</span><span>Evidence-based recommendations</span></div>
+      <form onSubmit={e => { e.preventDefault(); void run(); }} className="space-y-4">
+        <label htmlFor="audit-url" className="block text-sm font-semibold">Website address</label>
+        <div className="flex flex-col gap-2 sm:flex-row"><div className="relative min-w-0 flex-1"><Search className="absolute left-4 top-4 size-4 text-muted-foreground" /><Input id="audit-url" value={url} onChange={e => setUrl(e.target.value)} placeholder="https://example.com" maxLength={500} className="h-12 bg-card pl-11 text-base" disabled={loading} required /></div><Button type="submit" variant="hero" size="lg" disabled={loading || !url.trim()}>{loading ? <Loader2 className="animate-spin" /> : <ArrowRight />}{loading ? "Auditing…" : "Run audit"}</Button></div>
+        <Button type="button" variant="ghost" size="sm" onClick={() => setSettings(!settings)} aria-expanded={settings} aria-controls="audit-settings"><SlidersHorizontal />Audit settings</Button>
+        {settings && <div id="audit-settings" className="grid gap-5 border-y py-5 sm:grid-cols-2"><div><label htmlFor="audit-pages" className="mb-2 block text-sm font-medium">Page limit</label><select id="audit-pages" className="h-10 w-full rounded-md border bg-card px-3 text-sm" value={maxPages} onChange={e => setMaxPages(Number(e.target.value))} disabled={loading}><option value={1}>1 page · focused scan</option><option value={2}>2 pages · small sample</option><option value={3}>3 pages · extended sample</option></select></div><div><label htmlFor="audit-competitor" className="mb-2 block text-sm font-medium">Competitor website <span className="text-muted-foreground">(optional)</span></label><Input id="audit-competitor" value={competitorUrl} onChange={e => setCompetitorUrl(e.target.value)} placeholder="https://competitor.com" maxLength={500} disabled={loading} /></div><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={checkLinks} onChange={e => setCheckLinks(e.target.checked)} disabled={loading} />Check up to 12 same-site links</label><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={checkImages} onChange={e => setCheckImages(e.target.checked)} disabled={loading} />Check up to 4 same-site images</label><p className="text-xs text-muted-foreground sm:col-span-2">Static HTML · no form submissions · respects crawl restrictions. Browser screenshots, scheduled scans and email alerts are not connected.</p></div>}
+      </form>
+      {loading && <div className="mt-6 flex items-center gap-3 border-y py-6" role="status" aria-live="polite"><Loader2 className="size-5 animate-spin text-primary" /><div><p className="text-sm font-semibold">{stage}</p><p className="mt-1 text-xs text-muted-foreground">Progress is indeterminate; no fabricated completion percentage.</p></div></div>}
       {err && <ErrorNote msg={err} />}
-      {res && (
-        <div className="mt-8 space-y-6" id="audit-report">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl border bg-card p-5 sm:col-span-2 lg:col-span-1">
-              <p className="text-sm text-muted-foreground">Overall score</p>
-              <p className={`font-display text-6xl font-extrabold ${tone(res.score)}`}>{res.score}</p>
-              <p className="truncate text-xs text-muted-foreground">{res.url}</p>
-            </div>
-            {res.groups.map((g) => (
-              <div key={g.group} className="rounded-2xl border bg-card p-5">
-                <p className="text-sm text-muted-foreground">{g.group}</p>
-                <p className={`font-display text-3xl font-bold ${tone(g.score)}`}>{g.score}</p>
-                <div className="mt-2 h-1.5 rounded-full bg-muted"><div className="h-full rounded-full bg-primary" style={{ width: `${g.score}%` }} /></div>
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-2 print:hidden">
-            <Button variant="outline" onClick={() => window.print()}>Export PDF</Button>
-            <Button variant="outline" onClick={() => download("audit.json", JSON.stringify(res, null, 2), "application/json")}>Export JSON</Button>
-          </div>
-          <div className="divide-y rounded-2xl border bg-card">
-            {res.checks.map((c) => (
-              <div key={c.id} className="flex gap-4 p-4">
-                <span className={`mt-0.5 ${c.pass ? "text-brand-green" : c.warn ? "text-brand-orange" : "text-brand-red"}`}>
-                  {c.pass ? <Check className="size-5" /> : c.warn ? <AlertTriangle className="size-5" /> : <X className="size-5" />}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium">{c.label} <span className="ml-2 text-xs text-muted-foreground">{c.group}</span></p>
-                  <p className="break-words text-sm text-muted-foreground">{c.detail}</p>
-                  {!c.pass && c.fix && <p className="mt-1 text-sm"><strong>Fix:</strong> {c.fix}</p>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {res && <AuditResults key={res.checkedAt} report={res} competitor={competitor} previous={previous} />}
+      <section className="mt-8 border-t pt-5"><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="flex items-center gap-2 text-base font-semibold"><History className="size-4" /> Saved audits</h2>{history.length > 0 && <Button variant="ghost" size="sm" onClick={() => { setHistory([]); try { localStorage.removeItem(AUDIT_HISTORY_KEY); } catch { setStorageNote("Browser storage could not be cleared."); } }}><Trash2 />Clear history</Button>}</div><p className="mt-2 text-xs text-muted-foreground">Last 10 reports · saved only in this browser · no account sync</p>{storageNote && <p role="status" className="mt-2 text-sm">{storageNote}</p>}{history.length ? <div className="mt-3 divide-y">{history.map(report => <div key={report.checkedAt} className="flex flex-wrap items-center gap-3 py-3"><div className="min-w-0 flex-1"><p className="break-all text-sm font-medium">{report.url}</p><p className="mt-1 text-xs text-muted-foreground">{new Date(report.checkedAt).toLocaleString()} · score {report.score ?? "—"} · {report.coverage.percent}% coverage</p></div><Button variant="outline" size="sm" disabled={loading} onClick={() => { setRes(report); setCompetitor(null); setErr(""); }}>Open report</Button><Button variant="ghost" size="icon" title="Rescan website" aria-label={`Rescan ${report.url}`} disabled={loading} onClick={() => { setUrl(report.url); void run(report.url); }}><RotateCcw className="size-4" /></Button></div>)}</div> : <p className="py-6 text-sm text-muted-foreground">No saved audits yet.</p>}</section>
     </ToolLayout>
   );
 }
@@ -89,7 +92,7 @@ function About() {
   return (
     <>
       <h2>A quick health check for any website</h2>
-      <p>The Website Auditor scans a public page and grades the technical basics that affect how it ranks, how it looks when shared and how it feels on a phone. In a few seconds you get an overall score, scores for SEO, mobile, security, accessibility, performance and links, and a plain-English fix for every problem.</p>
+      <p>The Website Auditor scans a public page and checks static HTML signals related to search, sharing, accessibility, security and usability. You get category scores for tested checks, an explicit coverage summary and a plain-English recommendation with actual evidence. Unsupported browser checks are marked Not Tested.</p>
       <h2>What we check</h2>
       <ul>
         <li><strong>SEO:</strong> title length, meta description, a single H1, canonical tag, noindex, robots.txt, sitemap, JSON-LD schema, Open Graph tags and the language attribute.</li>
@@ -104,7 +107,7 @@ function About() {
         <li>Enter the full address of the page you want to audit.</li>
         <li>Click <strong>Run audit</strong>.</li>
         <li>Start with red items, then orange warnings. Each one has a suggested fix.</li>
-        <li>Export the report as PDF for clients or JSON for your own tracking.</li>
+        <li>Export a PDF, CSV or JSON report, with your chosen report name.</li>
       </ol>
       <h2>Next steps</h2>
       <p>After fixing issues, re-run the audit to confirm your score improved. Then submit your sitemap in Google Search Console. Curious what platform a site is built on? Try the <Link to="/tools/cms-detector">CMS Detector</Link>. Want your colors to pass accessibility too? Use the <Link to="/tools/contrast-checker">Contrast Checker</Link>.</p>
