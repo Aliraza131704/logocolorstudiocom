@@ -1,5 +1,7 @@
 # Asset downloads
-- [ ] Apply uploaded palette, blog, sharing, canonical, navigation, sitemap, security, trust, accessibility and FAQ fixes; verify public and owner flows.
+- [x] Apply palette, blog, sharing, canonical, navigation, sitemap, security, trust, accessibility and FAQ fixes; verified 39 page variants in both themes, 20 regression tests, generator download and owner contact/blog flows.
+- [ ] Verify an enrolled MFA challenge — requires an owner-enrolled authenticator; conditional enforcement is implemented, but the tested account has no enrolled factor.
+- [ ] Replace explicit author/team placeholders — requires the owner's real names, bio and optional photos.
 - [x] Require website sponsor opening before download; unit tests and real owner/public flow verified, including blocked popups.
 - [x] Add banner, website and AdSense sponsor formats; format rules tested and real owner website-sponsor save/continue verified.
 - [x] Expand catalog for multiple assets with owner add/edit/delete/publish and public search/categories (real owner CRUD and public read verified).

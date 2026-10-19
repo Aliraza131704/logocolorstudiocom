@@ -15,5 +15,5 @@ export function MfaChallenge({ factorId }: { factorId: string }) {
     setBusy(false);
     if (result.error) { setError("The code could not be verified. Try a new code."); return; }
     await router.invalidate();
-  }}><h1 className="text-2xl font-bold">Verify your sign-in</h1><label htmlFor="mfa-code" className="block text-sm">Authenticator code</label><Input id="mfa-code" autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" required maxLength={6} value={code} onChange={e => setCode(e.target.value)} />{error && <p role="alert">{error}</p>}<Button type="submit" disabled={busy}>{busy ? "Verifying…" : "Verify"}</Button><Button variant="outline" onClick={async () => { await supabase.auth.signOut(); await router.invalidate(); }}>Sign out</Button></form></main>;
+  }}><h1 className="text-2xl font-bold">Verify your sign-in</h1><label htmlFor="mfa-code" className="block text-sm">Authenticator code</label><Input id="mfa-code" autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" required maxLength={6} value={code} onChange={e => setCode(e.target.value)} />{error && <p role="alert">{error}</p>}<Button type="submit" disabled={busy}>{busy ? "Verifying…" : "Verify"}</Button><Button type="button" variant="outline" onClick={async () => { await supabase.auth.signOut(); await router.invalidate(); }}>Sign out</Button></form></main>;
 }
