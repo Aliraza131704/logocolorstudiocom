@@ -53,8 +53,11 @@ export function inspectAuditPage(page: Fetched) {
   add("dimensions", "Images", "Image dimension attributes", noDimensions.length ? "Warning" : "Passed", `${noDimensions.length}/${images.length} images without both width and height attributes`, "CSS may reserve space instead. Missing attributes are a review hint, not measured layout shift.", "Reserve image aspect ratios with dimensions or CSS.", '<img src="photo.webp" width="1200" height="800" alt="…">');
   add("lazy", "Images", "Image loading hints", images.length < 4 || images.some(e => e.getAttribute("loading") === "lazy") ? "Passed" : "Warning", `${images.filter(e => e.getAttribute("loading") === "lazy").length}/${images.length} images use loading=lazy`, "The scanner cannot determine which images are below the fold.", "Lazy-load below-the-fold images, not the main visible image.", '<img loading="lazy" src="photo.webp" alt="…">', "low");
   const body = document.querySelector("body");
-  body?.querySelectorAll("script,style,noscript,template").forEach(e => e.remove());
-  const bodyText = body ? text(body) : "";
+  const contentBody = body?.cloneNode(true) as Element | undefined;
+  contentBody?.querySelectorAll("script,style,noscript,template").forEach(e => e.remove());
+  // textContent concatenates adjacent block nodes without spaces; preserve word boundaries.
+  contentBody?.querySelectorAll("p,div,section,article,li,h1,h2,h3,h4,h5,h6,br,td,th").forEach(e => e.append(" "));
+  const bodyText = contentBody ? text(contentBody) : "";
   const words = bodyText.split(/\s+/).filter(Boolean).length;
   add("content", "Content", "Content depth signal", words >= 150 ? "Passed" : "Warning", `${words} words in static body text`, "Length is not quality; short utility and contact pages can be appropriate. Script-rendered content is excluded.", "Review whether the page answers its visitors' questions with useful examples.", undefined, "low");
   const typos: Record<string, string> = { teh: "the", recieve: "receive", definately: "definitely", seperate: "separate", accomodate: "accommodate", occured: "occurred", succesful: "successful", buisness: "business" };
@@ -79,10 +82,7 @@ export function inspectAuditPage(page: Fetched) {
   const longUrls = links.filter(h => h.length > 200 || /[?&](session|token|password)=/i.test(h));
   add("urls", "Links", "URL hygiene signals", longUrls.length ? "Warning" : "Passed", `${longUrls.length} long or sensitive-parameter URL signals; ${links.length} unique links`, "Length is a review hint; authentication data should not be placed in public URLs.", "Keep public URLs descriptive and avoid exposing sensitive query parameters.", undefined, "low");
   const schemas: unknown[] = [];
-  const schemaElements = all('script[type="application/ld+json"]');
-  // These scripts may have been removed from body above, so parse schema from the original document.
-  const original = parseHTML(page.html).document;
-  const originalSchemas = Array.from(original.querySelectorAll('script[type="application/ld+json"]'));
+  const originalSchemas = all('script[type="application/ld+json"]');
   let invalidSchema = 0;
   for (const element of originalSchemas) { try { schemas.push(JSON.parse(element.textContent ?? "")); } catch { invalidSchema++; } }
   const schemaTypes: string[] = [];

@@ -45,7 +45,6 @@ export async function runWebsiteAudit(options: AuditOptions): Promise<AuditRepor
   const discoveredLinks = new Set<string>();
   const discoveredImages = new Set<string>();
   let firstPage: Awaited<ReturnType<typeof auditFetch>> | undefined;
-  const perPage = new Map<string, ReturnType<typeof inspectAuditPage>>();
   while (queue.length && pages.length < options.maxPages) {
     const url = queue.shift();
     if (!url || seen.has(url)) continue;
@@ -63,7 +62,6 @@ export async function runWebsiteAudit(options: AuditOptions): Promise<AuditRepor
       if (!firstPage) firstPage = page;
       if (blockedAuditPage(page) || page.status >= 400) throw new Error(`HTTP ${page.status} or restricted page; not parsed.`);
       const inspected = inspectAuditPage(page);
-      perPage.set(page.url, inspected);
       pages.push({ url: page.url, status: page.status, bytes: page.bytes, responseMs: page.ms, title: inspected.title });
       findings.push(...inspected.findings);
       if (page.truncated) notes.push(`HTML for ${page.url} exceeded the 1 MB limit; checks cover only downloaded markup.`);
@@ -85,7 +83,7 @@ export async function runWebsiteAudit(options: AuditOptions): Promise<AuditRepor
   const add = (finding: Omit<AuditFinding, "id" | "url"> & { id: string; url?: string }) => findings.push({ ...finding, id: `scan#${finding.id}`, url: finding.url ?? reportUrl });
   add({ id: "robots", category: "SEO", label: "robots.txt availability", status: robots.status >= 200 && robots.status < 300 ? "Passed" : "Warning", severity: "low", url: robotsUrl, evidence: `HTTP ${robots.status}; selected path permitted`, explanation: "A missing robots.txt does not itself prevent indexing. Crawl restrictions were honored for this scan.", fix: "Publish a plain-text crawl policy with a sitemap reference if appropriate." });
   const sitemapMatch = robotsText.match(/^sitemap:\s*(https?:\/\/\S+)/im)?.[1];
-  let sitemapUrl = sitemapMatch ?? new URL("/sitemap.xml", target).href;
+  const sitemapUrl = sitemapMatch ?? new URL("/sitemap.xml", target).href;
   try {
     if (new URL(sitemapUrl).origin !== target.origin) throw new Error("Sitemap is external; not fetched by this same-origin scan.");
     const sitemap = await request(sitemapUrl, "GET", 200_000);
@@ -95,7 +93,7 @@ export async function runWebsiteAudit(options: AuditOptions): Promise<AuditRepor
   const links = [...discoveredLinks].flatMap(href => {
     try {
       const u = publicWebsiteUrl(href);
-      return u.origin === target.origin && robotsAllowed(robotsText, u) && !/\/(logout|signout|delete|remove|cart|checkout)(\/|$)/i.test(u.pathname) ? [u.href] : [];
+      return u.origin === target.origin && !u.search && robotsAllowed(robotsText, u) && !/\/(logout|signout|delete|remove|cart|checkout)(\/|$)/i.test(u.pathname) ? [u.href] : [];
     } catch { return []; }
   }).slice(0, MAX_AUDIT_LINKS);
   async function checkResource(url: string, category: "Links" | "Images", index: number) {

@@ -20,6 +20,7 @@ async function assertPublicHost(url: URL) {
 
 export async function auditFetch(raw: string, method: "GET" | "HEAD" = "GET", max = MAX_BYTES) {
   let url = publicWebsiteUrl(raw);
+  const allowedOrigin = url.origin;
   const started = Date.now();
   for (let redirects = 0; redirects <= 4; redirects++) {
     await assertPublicHost(url);
@@ -29,6 +30,7 @@ export async function auditFetch(raw: string, method: "GET" | "HEAD" = "GET", ma
       const location = response.headers.get("location");
       if (!location) throw new Error("The website returned an incomplete redirect.");
       url = publicWebsiteUrl(new URL(location, url).href);
+      if (url.origin !== allowedOrigin) throw new Error("This address redirects to another origin. Enter its final HTTPS website address to audit it with the correct crawl policy.");
       continue;
     }
     let bytes = 0;
