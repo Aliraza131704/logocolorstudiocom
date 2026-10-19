@@ -1,4 +1,5 @@
 # Asset downloads
+- [ ] Upgrade Website Auditor: secure evidence-based multi-page checks, coverage/statuses, filters, PDF/CSV, local history and competitor comparison; verify real public-site flows.
 - [x] Apply palette, blog, sharing, canonical, navigation, sitemap, security, trust, accessibility and FAQ fixes; verified 39 page variants in both themes, 20 regression tests, generator download and owner contact/blog flows.
 - [ ] Verify an enrolled MFA challenge — requires an owner-enrolled authenticator; conditional enforcement is implemented, but the tested account has no enrolled factor.
 - [ ] Replace explicit author/team placeholders — requires the owner's real names, bio and optional photos.
