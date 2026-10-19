@@ -51,6 +51,7 @@
         "embla-carousel-react": "^8.6.0",
         "framer-motion": "^14.3.0",
         "input-otp": "^1.4.2",
+        "ipaddr.js": "^2.5.0",
         "jspdf": "^4.2.1",
         "jspdf-autotable": "^5.0.9",
         "linkedom": "^0.18.13",
@@ -1042,6 +1043,8 @@
     "internmap": ["internmap@2.0.3", "", {}, "sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg=="],
 
     "iobuffer": ["iobuffer@5.4.0", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/iobuffer/-/iobuffer-5.4.0.tgz", {}, "sha512-DRebOWuqDvxunfkNJAlc3IzWIPD5xVxwUNbHr7xKB8E6aLJxIPfNX3CoMJghcFjpv6RWQsrcJbghtEwSPoJqMA=="],
+
+    "ipaddr.js": ["ipaddr.js@2.5.0", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/ipaddr.js/-/ipaddr.js-2.5.0.tgz", {}, "sha512-aq+t5NAc+cS6rZQQVWC2x98CPqGtKKTMDd4Gaodv0wShnItdKg/51djkGJ1hqH+Oy0ivDftCbSLCQob8zso01w=="],
 
     "is-extglob": ["is-extglob@2.1.1", "", {}, "sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ=="],
 
