@@ -1,5 +1,5 @@
 # Asset downloads
-- [ ] Add site-wide crawling beyond three pages with sitemap/link discovery, bounded batches, progress, stopping and honest partial reports.
+- [x] Add site-wide crawling beyond three pages with sitemap/link discovery, paced batches, progress, stopping and honest partial reports; real four-page crawl, Stop, export and history restore verified; 62 tests pass.
 - [x] Upgrade Website Auditor: real 1–3 page checks, coverage/statuses, filters, PDF/CSV/JSON, browser history and competitor comparison; public scans, mobile layouts and regression tests verified.
 - [ ] Rendered audit screenshots, layout/runtime checks and full grammar recommendations — require a supported browser-rendering/language service; explicitly Not Tested, never fabricated.
 - [ ] Account-synced audits, scheduled rescans and email alerts — require auditor account/auth scope and email-delivery setup; currently manual, browser-local scans only.
