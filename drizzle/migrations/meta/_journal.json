@@ -15,6 +15,13 @@
       "when": 1792342872549,
       "tag": "0001_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792421823951,
+      "tag": "0002_owner_mfa_and_contact_protection",
+      "breakpoints": true
     }
   ]
 }

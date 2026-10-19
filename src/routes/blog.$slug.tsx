@@ -4,7 +4,9 @@ import { getPost, listPosts } from "@/lib/content.functions";
 import { Breadcrumbs, breadcrumbLd, copyText } from "@/components/site/ui-bits";
 import { AdSlot } from "@/components/site/AdSlot";
 import { LogoImage } from "@/components/site/Logo";
-import { pageHead } from "@/lib/seo";
+import { pageHead, absoluteUrl } from "@/lib/seo";
+import { EDITORIAL_AUTHOR } from "@/lib/editorial-config";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
@@ -20,11 +22,11 @@ export const Route = createFileRoute("/blog/$slug")({
     const h = pageHead({
       title: (p.seo_title || p.title).slice(0, 60),
       description: (p.meta_description || p.excerpt).slice(0, 160),
-      path: p.canonical || path,
+      path,
       type: "article",
-      image: p.og_image || undefined,
+      image: p.og_image || p.cover_image || undefined,
       jsonLd: [
-        { "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.excerpt, datePublished: p.published_at, dateModified: p.updated_at, author: { "@type": "Organization", name: p.author }, publisher: { "@type": "Organization", name: "LogoColorStudio" }, image: p.cover_image },
+        { "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.excerpt, datePublished: p.published_at, dateModified: p.updated_at, author: { "@type": "Person", name: p.author === "LogoColorStudio Team" ? EDITORIAL_AUTHOR.name : p.author, url: absoluteUrl("/about") }, publisher: { "@type": "Organization", name: "LogoColorStudio" }, image: p.og_image || p.cover_image ? absoluteUrl(p.og_image || p.cover_image) : undefined, mainEntityOfPage: absoluteUrl(path) },
         breadcrumbLd([{ label: "Blog", to: "/blog" }, { label: p.title }], path),
       ],
     });
@@ -39,15 +41,16 @@ function Page() {
   const { post, related } = Route.useLoaderData();
   const toc: { id: string; text: string }[] = [];
   const html = post.content.replace(/<h2>(.*?)<\/h2>/g, (_, t: string) => { const id = slugify(t); toc.push({ id, text: t.replace(/<[^>]+>/g, "") }); return `<h2 id="${id}">${t}</h2>`; });
-  const words = post.content.replace(/<[^>]+>/g, " ").split(/\s+/).length;
-  const share = typeof window !== "undefined" ? window.location.href : "";
+  const words = post.content.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length;
+  const share = absoluteUrl(`/blog/${post.slug}`);
+  const author = post.author === "LogoColorStudio Team" ? EDITORIAL_AUTHOR.name : post.author;
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <Breadcrumbs items={[{ label: "Blog", to: "/blog" }, { label: post.title }]} />
       <header className="mx-auto max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-widest text-primary">{post.category}</p>
         <h1 className="mt-2 text-3xl font-extrabold leading-tight sm:text-5xl">{post.title}</h1>
-        <p className="mt-4 text-muted-foreground">By {post.author} · {new Date(post.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {Math.max(1, Math.round(words / 220))} min read</p>
+        <p className="mt-4 text-muted-foreground">By {author} · {new Date(post.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {Math.max(1, Math.ceil(words / 220))} min read</p>
       </header>
       {post.cover_image && <img src={post.cover_image} alt={post.title} width={1200} height={630} className="mx-auto mt-8 aspect-[1200/630] w-full max-w-4xl rounded-3xl border object-cover" />}
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_240px]">
@@ -57,14 +60,14 @@ function Page() {
           <div className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center gap-2">
             <span className="text-sm font-medium">Share:</span>
             <a className="rounded-full border p-2" aria-label="Share on X" target="_blank" rel="noopener noreferrer" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(share)}&text=${encodeURIComponent(post.title)}`}><Twitter className="size-4" /></a>
-            <a className="rounded-full border p-2" aria-label="Share on LinkedIn" target="_blank" rel="noopener noreferrer" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(share)}`}><Linkedin className="size-4" /></a>
-            <a className="rounded-full border p-2" aria-label="Share on Facebook" target="_blank" rel="noopener noreferrer" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(share)}`}><Facebook className="size-4" /></a>
-            <button className="rounded-full border p-2" aria-label="Copy link" onClick={() => copyText(window.location.href, "Link copied")}><Link2 className="size-4" /></button>
+            <a className="rounded-full border p-2" aria-label="Share on LinkedIn" target="_blank" rel="noopener noreferrer" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(share)}&title=${encodeURIComponent(post.title)}`}><Linkedin className="size-4" /></a>
+            <a className="rounded-full border p-2" aria-label="Share on Facebook" target="_blank" rel="noopener noreferrer" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(share)}&quote=${encodeURIComponent(post.title)}`}><Facebook className="size-4" /></a>
+            <Button variant="outline" size="icon" aria-label="Copy link" onClick={() => copyText(share, "Link copied")}><Link2 className="size-4" /></Button>
             <div className="ml-auto flex flex-wrap gap-1">{post.tags.map((t) => <span key={t} className="rounded-full bg-muted px-3 py-1 text-xs">#{t}</span>)}</div>
           </div>
           <div className="mx-auto mt-8 flex max-w-3xl items-center gap-4 rounded-2xl border bg-card p-5">
-            <LogoImage className="h-8" />
-            <div><p className="font-semibold">{post.author}</p><p className="text-sm text-muted-foreground">We build free tools and guides for brand colors and better websites.</p></div>
+            {EDITORIAL_AUTHOR.photo && <img src={EDITORIAL_AUTHOR.photo} alt={author} width={64} height={64} className="size-16 rounded-full object-cover" />}
+            <div><p className="font-semibold">{author}</p><p className="text-sm text-muted-foreground">{EDITORIAL_AUTHOR.bio}</p><Link to="/about" className="mt-2 inline-block text-sm text-primary underline">About LogoColorStudio</Link></div>
           </div>
         </div>
         {toc.length > 0 && (

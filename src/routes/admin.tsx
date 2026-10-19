@@ -17,6 +17,8 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { pageHead } from "@/lib/seo";
+import { MfaChallenge } from "@/components/admin/MfaChallenge";
+import { EDITORIAL_AUTHOR } from "@/lib/editorial-config";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -28,7 +30,16 @@ export const Route = createFileRoute("/admin")({
       await supabase.auth.signOut();
       throw redirect({ to: "/login" });
     }
-    return { email: data.user.email };
+    const { data: assurance, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (error) throw new Error("Could not verify sign-in security. Please try again.");
+    let factorId: string | undefined;
+    if (assurance.nextLevel === "aal2" && assurance.currentLevel !== "aal2") {
+      const { data: factors, error: factorError } = await supabase.auth.mfa.listFactors();
+      if (factorError) throw new Error("Could not load sign-in verification.");
+      factorId = factors.totp.find(f => f.status === "verified")?.id;
+      if (!factorId) throw new Error("Please use your enrolled verification method to finish signing in.");
+    }
+    return { email: data.user.email, factorId };
   },
   head: () => pageHead({ title: "Admin — LogoColorStudio", description: "Owner management for LogoColorStudio content, advertising and downloads.", path: "/admin", noindex: true }),
   component: Admin,
@@ -51,7 +62,8 @@ const clean = (html: string) => DOMPurify.sanitize(html, { USE_PROFILES: { html:
 function Admin() {
   const [tab, setTab] = useState<Tab>("dash");
   const nav = useNavigate();
-  const { email } = Route.useRouteContext();
+  const { email, factorId } = Route.useRouteContext();
+  if (factorId) return <MfaChallenge factorId={factorId} />;
   return (
     <div className="min-h-screen bg-background md:grid md:grid-cols-[240px_1fr]">
       <aside className="border-b bg-card md:min-h-screen md:border-b-0 md:border-r">
@@ -203,7 +215,7 @@ function SettingsPanel() {
 }
 
 type Post = { id?: string; slug: string; title: string; excerpt: string; content: string; cover_image: string; category: string; tags: string[]; author: string; status: string; published_at: string; seo_title: string; meta_description: string; canonical: string; og_image: string };
-const EMPTY: Post = { slug: "", title: "", excerpt: "", content: "<p></p>", cover_image: "", category: "Guides", tags: [], author: "LogoColorStudio Team", status: "draft", published_at: new Date().toISOString(), seo_title: "", meta_description: "", canonical: "", og_image: "" };
+const EMPTY: Post = { slug: "", title: "", excerpt: "", content: "<p></p>", cover_image: "", category: "Guides", tags: [], author: EDITORIAL_AUTHOR.name, status: "draft", published_at: new Date().toISOString(), seo_title: "", meta_description: "", canonical: "", og_image: "" };
 
 function BlogManager() {
   const qc = useQueryClient();

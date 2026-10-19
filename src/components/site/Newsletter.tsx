@@ -26,8 +26,8 @@ export function Newsletter() {
       <div className="absolute inset-x-0 top-0 h-1 bg-brand-gradient" />
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Get new palettes &amp; tools in your inbox</h2>
-          <p className="mt-1 text-muted-foreground">One short email a month. No spam, unsubscribe anytime.</p>
+          <h2 className="text-2xl font-bold">Join the LogoColorStudio newsletter list</h2>
+          <p className="mt-1 text-muted-foreground">Leave your email for future updates. Email delivery is not active yet.</p>
         </div>
         <form onSubmit={submit} className="flex w-full max-w-md gap-2">
           <label htmlFor="nl-email" className="sr-only">Email address</label>

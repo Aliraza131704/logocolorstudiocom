@@ -25,15 +25,22 @@ export type PostRow = {
 
 export const listPosts = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await pub();
-  const { data } = await sb.from("blog_posts").select("id,slug,title,excerpt,cover_image,category,tags,author,published_at,content").eq("status", "published").lte("published_at", new Date().toISOString()).order("published_at", { ascending: false });
-  return (data ?? []).map((p) => ({ ...p, content: undefined, words: String(p.content).replace(/<[^>]+>/g, " ").split(/\s+/).length })) as (Omit<PostRow, "content" | "seo_title" | "meta_description" | "canonical" | "og_image" | "updated_at"> & { words: number })[];
+  const rows = [];
+  for (let offset = 0; ; offset += 500) {
+    const { data, error } = await sb.from("blog_posts").select("id,slug,title,excerpt,cover_image,category,tags,author,published_at,updated_at,content").eq("status", "published").lte("published_at", new Date().toISOString()).order("published_at", { ascending: false }).order("id").range(offset, offset + 499);
+    if (error) throw new Error("Could not load published articles");
+    rows.push(...(data ?? []));
+    if (!data || data.length < 500) break;
+  }
+  return rows.map((p) => ({ ...p, content: undefined, words: String(p.content).replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length })) as (Omit<PostRow, "content" | "seo_title" | "meta_description" | "canonical" | "og_image"> & { words: number })[];
 });
 
 export const getPost = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => z.object({ slug: z.string().max(200) }).parse(d))
   .handler(async ({ data }) => {
     const sb = await pub();
-    const { data: p } = await sb.from("blog_posts").select("*").eq("slug", data.slug).eq("status", "published").lte("published_at", new Date().toISOString()).maybeSingle();
+    const { data: p, error } = await sb.from("blog_posts").select("*").eq("slug", data.slug).eq("status", "published").lte("published_at", new Date().toISOString()).maybeSingle();
+    if (error) throw new Error("Could not load article");
     return (p as PostRow | null) ?? null;
   });
 
@@ -59,4 +66,13 @@ export const listDownloadAssets = createServerFn({ method: 'GET' }).handler(asyn
   const { data, error } = await sb.from('site_settings').select('value').eq('key', CATALOG_KEY).maybeSingle();
   if (error) throw new Error('Could not load downloads');
   return parseCatalog(data?.value ?? '').filter(a => a.published);
+});
+
+export const getSitemapContent = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = await pub();
+  const { data: pages, error } = await sb.from("pages").select("slug,updated_at");
+  if (error) throw new Error("Could not load sitemap pages");
+  const { data: settings, error: settingError } = await sb.from("site_settings").select("updated_at").eq("key", "download_catalog").maybeSingle();
+  if (settingError) throw new Error("Could not load download revision");
+  return { pages: pages ?? [], downloadUpdated: settings?.updated_at as string | undefined };
 });

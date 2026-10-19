@@ -5,7 +5,7 @@ export type ToolDef = { slug: string; path: string; name: string; short: string;
 export const TOOLS: ToolDef[] = [
   { slug: "logo-extractor", path: "/tools/logo-extractor", name: "Logo Extractor", short: "Upload a logo and get its exact brand colors in HEX, RGB and HSL.", icon: Image, color: "text-brand-blue" },
   { slug: "website-extractor", path: "/tools/website-extractor", name: "Website Extractor", short: "Pull colors, fonts and the logo from any public website.", icon: Globe, color: "text-brand-green" },
-  { slug: "palette-generator", path: "/palettes", name: "Palette Generator", short: "Create harmonious palettes, lock, shuffle and export.", icon: Palette, color: "text-brand-orange" },
+  { slug: "palette-generator", path: "/tools/palette-generator", name: "Palette Generator", short: "Create harmonious palettes, lock, shuffle and export.", icon: Palette, color: "text-brand-orange" },
   { slug: "contrast-checker", path: "/tools/contrast-checker", name: "Contrast Checker", short: "Test any color pair against WCAG AA and AAA.", icon: Contrast, color: "text-brand-red" },
   { slug: "theme-generator", path: "/tools/theme-generator", name: "Theme Generator", short: "Build light and dark UI themes from your palette with live preview.", icon: SunMoon, color: "text-brand-blue" },
   { slug: "export-center", path: "/tools/export-center", name: "Export Center", short: "Export colors as CSS variables, Tailwind, SCSS or JSON.", icon: Download, color: "text-brand-green" },

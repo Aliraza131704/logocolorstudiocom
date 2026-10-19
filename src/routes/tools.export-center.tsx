@@ -43,8 +43,8 @@ function Page() {
           <div className="space-y-2">
             {colors.map((c, i) => (
               <div key={i} className="flex items-center gap-2">
-                <input type="color" aria-label={`Color ${i + 1}`} value={c} onChange={(e) => setColors(colors.map((x, j) => (j === i ? normalizeHex(e.target.value)! : x)))} className="h-10 w-12 cursor-pointer rounded-lg border bg-transparent" />
-                <Input defaultValue={c} key={c} className="font-mono" onBlur={(e) => { const n = normalizeHex(e.target.value); if (n) setColors(colors.map((x, j) => (j === i ? n : x))); }} />
+                <input type="color" aria-label={`Color ${i + 1}`} value={c} onChange={(e) => setColors(colors.map((x, j) => (j === i ? normalizeHex(e.target.value) ?? x : x)))} className="h-10 w-12 cursor-pointer rounded-lg border bg-transparent" />
+                <Input aria-label={`Color ${i + 1} HEX value`} defaultValue={c} key={c} className="font-mono" onBlur={(e) => { const n = normalizeHex(e.target.value); if (n) setColors(colors.map((x, j) => (j === i ? n : x))); }} />
                 <Button variant="ghost" size="icon" aria-label="Remove color" onClick={() => setColors(colors.filter((_, j) => j !== i))} disabled={colors.length <= 1}><X /></Button>
               </div>
             ))}
