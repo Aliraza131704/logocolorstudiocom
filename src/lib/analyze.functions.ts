@@ -72,6 +72,8 @@ const auditInput = z.object({
   maxPages: z.number().int().min(1).max(3).default(1),
   checkLinks: z.boolean().default(true),
   checkImages: z.boolean().default(true),
+  pageUrls: z.array(z.string().min(3).max(500)).min(1).max(3).optional(),
+  discoverSite: z.boolean().default(false),
 });
 export const auditWebsite = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => auditInput.parse(d))

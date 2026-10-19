@@ -9,8 +9,10 @@ export type AuditReport = {
   groups: { category: AuditCategory; score: number | null; tested: number; total: number }[];
   findings: AuditFinding[]; pages: AuditPage[]; coverage: { tested: number; total: number; percent: number };
   limits: { maxPages: number; maxLinks: number }; notes: string[];
+  discovered?: string[];
+  crawl?: { attempted: number; pending: number; stopped: boolean; skipped: string[]; complete: boolean };
 };
-export type AuditOptions = { url: string; maxPages: number; checkLinks: boolean; checkImages: boolean };
+export type AuditOptions = { url: string; maxPages: number; checkLinks: boolean; checkImages: boolean; pageUrls?: string[]; discoverSite?: boolean };
 export const MAX_AUDIT_PAGES = 3;
 export const MAX_AUDIT_LINKS = 12;
 

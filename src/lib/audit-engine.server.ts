@@ -1,6 +1,7 @@
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { auditFetch, blockedAuditPage, robotsAllowed } from "./audit-fetch.server";
 import { publicWebsiteUrl } from "./audit-url";
+import { crawlUrl } from "./audit-crawl";
 import { inspectAuditPage } from "./audit-checks";
 import { MAX_AUDIT_LINKS, summarizeAudit, type AuditFinding, type AuditOptions, type AuditReport } from "./audit-types";
 
@@ -40,7 +41,12 @@ export async function runWebsiteAudit(options: AuditOptions): Promise<AuditRepor
     robotsText = robots.html;
   }
   if (!robotsAllowed(robotsText, target)) throw new Error("This website's robots.txt disallows scanning this page. No audit was performed.");
-  const queue = [target.href];
+  const queue = options.pageUrls?.map(url => {
+    const u = publicWebsiteUrl(url);
+    if (!crawlUrl(u.href, target.origin)) throw new Error("Scan pages must be safe URLs on the selected website.");
+    return u.href;
+  }) ?? [target.href];
+  const discovery = new Set<string>();
   const seen = new Set<string>();
   const discoveredLinks = new Set<string>();
   const discoveredImages = new Set<string>();
@@ -67,14 +73,16 @@ export async function runWebsiteAudit(options: AuditOptions): Promise<AuditRepor
       if (page.truncated) notes.push(`HTML for ${page.url} exceeded the 1 MB limit; checks cover only downloaded markup.`);
       inspected.links.forEach(href => {
         discoveredLinks.add(href);
+        const eligible = crawlUrl(href, target.origin);
+        if (eligible && robotsAllowed(robotsText, new URL(eligible)) && discovery.size < 1000) discovery.add(eligible);
         try {
           const u = publicWebsiteUrl(href);
-          if (u.origin === target.origin && !u.search && !/\.(pdf|zip|png|jpe?g|gif|webp|svg|mp4|mp3)$/i.test(u.pathname) && !/\/(logout|signout|delete|remove|cart|checkout)(\/|$)/i.test(u.pathname) && !seen.has(u.href) && queue.length < 12) queue.push(u.href);
+          if (!options.pageUrls && u.origin === target.origin && !u.search && !/\.(pdf|zip|png|jpe?g|gif|webp|svg|mp4|mp3)$/i.test(u.pathname) && !/\/(logout|signout|delete|remove|cart|checkout)(\/|$)/i.test(u.pathname) && !seen.has(u.href) && queue.length < 12) queue.push(u.href);
         } catch { /* unsafe or non-web URL is not crawled */ }
       });
       inspected.imageUrls.forEach(href => discoveredImages.add(href));
     } catch (error) {
-      if (!firstPage) throw error;
+      if (!firstPage && !options.pageUrls) throw error;
       notes.push(`${url}: ${error instanceof Error ? error.message : "Page unavailable"}`);
     }
   }
@@ -88,6 +96,25 @@ export async function runWebsiteAudit(options: AuditOptions): Promise<AuditRepor
     if (new URL(sitemapUrl).origin !== target.origin) throw new Error("Sitemap is external; not fetched by this same-origin scan.");
     const sitemap = await request(sitemapUrl, "GET", 200_000);
     const valid = sitemap.status === 200 && /<(urlset|sitemapindex)(\s|>)/i.test(sitemap.html);
+    if (options.discoverSite && valid) {
+      const { parseHTML } = await import("linkedom");
+      const locations = (xml: string) => [...parseHTML(xml).document.querySelectorAll("loc")].map(el => el.textContent?.trim() ?? "");
+      const collect = (xml: string) => locations(xml).forEach(href => { const u = crawlUrl(href, target.origin); if (u && robotsAllowed(robotsText, new URL(u)) && discovery.size < 1000) discovery.add(u); });
+      if (/<urlset(\s|>)/i.test(sitemap.html)) collect(sitemap.html);
+      else {
+        const children = locations(sitemap.html).slice(0, 3);
+        notes.push("Sitemap index discovery inspects up to three child documents; larger or nested indexes may remain partially discovered.");
+        for (const child of children) {
+          try {
+            const u = publicWebsiteUrl(child);
+            if (u.origin !== target.origin || !robotsAllowed(robotsText, u)) continue;
+            const xml = await request(u.href, "GET", 200_000);
+            if (xml.status === 200 && /<urlset(\s|>)/i.test(xml.html)) collect(xml.html);
+            if (xml.truncated) notes.push(`Sitemap ${child} was truncated; some URLs may not be discovered.`);
+          } catch { notes.push(`Sitemap ${child} could not be read.`); }
+        }
+      }
+    }
     add({ id: "sitemap", category: "SEO", label: "Sitemap document signal", status: valid ? "Passed" : "Warning", severity: "medium", url: sitemapUrl, evidence: `HTTP ${sitemap.status}; XML root ${valid ? "found" : "not found"}${sitemap.truncated ? "; truncated" : ""}`, explanation: "This validates availability and XML-root signals, not every listed URL or Google submission.", fix: "Publish an XML sitemap containing canonical, indexable pages." });
   } catch (error) { add({ id: "sitemap", category: "SEO", label: "Sitemap document", status: "Not Tested", severity: "medium", url: sitemapUrl, evidence: error instanceof Error ? error.message : "Unavailable", explanation: "The sitemap was not inspected.", fix: "Check sitemap access and retry." }); }
   const links = [...discoveredLinks].flatMap(href => {
@@ -125,5 +152,5 @@ export async function runWebsiteAudit(options: AuditOptions): Promise<AuditRepor
   const duplicateTitles = pages.filter((p, i) => p.title && pages.findIndex(other => other.title === p.title) !== i);
   if (pages.length > 1) add({ id: "duplicate-titles", category: "SEO", label: "Duplicate titles across scanned pages", status: duplicateTitles.length ? "Warning" : "Passed", severity: "medium", evidence: duplicateTitles.length ? duplicateTitles.map(p => `${p.url}: ${p.title}`).join("; ") : `${pages.length} scanned pages have no duplicate non-empty titles`, explanation: "This compares only the small scanned sample, not the whole site.", fix: "Give each distinct page a unique title." });
   notes.push(`${pages.length}/${options.maxPages} page limit used; ${links.length} eligible links sampled; same-origin crawling only. Up to 24 fetch operations with a 45-second scheduling budget.`);
-  return { version: 2, url: reportUrl, checkedAt: new Date().toISOString(), durationMs: Date.now() - started, ...summarizeAudit(findings), findings, pages, limits: { maxPages: options.maxPages, maxLinks: MAX_AUDIT_LINKS }, notes };
+  return { version: 2, url: reportUrl, checkedAt: new Date().toISOString(), durationMs: Date.now() - started, ...summarizeAudit(findings), findings, pages, limits: { maxPages: options.maxPages, maxLinks: MAX_AUDIT_LINKS }, notes, discovered: [...discovery] };
 }
