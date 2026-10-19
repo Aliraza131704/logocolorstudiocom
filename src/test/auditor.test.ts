@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { inspectAuditPage } from "@/lib/audit-checks";
 import { auditScore, summarizeAudit, type AuditFinding } from "@/lib/audit-types";
 import { publicWebsiteUrl, isPublicAddress } from "@/lib/audit-url";
-import { robotsAllowed } from "@/lib/audit-fetch.server";
+import { auditFetch, robotsAllowed } from "@/lib/audit-fetch.server";
 import { auditCsv, readAuditHistory } from "@/lib/audit-report";
 
 const page = { url: "https://example.com/", status: 200, bytes: 800, ms: 200, headers: { "content-type": "text/html" }, html: '<html lang="en"><head><title>A useful page title</title><script type="application/ld+json">{broken json}</script></head><body><h1>Hello</h1><h3>Jump</h3><img src="photo.webp"><form><input id="email"></form><p>teh buisness</p></body></html>' };
@@ -40,4 +40,25 @@ describe("safe report exports", () => {
     expect(auditCsv(report, "Test")).toContain("'=HYPERLINK");
   });
   it("ignores corrupt browser history", () => { expect(readAuditHistory('{broken')).toEqual([]); });
+});
+describe("bounded fetch safety", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  const dns = () => new Response(JSON.stringify({ Status: 0, Answer: [{ type: 1, data: "8.8.8.8" }] }), { headers: { "content-type": "application/json" } });
+  it("stops unsafe redirects before requesting the destination", async () => {
+    const mock = vi.fn(async (url: string | URL) => String(url).startsWith("https://cloudflare-dns.com/") ? dns() : new Response(null, { status: 302, headers: { location: "http://127.0.0.1/" } }));
+    vi.stubGlobal("fetch", mock);
+    await expect(auditFetch("https://example.com/")).rejects.toThrow("not a public website");
+    expect(mock.mock.calls.some(([url]) => String(url).includes("127.0.0.1"))).toBe(false);
+  });
+  it("refuses a host with any private DNS answer", async () => {
+    const mock = vi.fn(async () => new Response(JSON.stringify({ Status: 0, Answer: [{ type: 1, data: "10.0.0.1" }] })));
+    vi.stubGlobal("fetch", mock);
+    await expect(auditFetch("https://example.com/")).rejects.toThrow("exclusively to public addresses");
+    expect(mock).toHaveBeenCalledTimes(2);
+  });
+  it("caps downloaded body bytes", async () => {
+    vi.stubGlobal("fetch", vi.fn(async (url: string | URL) => String(url).startsWith("https://cloudflare-dns.com/") ? dns() : new Response("1234567890")));
+    const response = await auditFetch("https://example.com/", "GET", 5);
+    expect(response.html).toBe("12345"); expect(response.bytes).toBe(5); expect(response.truncated).toBe(true);
+  });
 });

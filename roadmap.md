@@ -1,5 +1,7 @@
 # Asset downloads
-- [ ] Upgrade Website Auditor: secure evidence-based multi-page checks, coverage/statuses, filters, PDF/CSV, local history and competitor comparison; verify real public-site flows.
+- [x] Upgrade Website Auditor: real 1–3 page checks, coverage/statuses, filters, PDF/CSV/JSON, browser history and competitor comparison; public scans, mobile layouts and regression tests verified.
+- [ ] Rendered audit screenshots, layout/runtime checks and full grammar recommendations — require a supported browser-rendering/language service; explicitly Not Tested, never fabricated.
+- [ ] Account-synced audits, scheduled rescans and email alerts — require auditor account/auth scope and email-delivery setup; currently manual, browser-local scans only.
 - [x] Apply palette, blog, sharing, canonical, navigation, sitemap, security, trust, accessibility and FAQ fixes; verified 39 page variants in both themes, 20 regression tests, generator download and owner contact/blog flows.
 - [ ] Verify an enrolled MFA challenge — requires an owner-enrolled authenticator; conditional enforcement is implemented, but the tested account has no enrolled factor.
 - [ ] Replace explicit author/team placeholders — requires the owner's real names, bio and optional photos.

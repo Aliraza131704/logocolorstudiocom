@@ -24,8 +24,8 @@ const FAQS: Faq[] = [
 export const Route = createFileRoute("/tools/website-auditor")({
   head: () =>
     pageHead({
-      title: "Free Website Auditor — SEO & Performance Check",
-      description: "Audit any website for SEO, mobile, HTTPS, image alt text, performance hints and broken links. Get a score, fix tips and PDF/JSON export.",
+      title: "Website Auditor — Evidence & Reports | LogoColorStudio",
+      description: "Audit public website HTML with real evidence, category scores, coverage, link checks and CMS detection. Compare scans and export PDF, CSV or JSON.",
       path: "/tools/website-auditor",
       jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Auditor" }], "/tools/website-auditor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Auditor", applicationCategory: "BusinessApplication", operatingSystem: "Any" }],
     }),
@@ -99,7 +99,7 @@ function About() {
         <li><strong>Mobile:</strong> a correct responsive viewport tag.</li>
         <li><strong>Security:</strong> HTTPS and the HSTS header.</li>
         <li><strong>Accessibility:</strong> alt text on images.</li>
-        <li><strong>Performance:</strong> server response time, HTML size, compression, lazy-loaded images and the number of external scripts.</li>
+        <li><strong>Performance:</strong> downloaded HTML size and external script count. Fetch duration is an observation, not a graded speed metric. Browser performance and compression are not tested.</li>
         <li><strong>Links:</strong> a sample of up to 12 links checked for 4xx and 5xx errors.</li>
       </ul>
       <h2>How to run an audit</h2>
