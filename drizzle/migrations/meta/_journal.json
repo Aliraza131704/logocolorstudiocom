@@ -22,6 +22,13 @@
       "when": 1792421823951,
       "tag": "0002_owner_mfa_and_contact_protection",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792424642462,
+      "tag": "0003_atomic_auditor_request_limit",
+      "breakpoints": true
     }
   ]
 }
