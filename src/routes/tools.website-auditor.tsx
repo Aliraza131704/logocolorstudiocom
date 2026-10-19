@@ -67,7 +67,7 @@ function Page() {
     setLoading(true); setErr(""); setRes(null); setCompetitor(null);
     setStage("Fetching permitted pages and evaluating evidence…");
     try {
-      const scan = async (input: string): Promise<AuditReport> => {
+      const scan = async (input: string, primary = true): Promise<AuditReport> => {
         if (!siteWide) return fn({ data: { url: input, maxPages, checkLinks, checkImages } });
         const started = Date.now();
         const first = await fn({ data: { url: input, maxPages: 1, checkLinks, checkImages, discoverSite: true } });
@@ -80,7 +80,7 @@ function Page() {
         enqueue(first.discovered ?? []);
         let lastRequest = started;
         while (queue.length && attempted.size < SITE_AUDIT_LIMIT && !stop.current) {
-          setRes(mergeAuditBatches(reports, target, [...attempted], queue.length, false));
+          if (primary) setRes(mergeAuditBatches(reports, target, [...attempted], queue.length, false));
           setStage(`${reports.reduce((sum, r) => sum + r.pages.length, 0)} pages scanned · ${queue.length} discovered pages waiting · keep this tab open`);
           // Pace batches below the existing five-requests-per-minute safety limit.
           while (Date.now() - lastRequest < 16_000 && !stop.current) await new Promise(resolve => setTimeout(resolve, 250));
@@ -104,7 +104,7 @@ function Page() {
       if (competitorUrl.trim() && !stop.current) {
         setStage("Auditing the competitor with the same settings…");
         if (siteWide) for (let i = 0; i < 64 && !stop.current; i++) await new Promise(resolve => setTimeout(resolve, 250));
-        try { if (!stop.current) setCompetitor(await scan(competitorUrl.trim())); }
+        try { if (!stop.current) setCompetitor(await scan(competitorUrl.trim(), false)); }
         catch (error) { setErr(`Your report is ready. Competitor scan: ${error instanceof Error ? error.message : "Unavailable"}`); }
       }
     } catch (error) { setErr(error instanceof Error ? error.message : "Audit unavailable. Please try again."); }
@@ -120,7 +120,7 @@ function Page() {
         <label htmlFor="audit-url" className="block text-sm font-semibold">Website address</label>
         <div className="flex flex-col gap-2 sm:flex-row"><div className="relative min-w-0 flex-1"><Search className="absolute left-4 top-4 size-4 text-muted-foreground" /><Input id="audit-url" value={url} onChange={e => setUrl(e.target.value)} placeholder="https://example.com" maxLength={500} className="h-12 bg-card pl-11 text-base" disabled={loading} required /></div><Button type="submit" variant="hero" size="lg" disabled={loading || !url.trim()}>{loading ? <Loader2 className="animate-spin" /> : <ArrowRight />}{loading ? "Auditing…" : "Run audit"}</Button></div>
         <Button type="button" variant="ghost" size="sm" onClick={() => setSettings(!settings)} aria-expanded={settings} aria-controls="audit-settings"><SlidersHorizontal />Audit settings</Button>
-        {settings && <div id="audit-settings" className="grid gap-5 border-y py-5 sm:grid-cols-2"><div><label htmlFor="audit-pages" className="mb-2 block text-sm font-medium">Page limit</label><select id="audit-pages" className="h-10 w-full rounded-md border bg-card px-3 text-sm" value={maxPages} onChange={e => setMaxPages(Number(e.target.value))} disabled={loading}><option value={1}>1 page · focused scan</option><option value={2}>2 pages · small sample</option><option value={3}>3 pages · extended sample</option></select></div><div><label htmlFor="audit-competitor" className="mb-2 block text-sm font-medium">Competitor website <span className="text-muted-foreground">(optional)</span></label><Input id="audit-competitor" value={competitorUrl} onChange={e => setCompetitorUrl(e.target.value)} placeholder="https://competitor.com" maxLength={500} disabled={loading} /></div><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={checkLinks} onChange={e => setCheckLinks(e.target.checked)} disabled={loading} />Check up to 12 same-site links</label><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={checkImages} onChange={e => setCheckImages(e.target.checked)} disabled={loading} />Check up to 4 same-site images</label><p className="text-xs text-muted-foreground sm:col-span-2">Static HTML · no form submissions · respects crawl restrictions. Browser screenshots, scheduled scans and email alerts are not connected.</p></div>}
+        {settings && <div id="audit-settings" className="grid gap-5 border-y py-5 sm:grid-cols-2"><div><label htmlFor="audit-pages" className="mb-2 block text-sm font-medium">Page limit</label><select id="audit-pages" className="h-10 w-full rounded-md border bg-card px-3 text-sm" value={maxPages} onChange={e => setMaxPages(Number(e.target.value))} disabled={loading || siteWide}><option value={1}>1 page · focused scan</option><option value={2}>2 pages · small sample</option><option value={3}>3 pages · extended sample</option></select></div><div><label htmlFor="audit-competitor" className="mb-2 block text-sm font-medium">Competitor website <span className="text-muted-foreground">(optional)</span></label><Input id="audit-competitor" value={competitorUrl} onChange={e => setCompetitorUrl(e.target.value)} placeholder="https://competitor.com" maxLength={500} disabled={loading} /></div><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={checkLinks} onChange={e => setCheckLinks(e.target.checked)} disabled={loading} />Check up to 12 same-site links</label><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={checkImages} onChange={e => setCheckImages(e.target.checked)} disabled={loading} />Check up to 4 same-site images</label><p className="text-xs text-muted-foreground sm:col-span-2">Static HTML · no form submissions · respects crawl restrictions. Browser screenshots, scheduled scans and email alerts are not connected.</p></div>}
       </form>
       {loading && <div className="mt-6 flex flex-wrap items-center gap-3 border-y py-6" role="status" aria-live="polite"><Loader2 className="size-5 animate-spin text-primary" /><div className="min-w-0 flex-1"><p className="text-sm font-semibold">{stage}</p><p className="mt-1 text-xs text-muted-foreground">{siteWide ? "Batches are paced to respect scan limits. Stopping finishes the current batch and keeps a partial report." : "Progress is indeterminate; no fabricated completion percentage."}</p></div><Button type="button" variant="outline" disabled={stopping} onClick={() => { stop.current = true; setStopping(true); }}>{stopping ? "Stopping…" : "Stop scan"}</Button></div>}
       {err && <ErrorNote msg={err} />}
