@@ -277,12 +277,22 @@ function BlogManager() {
           <label className="block">Category<Input className="mt-1" value={p.category} onChange={(e) => set("category", e.target.value)} /></label>
           <label className="block">Tags (comma separated)<Input className="mt-1" value={p.tags.join(", ")} onChange={(e) => set("tags", e.target.value.split(",").map((t) => t.trim()).filter(Boolean))} /></label>
           <label className="block">Author<Input className="mt-1" value={p.author} onChange={(e) => set("author", e.target.value)} /></label>
-          <label className="block">Cover image URL<Input className="mt-1" value={p.cover_image} onChange={(e) => set("cover_image", e.target.value)} /></label>
+          <label className="block">Cover image (upload or paste URL)
+            <div className="mt-1 flex gap-2">
+              <Input className="min-w-0 flex-1" value={p.cover_image} onChange={(e) => set("cover_image", e.target.value)} />
+              <ImageUpload label="Upload" folder="covers" onUploaded={(url) => set("cover_image", url)} />
+            </div>
+          </label>
           {p.cover_image && <img src={p.cover_image} alt="" className="rounded-lg" />}
           <label className="block">SEO title<Input className="mt-1" maxLength={60} value={p.seo_title} onChange={(e) => set("seo_title", e.target.value)} /></label>
           <label className="block">Meta description<Textarea className="mt-1" maxLength={160} value={p.meta_description} onChange={(e) => set("meta_description", e.target.value)} /></label>
           <label className="block">Canonical URL<Input className="mt-1" value={p.canonical} onChange={(e) => set("canonical", e.target.value)} /></label>
-          <label className="block">OG image URL<Input className="mt-1" value={p.og_image} onChange={(e) => set("og_image", e.target.value)} /></label>
+          <label className="block">OG image (upload or paste URL)
+            <div className="mt-1 flex gap-2">
+              <Input className="min-w-0 flex-1" value={p.og_image} onChange={(e) => set("og_image", e.target.value)} />
+              <ImageUpload label="Upload" folder="og" onUploaded={(url) => set("og_image", url)} />
+            </div>
+          </label>
           <div className="flex gap-2 pt-2"><Button onClick={save}>Save post</Button><Button variant="outline" onClick={() => setP(null)}>Cancel</Button></div>
         </div>
       </div>
