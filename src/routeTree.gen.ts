@@ -38,6 +38,7 @@ import { Route as ToolsThemeGeneratorRouteImport } from './routes/tools.theme-ge
 import { Route as ToolsWebsiteAuditorRouteImport } from './routes/tools.website-auditor'
 import { Route as ToolsWebsiteExtractorRouteImport } from './routes/tools.website-extractor'
 import { Route as ToolsWordpressThemeDetectorRouteImport } from './routes/tools.wordpress-theme-detector'
+import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -186,6 +187,11 @@ const ToolsWordpressThemeDetectorRoute =
     path: '/tools/wordpress-theme-detector',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
+  id: '/api/public/media/$',
+  path: '/api/public/media/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -217,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog/': typeof BlogIndexRoute
   '/tools/': typeof ToolsIndexRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -248,6 +255,7 @@ export interface FileRoutesByTo {
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog': typeof BlogIndexRoute
   '/tools': typeof ToolsIndexRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -280,6 +288,7 @@ export interface FileRoutesById {
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog/': typeof BlogIndexRoute
   '/tools/': typeof ToolsIndexRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -313,6 +322,7 @@ export interface FileRouteTypes {
     | '/tools/wordpress-theme-detector'
     | '/blog/'
     | '/tools/'
+    | '/api/public/media/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/tools/wordpress-theme-detector'
     | '/blog'
     | '/tools'
+    | '/api/public/media/$'
   id:
     | '__root__'
     | '/'
@@ -375,6 +386,7 @@ export interface FileRouteTypes {
     | '/tools/wordpress-theme-detector'
     | '/blog/'
     | '/tools/'
+    | '/api/public/media/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -407,6 +419,7 @@ export interface RootRouteChildren {
   ToolsWordpressThemeDetectorRoute: typeof ToolsWordpressThemeDetectorRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
+  ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -614,6 +627,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsWordpressThemeDetectorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/media/$': {
+      id: '/api/public/media/$'
+      path: '/api/public/media/$'
+      fullPath: '/api/public/media/$'
+      preLoaderRoute: typeof ApiPublicMediaSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -647,6 +667,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsWordpressThemeDetectorRoute: ToolsWordpressThemeDetectorRoute,
   BlogIndexRoute: BlogIndexRoute,
   ToolsIndexRoute: ToolsIndexRoute,
+  ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
