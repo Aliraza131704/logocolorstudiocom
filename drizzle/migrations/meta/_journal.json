@@ -29,6 +29,13 @@
       "when": 1792424642462,
       "tag": "0003_atomic_auditor_request_limit",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792607732171,
+      "tag": "0004_media_storage_policies",
+      "breakpoints": true
     }
   ]
 }
