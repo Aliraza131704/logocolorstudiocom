@@ -13,3 +13,7 @@
 - [x] Add consent-gated sponsor-video flow and owner video settings.
 - [x] Test reward rules, download delivery, and mobile layout (owner settings checked; test video unlocked valid ZIP).
 - [ ] Activate sponsors — requires owner's video, banner, website URL or approved AdSense placement code.
+## Tool page content expansion (uploaded brief)
+- [x] CMS Detector guide + 12 FAQs
+- [x] Logo Extractor guide + 12 FAQs
+- [ ] Website Extractor, Palette Generator, Contrast Checker, Theme Generator, Website Auditor, Shopify Theme Detector, WordPress Theme Detector (waiting on owner review of first two)
