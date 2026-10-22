@@ -8,10 +8,18 @@ import { detectCms } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
 
 const FAQS: Faq[] = [
+  { q: "Is this CMS detector free?", a: "Yes. It is completely free, needs no account and has no daily credit system. A fair-use limit of about 20 checks per minute per visitor keeps it fast for everyone." },
   { q: "Which platforms can be detected?", a: "WordPress, Shopify, Wix, Squarespace, Webflow, Joomla, Drupal, Magento, Ghost, BigCommerce, PrestaShop, WooCommerce, OpenCart, Ecwid, HubSpot CMS, Framer, Weebly, Duda, Tilda, Blogger, TYPO3, headless CMSs like Contentful and Sanity, plus 40+ frameworks, analytics tools, hosts and page builders." },
-  { q: "What does the confidence score mean?", a: "It reflects how many independent fingerprints matched, such as generator tags, asset paths and server headers. 80%+ is a very strong match." },
-  { q: "Why is nothing detected?", a: "The site may be custom-built, use a headless setup, or hide its platform signals." },
-  { q: "Is it legal to check a site's CMS?", a: "Yes. We only read the same public HTML and headers your browser receives." },
+  { q: "What does the confidence score mean?", a: "It reflects how many independent fingerprints matched, such as generator tags, asset paths and server headers. 80% or more is a very strong match." },
+  { q: "How accurate is the CMS detector?", a: "For mainstream platforms with clear fingerprints, results are very reliable. Accuracy drops for custom-built sites, headless setups and sites that intentionally hide their signals, which is why every match shows its evidence." },
+  { q: "Why is nothing detected?", a: "The site may be custom-built, use a headless setup, hide its platform signals, or block automated visits." },
+  { q: "Is it legal to check a site's CMS?", a: "Yes. We only read the same public HTML and headers your browser receives when it visits the page." },
+  { q: "Can it detect WooCommerce and Magento stores?", a: "Yes. WooCommerce is recognised from its plugin assets and body classes on WordPress sites, and Magento from its static paths, cookies and scripts." },
+  { q: "What is the difference between a CMS and a framework?", a: "A CMS manages and publishes content through an editor. A framework such as Next.js or Laravel is code developers use to build an application. Some sites combine both." },
+  { q: "Can it see pages behind a login?", a: "No. Only public pages that load without signing in can be checked." },
+  { q: "Do you store the websites I check?", a: "No. Pages are fetched, analysed and discarded. We do not keep a history of the addresses you scan." },
+  { q: "Why does a site show more than one platform?", a: "Many sites layer technologies, for example a Next.js front end over a headless CMS, or a page builder on top of WordPress. Each is listed with its own score." },
+  { q: "How do I find the theme after detecting the CMS?", a: "For WordPress and Shopify sites, follow the link under the result to the matching theme detector." },
 ];
 
 export const Route = createFileRoute("/tools/cms-detector")({
@@ -38,7 +46,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout slug="cms-detector" title="CMS Detector" intro="Find out which content management system or site builder powers any website." faqs={FAQS} about={<About />}>
+    <ToolLayout slug="cms-detector" title="Free CMS Detector – Identify Any Website's Platform" intro="Find out which content management system or site builder powers any website." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Detect" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}
@@ -94,25 +102,63 @@ function Page() {
 function About() {
   return (
     <>
-      <h2>Identify the platform behind any website</h2>
-      <p>Every content management system leaves fingerprints: a generator meta tag, distinctive folder names like <code>/wp-content/</code> or <code>/cdn/shop/</code>, special HTML attributes, JavaScript globals and HTTP headers. The CMS Detector loads the page you enter, checks it against fingerprints for more than fifteen popular platforms and shows a confidence score for each match.</p>
-      <h2>When this is useful</h2>
-      <ul>
-        <li>Sales and agencies qualifying leads by the platform they use.</li>
-        <li>Designers researching how a competitor built their site.</li>
-        <li>Developers estimating a migration or redesign.</li>
-        <li>Marketers choosing plugins or integrations that will work.</li>
-      </ul>
-      <h2>How to use it</h2>
+      <h2>A free website technology checker for any public site</h2>
+      <p>Ever landed on a beautifully built website and wondered what platform it runs on? The LogoColorStudio CMS Detector answers that question in a few seconds. Paste an address, press Detect, and the tool tells you which content management system, website builder or ecommerce platform most likely powers the page, how confident that match is, and which supporting technologies it spotted along the way.</p>
+      <p>A content management system, or CMS, is the software a team uses to create, edit and publish pages without writing every line of code by hand. WordPress, Shopify, Wix, Squarespace, Webflow, Drupal, Joomla, Magento, Ghost and many others all fall into this group. Some are self-hosted open-source projects, some are hosted builders that bundle design, hosting and editing, and some are headless systems that only store content while a separate front end displays it.</p>
+      <p>The tool is built for people who need a quick, honest answer: designers researching inspiration, developers scoping a migration, agencies qualifying leads, marketers checking which integrations a partner can support, and SEO specialists auditing competitors. Students learning how the web works also use it to see real examples of each platform in the wild.</p>
+      <p>Knowing the platform matters because it shapes almost everything else about a site: how pages are structured, which plugins or apps are available, how fast the site can be, how easy it is to move content, and what it typically costs to maintain. Instead of digging through source code yourself, the detector collects the evidence and explains it in plain language. It is free, needs no account, and only reads the same public information your own browser receives when you visit a page.</p>
+
+      <h2>How to find out what CMS a website uses</h2>
       <ol>
-        <li>Paste the website address and click <strong>Detect</strong>.</li>
-        <li>Read the most likely platform and the confidence bars for all matches.</li>
-        <li>Check the technical details: generator tag, server and X-Powered-By header.</li>
-        <li>For WordPress or Shopify sites, continue to the theme detectors for more detail.</li>
+        <li><strong>Copy the address.</strong> Open the site you are curious about and copy its URL, or simply type the domain, such as <code>example.com</code>. The scheme is added for you.</li>
+        <li><strong>Paste it into the field above</strong> and click <strong>Detect</strong>. The check usually finishes in a few seconds.</li>
+        <li><strong>Read the most likely platform.</strong> The large heading shows the strongest match. Below it, bars show the confidence for every platform that matched.</li>
+        <li><strong>Review the evidence.</strong> Each match lists the signals behind it, such as a generator tag, an asset folder or a response header, so you can judge the result yourself.</li>
+        <li><strong>Check the technical panel.</strong> The side panel shows the page title, status code, response time, page size, language, generator tag, server and X-Powered-By header.</li>
+        <li><strong>Go deeper.</strong> For WordPress and Shopify sites, follow the link to the matching theme detector to learn the exact theme, plugins or apps.</li>
       </ol>
-      <h2>How confidence is calculated</h2>
-      <p>Each fingerprint adds points. A generator tag that names the platform is a strong signal, asset paths are strong, and headers confirm the result. Scores are capped at 100%. A site can show more than one platform, for example a Next.js front end on top of a headless CMS. If nothing matches, the site is probably custom-built.</p>
-      <p>Pair this with the <Link to="/tools/website-auditor">Website Auditor</Link> to see how well the site is optimised, or the <Link to="/tools/website-extractor">Website Extractor</Link> to grab its colors and fonts.</p>
+
+      <h2>Key features</h2>
+      <ul>
+        <li>Weighted fingerprints for more than thirty CMS, builder and ecommerce platforms.</li>
+        <li>A confidence percentage for every match, not a single unexplained guess.</li>
+        <li>Visible evidence for each result so you can verify it.</li>
+        <li>Detection of 40+ supporting technologies: JavaScript frameworks, analytics, tag managers, CDNs, hosting and page builders.</li>
+        <li>Recognition of headless setups, such as a Next.js front end over a headless CMS.</li>
+        <li>Detect Shopify, detect WooCommerce, detect Magento, BigCommerce, PrestaShop and other store platforms.</li>
+        <li>Response details: status code, speed and page weight.</li>
+        <li>Generator, server and X-Powered-By header readout.</li>
+        <li>Clear messages when a site blocks automated visits instead of a misleading empty result.</li>
+        <li>One-click hand-off to the WordPress and Shopify theme detectors.</li>
+        <li>No sign-up, no installs and no browser extension required.</li>
+        <li>Works on desktop and mobile.</li>
+      </ul>
+
+      <h2>Why knowing a website's platform matters</h2>
+      <p><strong>Competitor analysis.</strong> If several leading competitors in your niche use the same platform, that tells you something about what works for businesses like yours. A store on Shopify Plus suggests a different budget and growth stage than one on a free website builder. Pairing the platform with the technology stack, such as which analytics, email or review tools are present, gives you a practical picture of how a rival operates online.</p>
+      <p><strong>SEO planning.</strong> Every platform handles search basics differently. WordPress gives you enormous control through plugins but depends on good configuration. Hosted builders make clean defaults easy but can limit custom markup, redirects or server settings. When you audit a site, knowing the CMS tells you where titles, canonical tags, sitemaps and structured data are probably generated, and which fixes are realistic. It also explains common patterns, such as duplicate collection URLs on Shopify or tag archives on WordPress.</p>
+      <p><strong>Web development and migrations.</strong> Before quoting a redesign or a move to a new system, developers need to know what they are migrating from. Content export options, URL structures, image storage and plugin data vary widely. A quick check helps you estimate effort, ask the right questions and avoid surprises halfway through a project.</p>
+      <p><strong>Sales and partnerships.</strong> Agencies, app makers and freelancers often specialise in one ecosystem. Checking the platform first means you only pitch services that genuinely fit, which saves time on both sides and makes outreach more relevant.</p>
+      <p><strong>Security awareness.</strong> Site owners can confirm what their own site reveals publicly. If your generator tag advertises an exact old version number, you may want to update the software and hide that detail. The detector shows only public signals, so it is a useful way to see your site the way any visitor or scanner sees it.</p>
+      <p><strong>Learning and inspiration.</strong> Designers often fall in love with a layout and want to know whether they could build something similar with tools they already know. Finding out a site was made in Webflow, Framer or Squarespace instantly tells you whether that look is within reach.</p>
+
+      <h2>Who uses the CMS Detector</h2>
+      <p><strong>Designers</strong> use it to research inspiration and understand which builders produce the layouts they admire. Combined with the <Link to="/tools/website-extractor">Website Extractor</Link>, they can capture both the platform and the color and font system of a reference site.</p>
+      <p><strong>Developers</strong> run checks before estimating work, when inheriting an unfamiliar project, or when debugging an integration that behaves differently on each platform. Seeing the framework, CDN and hosting signals together saves time spent reading source code.</p>
+      <p><strong>Marketers</strong> check which analytics, tag managers and email tools competitors use, and whether a partner's site can support a particular widget, pixel or integration before planning a campaign.</p>
+      <p><strong>SEO professionals</strong> identify the platform at the start of every audit so their recommendations match what the site can actually change. They often follow up with the <Link to="/tools/website-auditor">Website Auditor</Link> to review titles, headings, links and other on-page factors.</p>
+      <p><strong>Store owners and sales teams</strong> use it to benchmark rival shops, qualify leads by ecommerce platform and find the theme or apps behind a store with the <Link to="/tools/shopify-theme-detector">Shopify Theme Detector</Link> or <Link to="/tools/wordpress-theme-detector">WordPress Theme Detector</Link>.</p>
+
+      <h2>CMS vs framework: what is the difference?</h2>
+      <p>A CMS manages content: it has an editor, stores pages and posts, and usually renders the final HTML. A framework such as React, Next.js, Vue, Nuxt or Laravel is a set of building blocks developers use to write an application. A site can use both: a headless CMS like Contentful or Sanity can store the content while a Next.js front end displays it. That is why the detector reports platforms and technologies separately, and why one site can show several results at once.</p>
+
+      <h2>How to inspect a site's source code yourself</h2>
+      <p>You can confirm many results manually. In most browsers, right-click and choose <em>View page source</em>, then search for clues: a <code>&lt;meta name="generator"&gt;</code> tag, paths like <code>/wp-content/</code>, <code>/cdn/shop/</code> or <code>/sites/default/files/</code>, or scripts from a builder's domain. Your browser's developer tools also show response headers in the Network tab, where values like <code>x-powered-by</code> or platform-specific headers often appear.</p>
+
+      <h2>Technical deep dive: how detection works</h2>
+      <p>When you submit a URL, our server validates it, refuses private or internal network addresses, and requests the page with a normal browser-style request. Fetching happens on the server because browsers block most cross-site requests. The tool then examines several independent sources of evidence.</p>
+      <p>First, the HTML: generator meta tags, characteristic class names and data attributes, links to theme and asset folders, inline JavaScript objects such as <code>Shopify.theme</code>, and script sources loaded from known platform domains. Second, the HTTP response headers: server names, X-Powered-By values, cookies and platform-specific headers. Third, where useful, a small number of light secondary checks against well-known public paths help confirm a weak match.</p>
+      <p>Each signal carries a weight. A generator tag that names the platform is strong evidence; a shared library is weak evidence. The weights are combined into a score capped at 100%. Results above roughly 80% are very strong matches; lower scores mean fewer signals were found. If a site is custom-built, heavily cached behind a firewall or deliberately hides its fingerprints, the detector says so instead of inventing an answer. Requests are rate limited per visitor to keep the service fast, and scanned pages are not stored.</p>
     </>
   );
 }
