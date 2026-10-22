@@ -6,6 +6,8 @@ import { ErrorNote, ResultSkeleton, UrlForm } from "@/components/site/tool-parts
 import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { detectCms } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
+import cmsDetectImg from "@/assets/guide-cms-detect.jpg";
+import cmsFrameworkImg from "@/assets/guide-cms-vs-framework.jpg";
 
 const FAQS: Faq[] = [
   { q: "Is this CMS detector free?", a: "Yes. It is completely free, needs no account and has no daily credit system. A fair-use limit of about 20 checks per minute per visitor keeps it fast for everyone." },
@@ -108,6 +110,7 @@ function About() {
       <p>The tool is built for people who need a quick, honest answer: designers researching inspiration, developers scoping a migration, agencies qualifying leads, marketers checking which integrations a partner can support, and SEO specialists auditing competitors. Students learning how the web works also use it to see real examples of each platform in the wild.</p>
       <p>Knowing the platform matters because it shapes almost everything else about a site: how pages are structured, which plugins or apps are available, how fast the site can be, how easy it is to move content, and what it typically costs to maintain. Instead of digging through source code yourself, the detector collects the evidence and explains it in plain language. It is free, needs no account, and only reads the same public information your own browser receives when you visit a page.</p>
 
+      <figure><img src={cmsDetectImg} alt="Magnifying glass revealing the code, database, store and plugin layers behind a website" width={1200} height={688} loading="lazy" className="rounded-2xl border" /><figcaption>The detector looks beneath the page to reveal the platform and technology layers that power it.</figcaption></figure>
       <h2>How to find out what CMS a website uses</h2>
       <ol>
         <li><strong>Copy the address.</strong> Open the site you are curious about and copy its URL, or simply type the domain, such as <code>example.com</code>. The scheme is added for you.</li>
@@ -152,6 +155,7 @@ function About() {
       <h2>CMS vs framework: what is the difference?</h2>
       <p>A CMS manages content: it has an editor, stores pages and posts, and usually renders the final HTML. A framework such as React, Next.js, Vue, Nuxt or Laravel is a set of building blocks developers use to write an application. A site can use both: a headless CMS like Contentful or Sanity can store the content while a Next.js front end displays it. That is why the detector reports platforms and technologies separately, and why one site can show several results at once.</p>
 
+      <figure><img src={cmsFrameworkImg} alt="A content editor dashboard on the left and code framework building blocks on the right" width={1200} height={688} loading="lazy" className="rounded-2xl border" /><figcaption>A CMS gives editors a dashboard for content; a framework gives developers code building blocks.</figcaption></figure>
       <h2>How to inspect a site's source code yourself</h2>
       <p>You can confirm many results manually. In most browsers, right-click and choose <em>View page source</em>, then search for clues: a <code>&lt;meta name="generator"&gt;</code> tag, paths like <code>/wp-content/</code>, <code>/cdn/shop/</code> or <code>/sites/default/files/</code>, or scripts from a builder's domain. Your browser's developer tools also show response headers in the Network tab, where values like <code>x-powered-by</code> or platform-specific headers often appear.</p>
 
