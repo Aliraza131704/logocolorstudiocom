@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { extractColors } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
+import logoExtractImg from "@/assets/guide-logo-extract.jpg";
+import colorWheelImg from "@/assets/guide-color-wheel.jpg";
 import { toast } from "sonner";
 
 const FAQS: Faq[] = [
@@ -132,6 +134,7 @@ function About() {
       <p>Accurate brand colors matter more than most people expect. A logo that appears in three slightly different blues across a website, an invoice and an ad looks careless, and visitors notice inconsistency even when they cannot name it. Extracting the true values once and sharing them as design tokens keeps every channel aligned.</p>
       <p>Privacy is built in. Your file is never uploaded to our servers: it is read and analysed entirely inside your browser, so confidential client logos and unreleased artwork stay on your device. There is no sign-up, watermark or usage limit.</p>
 
+      <figure><img src={logoExtractImg} alt="A multicolor logo mark splitting into five round color swatches with an eyedropper" width={1200} height={688} loading="lazy" className="rounded-2xl border" /><figcaption>Each distinct color in the logo becomes its own swatch with HEX, RGB and HSL values.</figcaption></figure>
       <h2>How to extract a color palette from a logo</h2>
       <ol>
         <li><strong>Add your image.</strong> Click <strong>Choose file</strong> or drag your logo into the drop area. Files up to 10 MB are supported.</li>
@@ -173,6 +176,7 @@ function About() {
       <h2>Color harmonies: building on your logo colors</h2>
       <p>Most logos only contain two or three colors, but a website or campaign needs more. Color harmonies are proven ways to add colors that work together. <strong>Complementary</strong> colors sit opposite on the wheel and create strong contrast. <strong>Analogous</strong> colors sit next to each other and feel calm. <strong>Triadic</strong> palettes use three evenly spaced hues for a lively balance, while <strong>monochromatic</strong> palettes use tints and shades of one hue. The <Link to="/tools/palette-generator">Palette Generator</Link> creates each of these from a base color, and the <Link to="/palettes">palette gallery</Link> offers ready-made ideas.</p>
 
+      <figure><img src={colorWheelImg} alt="Color wheel with triadic harmony lines beside palette cards, a monitor and a printer" width={1200} height={688} loading="lazy" className="rounded-2xl border" /><figcaption>Harmonies on the color wheel help extend a logo palette, while screen and print use different color models.</figcaption></figure>
       <h2>Who uses the Logo Color Extractor</h2>
       <p><strong>Designers</strong> use it to recover exact values when a client supplies only a logo file, or to compare a redrawn logo against the original. <strong>Developers</strong> paste the exported CSS variables or Tailwind config directly into a project, which avoids typos and mismatched shades. <strong>Marketers</strong> extract colors to keep social posts, ads, email templates and landing pages on-brand without waiting for a designer. <strong>SEO and content teams</strong> use the palette to make on-brand featured images and infographics. <strong>Business owners</strong> setting up Shopify, WordPress or a website builder use the HEX codes in theme settings so their site matches their signage and packaging. To grab colors from a live website instead of an image, try the <Link to="/tools/website-extractor">Website Extractor</Link>.</p>
 
