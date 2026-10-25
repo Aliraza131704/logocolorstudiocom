@@ -16,5 +16,5 @@
 ## Tool page content expansion (uploaded brief)
 - [x] CMS Detector guide + 12 FAQs
 - [x] Logo Extractor guide + 12 FAQs
-- [ ] Finalize Website Extractor, Palette Generator, Contrast Checker, Theme Generator, Shopify Theme Detector, WordPress Theme Detector and Export Center with expanded guides, 12 FAQs and two pictures each; verify every page in the preview.
-- [ ] Verify the already-added Website Auditor guide and pictures in the preview.
+- [x] Finalize Website Extractor, Palette Generator, Contrast Checker, Theme Generator, Shopify Theme Detector, WordPress Theme Detector and Export Center with expanded guides, 12 FAQs and two pictures each; all seven verified in desktop/mobile preview, with loaded pictures and server-rendered FAQs; 10 regression tests pass.
+- [x] Verify the already-added Website Auditor guide and pictures in desktop/mobile preview.

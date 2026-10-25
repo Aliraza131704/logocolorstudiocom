@@ -393,7 +393,7 @@ export const TOOL_GUIDES: Record<string, ToolGuideContent> = {
       "Confirm whether Shopify signals were found before interpreting the theme fields.",
       "Compare the displayed theme name with Based on, version and Theme Store ID when available.",
       "Review the detected integrations as visible examples, not a complete list of installed apps.",
-      "Follow an available Theme Store link, review the official demo and licensing terms, and compare the actual features you need."
+      "Use the available Theme Store search link as a research lead, confirm the exact product, and review its official demo and licensing terms."
     ],
     "features": [
       "Public storefront URL input.",
@@ -407,7 +407,7 @@ export const TOOL_GUIDES: Record<string, ToolGuideContent> = {
       "Headless and architecture clues.",
       "Available shop, locale and currency details.",
       "Recognized storefront app integrations.",
-      "Theme Store link when a suitable identifier exists."
+      "Theme Store search reference when theme metadata is available."
     ],
     "sections": [
       {
@@ -473,7 +473,7 @@ export const TOOL_GUIDES: Record<string, ToolGuideContent> = {
       },
       {
         "q": "Can I get the same theme?",
-        "a": "Use an available official Theme Store link or confirm the supplier with the merchant. Detection does not grant a licence."
+        "a": "Use the Theme Store search reference, then confirm the exact product or supplier with the merchant. The link is not a verified product listing, and detection does not grant a licence."
       },
       {
         "q": "Are all apps detected?",
