@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { getAllPalettes, PALETTE_TAGS } from "@/lib/palettes";
-import { getIndexablePalettes, isIndexablePalette, paletteEditorial } from "@/lib/palette-editorial";
+import { getAllPalettes } from "@/lib/palettes";
+import { getFeaturedPalettes, getIndexablePalettes, hasPaletteShareImage, isIndexablePalette, paletteEditorial } from "@/lib/palette-editorial";
 import { SITE_URL, pageHead } from "@/lib/seo";
 import { renderSitemap, sitemapEntries } from "@/lib/sitemap";
 import { contrastRatio, readableOn } from "@/lib/color";
@@ -41,14 +41,14 @@ describe("Public URLs and sitemap", () => {
   it("emits noindex follow for excluded palettes", () => {
     expect(pageHead({ title: "Example", description: "Example", path: "/palette/example-70", noindex: true, follow: true }).meta.find(m => m.name === "robots")?.content).toBe("noindex, follow");
   });
-  it("includes downloads and generator and excludes admin, login and numeric palettes", () => {
+  it("includes downloads, generator and all 1,000 palette pages, and excludes admin and login", () => {
     const paths = sitemapEntries([], []).map(u => new URL(u.loc).pathname);
     expect(paths).toContain("/downloads");
     expect(paths).toContain("/tools/palette-generator");
     expect(paths).not.toContain("/admin");
     expect(paths).not.toContain("/login");
-    expect(paths.filter(p => p.startsWith("/palette/"))).toHaveLength(150);
-    expect(paths.some(p => /\/palette\/.*-\d+$/.test(p))).toBe(false);
+    expect(paths.filter(p => p.startsWith("/palette/"))).toHaveLength(1000);
+    expect(paths).toContain("/palette/coastal-breeze-70");
   });
   it("uses the article-specific update date and omits unknown dates instead of build fallbacks", () => {
     const entries = sitemapEntries([{ slug: "guide", published_at: "2026-09-02", updated_at: "2026-10-10" }], []);
