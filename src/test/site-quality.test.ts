@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getAllPalettes } from "@/lib/palettes";
+import { getAllPalettes, PALETTE_TAGS } from "@/lib/palettes";
 import { getFeaturedPalettes, getIndexablePalettes, hasPaletteShareImage, isIndexablePalette, paletteEditorial } from "@/lib/palette-editorial";
 import { SITE_URL, pageHead } from "@/lib/seo";
 import { renderSitemap, sitemapEntries } from "@/lib/sitemap";
