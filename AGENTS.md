@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Project rules
+- Expanded tool guides use shared browser-safe editorial content and ToolGuide figures, with the same FAQ data in page content and structured metadata; keep guide changes separate from tool algorithms.
 - Website Auditor uses a bounded static-HTML engine with its own DNS-screened, manual-redirect fetcher and atomic request limit; unsupported rendered checks never affect scores. This prevents invented measurements and unsafe secondary fetches without altering other tools.
 - Site-wide audits are browser-orchestrated, paced small batches with a capped discovery queue, same-origin sitemap/link discovery and explicit partial reports; retain per-invocation safety limits to avoid long-running requests and unrestricted crawling.
 - Auditor report history is explicitly browser-local (maximum ten reports), not account-backed; CSV escapes spreadsheet formulas and PDF exports carry coverage and evidence so reports remain portable and honest.

@@ -1,18 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ToolLayout } from "@/components/site/ToolLayout";
+import { ToolGuide } from "@/components/site/ToolGuide";
+import { TOOL_GUIDES } from "@/lib/tool-guide-content";
 import { ErrorNote, ResultSkeleton, UrlForm } from "@/components/site/tool-parts";
 import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { detectShopify } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
 
-const FAQS: Faq[] = [
-  { q: "How do you find the Shopify theme?", a: "Shopify stores expose a Shopify.theme object in the page with the theme name, ID and role, and Online Store 2.0 themes include schema name and version." },
-  { q: "Why does it show a custom name?", a: "Store owners can rename themes. The schema name shows the original theme it is based on." },
-  { q: "How are apps detected?", a: "By recognising script and asset URLs from popular Shopify apps such as Klaviyo, Judge.me and ReCharge." },
-  { q: "Can I buy the same theme?", a: "If it is a Theme Store theme, use the Theme Store link. Custom themes are not available to buy." },
-];
+const FAQS: Faq[] = TOOL_GUIDES["shopify-theme-detector"].faqs;
 
 export const Route = createFileRoute("/tools/shopify-theme-detector")({
   head: () =>
@@ -38,7 +35,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout slug="shopify-theme-detector" title="Shopify Theme Detector" intro="See which theme a Shopify store uses, its version and the apps it runs." faqs={FAQS} about={<About />}>
+    <ToolLayout slug="shopify-theme-detector" title={TOOL_GUIDES["shopify-theme-detector"].title} intro="See which theme a Shopify store uses, its version and the apps it runs." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} placeholder="store.com" cta="Detect theme" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}
@@ -76,22 +73,5 @@ function Page() {
 }
 
 function About() {
-  return (
-    <>
-      <h2>Find out which Shopify theme a store uses</h2>
-      <p>Seen a Shopify store with a layout you love? The Shopify Theme Detector reads the store's public page and reports the theme name, the Theme Store theme it is based on, its version and theme IDs, plus the apps and integrations the store runs. It is the fastest way to research competitors or find a starting point for your own store.</p>
-      <h2>How it works</h2>
-      <p>Every Shopify storefront includes a small JavaScript object called <code>Shopify.theme</code> with the theme's name, ID and role. Modern Online Store 2.0 themes also include a <code>schema_name</code> and <code>schema_version</code> that identify the original theme even if the merchant renamed it. We also confirm the store by looking for <code>/cdn/shop/</code> asset paths and Shopify headers.</p>
-      <h2>How to use it</h2>
-      <ol>
-        <li>Paste the store's address, such as <code>allbirds.com</code>.</li>
-        <li>Click <strong>Detect theme</strong>.</li>
-        <li>Read the theme name, base theme and version.</li>
-        <li>Follow the Theme Store link to preview or buy the theme, and review detected apps.</li>
-      </ol>
-      <h2>Understanding app detection</h2>
-      <p>Apps are identified from the scripts they load, like Klaviyo for email, Judge.me or Loox for reviews and ReCharge for subscriptions. Apps that only run in the admin or checkout cannot be seen from the storefront, so the list may be incomplete.</p>
-      <p>Not sure the site is on Shopify? Run the <Link to="/tools/cms-detector">CMS Detector</Link> first. To match the store's look, extract its palette with the <Link to="/tools/website-extractor">Website Extractor</Link>.</p>
-    </>
-  );
+  return <ToolGuide slug="shopify-theme-detector" />;
 }

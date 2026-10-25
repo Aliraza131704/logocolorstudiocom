@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PaletteRow } from "@/components/site/PaletteRow";
+import { ToolGuide } from "@/components/site/ToolGuide";
+import { TOOL_GUIDES } from "@/lib/tool-guide-content";
 import { loadPalette, savePalette, paletteToPng } from "@/components/site/tool-parts";
 import { Breadcrumbs, FaqList, copyText, download, faqLd, type Faq } from "@/components/site/ui-bits";
 import { AdSlot } from "@/components/site/AdSlot";
@@ -15,12 +17,7 @@ import { toast } from "sonner";
 import { paletteTextColor } from "@/lib/palette-presentation";
 import { absoluteUrl } from "@/lib/seo";
 
-export const GENERATOR_FAQS: Faq[] = [
-  { q: "How are palettes generated from my logo?", a: "We take your extracted logo colors and apply color theory rules (complementary, analogous, triadic and more) to the main color." },
-  { q: "How do I lock a color?", a: "Click the lock icon on a swatch. Locked colors stay when you shuffle or change the harmony rule." },
-  { q: "Can I share a palette?", a: "Yes. Click Share to copy a link that opens the palette with the same colors." },
-  { q: "Are the gallery palettes free to use?", a: "Yes, use them in any personal or commercial project." },
-];
+export const GENERATOR_FAQS: Faq[] = TOOL_GUIDES["palette-generator"].faqs;
 
 export function PaletteGeneratorPage() {
   const [logoColors, setLogoColors] = useState<string[] | null>(null);
@@ -33,7 +30,7 @@ export function PaletteGeneratorPage() {
     <div className="bg-hero">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <Breadcrumbs items={[{ label: "Tools", to: "/tools" }, { label: "Palette Generator" }]} />
-        <h1 className="text-4xl font-bold sm:text-5xl">Color Palette Generator</h1>
+        <h1 className="text-4xl font-bold sm:text-5xl">{TOOL_GUIDES["palette-generator"].title}</h1>
         <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Build color harmonies from your logo and create a custom palette.</p>
 
         <section className="mt-12">
@@ -59,9 +56,7 @@ export function PaletteGeneratorPage() {
         <div className="mt-10"><Button asChild variant="outline"><Link to="/palettes">Browse the palette gallery</Link></Button></div>
 
         <article className="prose-content mx-auto mt-20 max-w-3xl">
-          <h2>How to build a great color palette</h2>
-          <p>A good palette balances one or two strong brand colors with supporting shades and neutrals. Color harmony rules are a reliable shortcut: <strong>complementary</strong> palettes pair opposite hues for energy, <strong>analogous</strong> palettes use neighbours for calm, <strong>triadic</strong> palettes space three hues evenly for playful balance, and <strong>monochromatic</strong> palettes vary lightness for a refined, minimal feel.</p>
-          <p>Start with your logo colors, choose a rule, then lock what you love and shuffle the rest. Check text pairs with the <Link to="/tools/contrast-checker">Contrast Checker</Link> and turn your favourite into a UI with the <Link to="/tools/theme-generator">Theme Generator</Link>.</p>
+          <ToolGuide slug="palette-generator" />
         </article>
         <div className="mt-16"><FaqList faqs={GENERATOR_FAQS} /></div>
       </div>

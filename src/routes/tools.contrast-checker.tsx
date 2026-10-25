@@ -1,19 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeftRight, Check, X } from "lucide-react";
 import { ToolLayout } from "@/components/site/ToolLayout";
+import { ToolGuide } from "@/components/site/ToolGuide";
+import { TOOL_GUIDES } from "@/lib/tool-guide-content";
 import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { adjust, contrastRatio, normalizeHex, wcag } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
 
-const FAQS: Faq[] = [
-  { q: "What contrast ratio do I need?", a: "WCAG AA requires 4.5:1 for normal text and 3:1 for large text. AAA requires 7:1 and 4.5:1." },
-  { q: "What counts as large text?", a: "Text at least 24px regular or 18.66px (14pt) bold." },
-  { q: "Does contrast apply to buttons and icons?", a: "Yes. UI components and meaningful graphics need at least 3:1 against adjacent colors." },
-  { q: "How do I fix a failing pair?", a: "Use the suggested darker or lighter text color, or increase the font size so the large-text rule applies." },
-];
+const FAQS: Faq[] = TOOL_GUIDES["contrast-checker"].faqs;
 
 export const Route = createFileRoute("/tools/contrast-checker")({
   head: () =>
@@ -60,7 +57,7 @@ function Page() {
     return c;
   };
   return (
-    <ToolLayout slug="contrast-checker" title="Contrast Checker" intro="Test any text and background pair against WCAG 2.2 accessibility levels." faqs={FAQS} about={<About />}>
+    <ToolLayout slug="contrast-checker" title={TOOL_GUIDES["contrast-checker"].title} intro="Test any text and background pair against WCAG 2.2 accessibility levels." faqs={FAQS} about={<About />}>
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-5 rounded-2xl border bg-card p-6">
           <ColorField key={`f${fg}`} label="Text color" value={fg} onChange={setFg} />
@@ -93,27 +90,5 @@ function Page() {
 }
 
 function About() {
-  return (
-    <>
-      <h2>Why color contrast matters</h2>
-      <p>Contrast is the difference in brightness between text and its background. Low contrast makes content hard to read for people with low vision or color blindness, for older users, and for anyone looking at a phone outdoors. The Web Content Accessibility Guidelines (WCAG) define clear minimum ratios, and many countries reference them in accessibility law.</p>
-      <h2>How to use the Contrast Checker</h2>
-      <ol>
-        <li>Pick a text color and a background color with the color pickers, or type HEX values.</li>
-        <li>Read the contrast ratio, from 1:1 (no contrast) to 21:1 (black on white).</li>
-        <li>Check the pass or fail result for AA and AAA, for normal and large text.</li>
-        <li>If the pair fails, click the fix button to get the closest passing text color while keeping its hue.</li>
-      </ol>
-      <h2>WCAG levels explained</h2>
-      <ul>
-        <li><strong>AA normal text: 4.5:1.</strong> The standard target for body copy on most websites.</li>
-        <li><strong>AA large text: 3:1.</strong> For headings of 24px or larger, or bold text of about 19px.</li>
-        <li><strong>AAA normal text: 7:1.</strong> Enhanced contrast for maximum readability.</li>
-        <li><strong>AAA large text: 4.5:1.</strong></li>
-      </ul>
-      <p>The ratio is calculated from relative luminance using the official WCAG formula, so the result matches browser developer tools and accessibility audits.</p>
-      <h2>Working with brand colors</h2>
-      <p>Bright brand colors like yellow, orange and light green rarely pass as text on white. Instead, use them as backgrounds with dark text, or for decorative elements. Our <Link to="/tools/theme-generator">Theme Generator</Link> automatically picks readable text colors for every surface, and you can read more in our <Link to="/blog/$slug" params={{ slug: "wcag-contrast-guide" }}>WCAG contrast guide</Link>.</p>
-    </>
-  );
+  return <ToolGuide slug="contrast-checker" />;
 }
