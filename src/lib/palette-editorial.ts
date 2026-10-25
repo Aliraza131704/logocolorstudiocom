@@ -1,10 +1,15 @@
 import { getAllPalettes, PALETTE_TAGS, type Palette } from "./palettes";
 import { contrastRatio, hexToHsl } from "./color";
 
-const selected = PALETTE_TAGS.flatMap(tag => getAllPalettes().filter(p => p.tags[0] === tag && !/-\d+$/.test(p.slug)).slice(0, 15));
-const selectedSlugs = new Set(selected.map(p => p.slug));
-export const getIndexablePalettes = () => selected;
-export const isIndexablePalette = (slug: string) => selectedSlugs.has(slug);
+const featured = PALETTE_TAGS.flatMap(tag => getAllPalettes().filter(p => p.tags[0] === tag && !/-\d+$/.test(p.slug)).slice(0, 15));
+const featuredSlugs = new Set(featured.map(p => p.slug));
+// Featured selection: 15 per tag, base names only. Drives the homepage strip,
+// gallery copy and which palettes have generated share images. All 1,000
+// palettes are indexable and listed in the sitemap; slugs never change.
+export const getFeaturedPalettes = () => featured;
+export const getIndexablePalettes = () => getAllPalettes();
+export const isIndexablePalette = (_slug: string) => true;
+export const hasPaletteShareImage = (slug: string) => featuredSlugs.has(slug);
 const styles: Record<string, { mood: string; uses: string[] }> = {
   Pastel: { mood: "soft and airy", uses: ["Wellness booking website", "Illustrator portfolio", "Children’s stationery brand"] },
   Dark: { mood: "quiet and atmospheric", uses: ["Music editorial website", "Photography portfolio", "Developer dashboard"] },

@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const featured = getIndexablePalettes().filter((_, i) => i % 15 === 0).slice(0, 6);
+  const featured = getFeaturedPalettes().filter((_, i) => i % 15 === 0).slice(0, 6);
   return (
     <>
       <section className="relative overflow-hidden bg-hero">
@@ -46,7 +46,7 @@ function Index() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button variant="hero" size="lg" asChild><Link to="/tools/logo-extractor">Upload a logo <ArrowRight /></Link></Button>
-              <Button variant="glass" size="lg" asChild><Link to="/palettes">Browse {getIndexablePalettes().length} featured palettes</Link></Button>
+              <Button variant="glass" size="lg" asChild><Link to="/palettes">Browse {getFeaturedPalettes().length} featured palettes</Link></Button>
             </div>
             <div className="mt-8 flex flex-wrap gap-6 text-sm text-muted-foreground">
               <span className="flex items-center gap-2"><Lock className="size-4 text-brand-green" /> Files stay on your device</span>

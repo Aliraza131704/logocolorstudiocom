@@ -8,7 +8,7 @@ import { Breadcrumbs, breadcrumbLd } from "@/components/site/ui-bits";
 import { likesQuery, useLike } from "@/components/site/PaletteGallery";
 import { Button } from "@/components/ui/button";
 import { contrastRatio, hexToHsl, readableOn } from "@/lib/color";
-import { isIndexablePalette, paletteEditorial } from "@/lib/palette-editorial";
+import { hasPaletteShareImage, paletteEditorial } from "@/lib/palette-editorial";
 import { paletteTextColor } from "@/lib/palette-presentation";
 import { pageHead } from "@/lib/seo";
 import { cn } from "@/lib/utils";
@@ -25,9 +25,8 @@ export const Route = createFileRoute("/palette/$slug")({
           title: `${p.name} Color Palette — ${p.colors.slice(0, 3).join(" ")}`.slice(0, 60),
           description: `${p.name} is a ${p.tags.join(", ").toLowerCase()} palette: ${p.colors.join(", ")}. Copy HEX and RGB or export CSS, Tailwind and JSON.`,
           path: `/palette/${params.slug}`,
-          noindex: !isIndexablePalette(p.slug),
           follow: true,
-          image: isIndexablePalette(p.slug) ? `/images/share/palette-${p.slug}.jpg` : undefined,
+          image: hasPaletteShareImage(p.slug) ? `/images/share/palette-${p.slug}.jpg` : undefined,
           type: "article",
           jsonLd: [breadcrumbLd([{ label: "Palettes", to: "/palettes" }, { label: p.name }], `/palette/${params.slug}`)],
         })
