@@ -2,9 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PaletteGallery } from "@/components/site/PaletteGallery";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
-import { getIndexablePalettes } from "@/lib/palette-editorial";
+import { getFeaturedPalettes } from "@/lib/palette-editorial";
 export const Route = createFileRoute("/palettes")({
-  head: () => pageHead({ title: "Color Palette Gallery — LogoColorStudio", description: `Browse ${getIndexablePalettes().length} featured color palettes and the full 1,000-palette library. Filter by style, copy colors and compare contrast.`, path: "/palettes" }),
+  head: () => pageHead({ title: "Color Palette Gallery — LogoColorStudio", description: `Browse ${getFeaturedPalettes().length} featured color palettes and the full 1,000-palette library. Filter by style, copy colors and compare contrast.`, path: "/palettes" }),
   component: GalleryPage,
 });
 function GalleryPage() {
