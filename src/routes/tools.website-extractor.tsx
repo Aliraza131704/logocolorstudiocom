@@ -2,18 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ToolLayout } from "@/components/site/ToolLayout";
+import { ToolGuide } from "@/components/site/ToolGuide";
+import { TOOL_GUIDES } from "@/lib/tool-guide-content";
 import { ColorCard, ErrorNote, ExportBox, ResultSkeleton, UrlForm, savePalette } from "@/components/site/tool-parts";
 import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { Button } from "@/components/ui/button";
 import { extractWebsite } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
 
-const FAQS: Faq[] = [
-  { q: "How does the Website Extractor find colors?", a: "It reads the page HTML and up to five stylesheets, counts every HEX and RGB value and ranks them by how often they are used." },
-  { q: "Why are some colors missing?", a: "Colors set by JavaScript at runtime, images or CSS variables defined in other files may not be detected." },
-  { q: "Can I scan any website?", a: "Any public website that allows normal visits. Pages behind a login or blocking bots cannot be read." },
-  { q: "Is there a limit?", a: "To keep the service fast for everyone there is a limit of about 20 scans per minute per visitor." },
-];
+const FAQS: Faq[] = TOOL_GUIDES["website-extractor"].faqs;
 
 export const Route = createFileRoute("/tools/website-extractor")({
   head: () =>
@@ -40,7 +37,7 @@ function Page() {
   };
   const hexes = res?.colors.slice(0, 10).map((c) => c.hex) ?? [];
   return (
-    <ToolLayout slug="website-extractor" title="Website Color Extractor" intro="Paste a website address to discover its brand colors, fonts and logo in seconds." faqs={FAQS} about={<About />}>
+    <ToolLayout slug="website-extractor" title={TOOL_GUIDES["website-extractor"].title} intro="Paste a website address to discover its brand colors, fonts and logo in seconds." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Extract" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}
@@ -81,22 +78,5 @@ function Page() {
 }
 
 function About() {
-  return (
-    <>
-      <h2>Extract brand colors from any website</h2>
-      <p>The Website Color Extractor reveals the color system behind any public website. Enter a URL and we load the page, read its inline styles and main stylesheets, then count every HEX and RGB value. Colors are ranked by frequency, so the brand's primary, secondary and neutral shades rise to the top. We also list the font families used and show the site's logo, favicon and theme color.</p>
-      <p>This is perfect when you are redesigning a client site, building a competitor analysis, matching a partner's branding in a co-marketing campaign, or simply want to learn from websites you admire.</p>
-      <h2>How to use it</h2>
-      <ol>
-        <li>Type or paste a web address such as <code>stripe.com</code>.</li>
-        <li>Press <strong>Extract</strong> and wait a few seconds while we analyse the page.</li>
-        <li>Review colors with their usage count, copy HEX or RGB values, and check the detected fonts.</li>
-        <li>Export the top colors as CSS, Tailwind, SCSS or JSON, or send them to the <Link to="/palettes">Palette Generator</Link>.</li>
-      </ol>
-      <h2>Understanding the results</h2>
-      <p>The usage count shows how many times a color appears in the CSS, not how much screen area it covers. Neutral grays and white often appear most because they style text, borders and backgrounds. The brand accent is usually the most frequent saturated color. Use the <Link to="/tools/contrast-checker">Contrast Checker</Link> to see whether those colors work together for text.</p>
-      <h2>Limitations</h2>
-      <p>Websites that build styles with JavaScript, use CSS-in-JS at runtime, or protect pages from automated visits may return fewer results. We only read publicly available files and never store the pages you scan. Please use the tool responsibly and respect each site's terms and trademarks.</p>
-    </>
-  );
+  return <ToolGuide slug="website-extractor" />;
 }

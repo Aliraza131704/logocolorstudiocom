@@ -1,18 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ToolLayout } from "@/components/site/ToolLayout";
+import { ToolGuide } from "@/components/site/ToolGuide";
+import { TOOL_GUIDES } from "@/lib/tool-guide-content";
 import { ErrorNote, ResultSkeleton, UrlForm } from "@/components/site/tool-parts";
 import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { detectWordpress } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
 
-const FAQS: Faq[] = [
-  { q: "How does WordPress theme detection work?", a: "We find /wp-content/themes/ paths in the page, then read the theme's style.css header for its name, version, author and parent theme." },
-  { q: "What is a child theme?", a: "A child theme inherits from a parent theme. If detected, we show the parent from the Template line of style.css." },
-  { q: "Why are some plugins missing?", a: "Only plugins that load files on the public page can be seen. Backend-only plugins are invisible." },
-  { q: "The theme name looks random. Why?", a: "Some sites use custom or renamed themes, or optimisation plugins that hide paths." },
-];
+const FAQS: Faq[] = TOOL_GUIDES["wordpress-theme-detector"].faqs;
 
 export const Route = createFileRoute("/tools/wordpress-theme-detector")({
   head: () =>
@@ -38,7 +35,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout slug="wordpress-theme-detector" title="WordPress Theme Detector" intro="Reveal the theme, version, author and plugins behind any WordPress website." faqs={FAQS} about={<About />}>
+    <ToolLayout slug="wordpress-theme-detector" title={TOOL_GUIDES["wordpress-theme-detector"].title} intro="Reveal the theme, version, author and plugins behind any WordPress website." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Detect theme" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}
@@ -90,21 +87,5 @@ function Page() {
 }
 
 function About() {
-  return (
-    <>
-      <h2>Discover any WordPress site's theme and plugins</h2>
-      <p>WordPress powers a huge share of the web, and many beautiful sites are built on themes you can use too. The WordPress Theme Detector finds the active theme of any WordPress site and reads its official header, so you see the real theme name, version, author, theme homepage, license and, for child themes, the parent theme. It also lists plugins whose files load on the public page.</p>
-      <h2>How it works</h2>
-      <p>WordPress serves theme files from <code>/wp-content/themes/&lt;theme-folder&gt;/</code> and plugin files from <code>/wp-content/plugins/&lt;plugin-folder&gt;/</code>. We scan the page for these paths, then fetch the theme's <code>style.css</code>. Every WordPress theme must begin that file with a comment block containing Theme Name, Author, Version and more, which we parse and display.</p>
-      <h2>How to use it</h2>
-      <ol>
-        <li>Enter the site's address and click <strong>Detect theme</strong>.</li>
-        <li>Review the theme card. If a parent theme is listed, the site uses a child theme.</li>
-        <li>Open the theme or author link to learn more or buy a licence.</li>
-        <li>Click any plugin to view it on WordPress.org.</li>
-      </ol>
-      <h2>Limitations</h2>
-      <p>Caching and optimisation plugins can combine files and hide folder names, and some agencies rename themes. Plugins that only work in the dashboard leave no trace on the front end. Read our step-by-step <Link to="/blog/$slug" params={{ slug: "how-to-detect-a-wordpress-theme" }}>guide to detecting WordPress themes</Link> for manual methods, or check the platform first with the <Link to="/tools/cms-detector">CMS Detector</Link>.</p>
-    </>
-  );
+  return <ToolGuide slug="wordpress-theme-detector" />;
 }
