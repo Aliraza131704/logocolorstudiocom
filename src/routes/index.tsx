@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { TOOLS } from "@/lib/tools";
 import { FaqList, Reveal, SectionTitle, faqLd, type Faq } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
-import { getIndexablePalettes } from "@/lib/palette-editorial";
+import { getFeaturedPalettes } from "@/lib/palette-editorial";
 
 const FAQS: Faq[] = [
   { q: "Is LogoColorStudio free?", a: "Yes. Every tool is free to use with no sign-up required." },
