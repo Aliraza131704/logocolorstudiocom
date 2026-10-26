@@ -12,6 +12,7 @@ import { hasPaletteShareImage, paletteEditorial } from "@/lib/palette-editorial"
 import { paletteTextColor } from "@/lib/palette-presentation";
 import { pageHead } from "@/lib/seo";
 import { cn } from "@/lib/utils";
+import { AdSlot } from "@/components/site/AdSlot";
 
 export const Route = createFileRoute("/palette/$slug")({
   loader: ({ params }) => {
@@ -66,6 +67,7 @@ function Page() {
         <h3>How to use it</h3>
         <p>Use the darkest shade for text or backgrounds, the most saturated color for buttons and links, and lighter tones for surfaces and highlights. Copy the CSS variables above, or check any pair in the <Link to="/tools/contrast-checker">Contrast Checker</Link>.</p>
       </article>
+      <AdSlot position="below_tool" className="mt-10" />
       <section className="mt-10" aria-labelledby="palette-uses">
         <h2 id="palette-uses" className="text-2xl font-bold">Suggested use cases</h2>
         <ul className="mt-4 list-disc space-y-2 pl-5">{editorial.uses.map(use => <li key={use}>{use}</li>)}</ul>
@@ -82,6 +84,7 @@ function Page() {
         <p className="mt-2 text-muted-foreground">Normal text needs 4.5:1 for AA or 7:1 for AAA. Large text needs 3:1 for AA.</p>
         <div className="mt-4 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b"><th className="p-3">Color</th><th className="p-3">White text</th><th className="p-3">Black text</th></tr></thead><tbody>{p.colors.map(c => <tr key={c} className="border-b"><th className="p-3 font-mono"><span className="mr-2 inline-block size-4 border align-middle" style={{ backgroundColor: c }} />{c}</th>{["#FFFFFF", "#000000"].map(text => { const ratio = contrastRatio(c, text); return <td key={text} className="p-3">{ratio.toFixed(2)}:1 · {ratio >= 7 ? "AAA" : ratio >= 4.5 ? "AA" : ratio >= 3 ? "Large text only" : "Fails AA"}</td>; })}</tr>)}</tbody></table></div>
       </section>
+      <AdSlot position="in_content" className="mt-10" />
       <section className="mt-12">
         <h2 className="text-2xl font-bold">Similar palettes</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
