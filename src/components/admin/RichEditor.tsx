@@ -3,10 +3,11 @@ import StarterKit from "@tiptap/starter-kit";
 import LinkExt from "@tiptap/extension-link";
 import ImageExt from "@tiptap/extension-image";
 import { useEffect, useRef, useState } from "react";
-import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link2, Image as Img, ImagePlus, Code, Quote, Undo, Redo } from "lucide-react";
+import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link2, Image as Img, ImagePlus, Code, Quote, Undo, Redo, Megaphone, FileCode } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { uploadMediaImage } from "@/lib/media-upload";
+import { encodeAdCode } from "@/components/site/AdSlot";
 
 export function RichEditor({ value, onChange }: { value: string; onChange: (html: string) => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -49,6 +50,8 @@ export function RichEditor({ value, onChange }: { value: string; onChange: (html
         <B label="Link" on={() => { const u = prompt("Link URL"); if (u) editor.chain().focus().setLink({ href: u }).run(); else editor.chain().focus().unsetLink().run(); }}><Link2 /></B>
         <B label="Upload image" active={busy} on={() => fileRef.current?.click()}><ImagePlus /></B>
         <B label="Image URL" on={() => { const u = prompt("Image URL"); if (u) editor.chain().focus().setImage({ src: u }).run(); }}><Img /></B>
+        <B label="Insert ad spot (Ads Manager in-content code)" on={() => editor.chain().focus().insertContent({ type: "paragraph", content: [{ type: "text", text: "[[ad]]" }] }).run()}><Megaphone /></B>
+        <B label="Paste ad code here" on={() => { const c = prompt("Paste ad code (AdSense or other HTML/script)"); if (c?.trim()) editor.chain().focus().insertContent({ type: "paragraph", content: [{ type: "text", text: `[[adcode:${encodeAdCode(c)}]]` }] }).run(); }}><FileCode /></B>
         <B label="Undo" on={() => editor.chain().focus().undo().run()}><Undo /></B>
         <B label="Redo" on={() => editor.chain().focus().redo().run()}><Redo /></B>
       </div>

@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Twitter, Linkedin, Facebook, Link2 } from "lucide-react";
 import { getPost, listPosts } from "@/lib/content.functions";
 import { Breadcrumbs, breadcrumbLd, copyText } from "@/components/site/ui-bits";
-import { AdSlot } from "@/components/site/AdSlot";
+import { AdSlot, InlineAdCode, splitAdMarkers } from "@/components/site/AdSlot";
 import { LogoImage } from "@/components/site/Logo";
 import { pageHead, absoluteUrl } from "@/lib/seo";
 import { EDITORIAL_AUTHOR } from "@/lib/editorial-config";
@@ -55,7 +55,9 @@ function Page() {
       {post.cover_image && <img src={post.cover_image} alt={post.title} width={1200} height={630} className="mx-auto mt-8 aspect-[1200/630] w-full max-w-4xl rounded-3xl border object-cover" />}
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_240px]">
         <div className="min-w-0">
-          <article className="prose-content mx-auto max-w-3xl" dangerouslySetInnerHTML={{ __html: html }} />
+          {splitAdMarkers(html).map((part, i) => "html" in part
+            ? <article key={i} className="prose-content mx-auto max-w-3xl" dangerouslySetInnerHTML={{ __html: part.html }} />
+            : "ad" in part ? <AdSlot key={i} position={part.ad} className="mx-auto max-w-3xl" /> : <InlineAdCode key={i} code={part.code} />)}
           <AdSlot position="in_content" className="mx-auto max-w-3xl" />
           <div className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center gap-2">
             <span className="text-sm font-medium">Share:</span>

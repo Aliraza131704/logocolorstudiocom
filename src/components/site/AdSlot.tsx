@@ -66,3 +66,35 @@ export function GlobalScripts() {
   }, [s, consent, isAdmin]);
   return null;
 }
+
+/** Ad code pasted by the owner inside a blog post. Same consent rules as AdSlot. */
+export function InlineAdCode({ code }: { code: string }) {
+  const { consent } = useConsent();
+  const ref = useRef<HTMLDivElement>(null);
+  const active = consent.ads && !!code.trim();
+  useEffect(() => { if (active && ref.current) inject(ref.current, code); }, [active, code]);
+  if (!active) return null;
+  return (
+    <aside aria-label="Advertisement" className="mx-auto my-6 w-full max-w-3xl">
+      <p className="mb-1 text-center text-[10px] uppercase tracking-widest text-muted-foreground">Advertisement</p>
+      <div ref={ref} className="flex min-h-[250px] w-full items-center justify-center overflow-hidden rounded-xl" />
+    </aside>
+  );
+}
+
+const AD_MARK = /<p>\s*\[\[(ad|adcode)(?::([A-Za-z0-9+/=]*))?\]\]\s*<\/p>/g;
+export const encodeAdCode = (code: string) => btoa(unescape(encodeURIComponent(code)));
+const decodeAdCode = (b: string) => { try { return decodeURIComponent(escape(atob(b))); } catch { return ""; } };
+
+/** Splits post HTML at [[ad]] / [[adcode:...]] markers inserted by the editor. */
+export function splitAdMarkers(html: string): ({ html: string } | { ad: string } | { code: string })[] {
+  const out: ({ html: string } | { ad: string } | { code: string })[] = [];
+  let last = 0;
+  for (const m of html.matchAll(AD_MARK)) {
+    out.push({ html: html.slice(last, m.index) });
+    out.push(m[1] === "ad" ? { ad: "in_content" } : { code: decodeAdCode(m[2] ?? "") });
+    last = m.index! + m[0].length;
+  }
+  out.push({ html: html.slice(last) });
+  return out;
+}
