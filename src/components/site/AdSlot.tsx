@@ -29,7 +29,7 @@ export function AdSlot({ position, className }: { position: string; className?: 
   const loc = useLocation();
   const slot = ads?.find((a) => a.position === position);
   const blocked = loc.pathname.startsWith("/admin") || loc.pathname.startsWith("/login");
-  const active = !!slot && slot.enabled && !!slot.code.trim() && consent.ads && !blocked;
+  const active = !!slot && slot.enabled && !!slot.code.trim() && consent.ads && !blocked && useAdsEnabled();
 
   useEffect(() => {
     if (active && ref.current) inject(ref.current, slot!.code);
