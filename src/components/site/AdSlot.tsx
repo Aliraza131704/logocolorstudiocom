@@ -24,7 +24,6 @@ const SIZES: Record<string, string> = {
 /** Renders admin-configured ad code for a position. Hidden until enabled + consented. */
 export function AdSlot({ position, className }: { position: string; className?: string }) {
   const { data: ads } = useAds();
-  const { consent } = useConsent();
   const ref = useRef<HTMLDivElement>(null);
   const loc = useLocation();
   const slot = ads?.find((a) => a.position === position);
@@ -75,7 +74,6 @@ export function GlobalScripts() {
 
 /** Ad code pasted by the owner inside a blog post. Same consent rules as AdSlot. */
 export function InlineAdCode({ code }: { code: string }) {
-  const { consent } = useConsent();
   const { data: settings } = useSettings();
   const ref = useRef<HTMLDivElement>(null);
   const active = !!code.trim() && adsEnabled(settings);
