@@ -30,7 +30,7 @@ export function AdSlot({ position, className }: { position: string; className?: 
   const slot = ads?.find((a) => a.position === position);
   const blocked = loc.pathname.startsWith("/admin") || loc.pathname.startsWith("/login");
   const { data: settings } = useSettings();
-  const active = !!slot && slot.enabled && !!slot.code.trim() && consent.ads && !blocked && adsEnabled(settings);
+  const active = !!slot && slot.enabled && !!slot.code.trim() && !blocked && adsEnabled(settings);
 
   useEffect(() => {
     if (active && ref.current) inject(ref.current, slot!.code);
@@ -68,7 +68,7 @@ export function GlobalScripts() {
     };
     if (consent.analytics) add("header", s.header_scripts ?? "", document.head);
     if (consent.analytics) add("footer", s.footer_scripts ?? "", document.body);
-    if (consent.ads && adsEnabled(s)) add("adsense", s.adsense_head ?? "", document.head);
+    if (adsEnabled(s)) add("adsense", s.adsense_head ?? "", document.head);
   }, [s, consent, isAdmin]);
   return null;
 }
@@ -78,7 +78,7 @@ export function InlineAdCode({ code }: { code: string }) {
   const { consent } = useConsent();
   const { data: settings } = useSettings();
   const ref = useRef<HTMLDivElement>(null);
-  const active = consent.ads && !!code.trim() && adsEnabled(settings);
+  const active = !!code.trim() && adsEnabled(settings);
   useEffect(() => { if (active && ref.current) inject(ref.current, code); }, [active, code]);
   if (!active) return null;
   return (
