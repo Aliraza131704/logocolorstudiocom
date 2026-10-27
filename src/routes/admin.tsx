@@ -134,7 +134,7 @@ function Dashboard() {
   );
 }
 
-type Slot = { position: string; label: string; code: string; enabled: boolean; show_desktop: boolean; show_mobile: boolean };
+type Slot = { position: string; label: string; code: string; image_url: string; link_url: string; enabled: boolean; show_desktop: boolean; show_mobile: boolean };
 
 function AdsManager() {
   const qc = useQueryClient();
@@ -142,7 +142,7 @@ function AdsManager() {
   const [edit, setEdit] = useState<Record<string, Slot>>({});
   useEffect(() => { if (slots) setEdit(Object.fromEntries(slots.map((s) => [s.position, s]))); }, [slots]);
   const save = async (s: Slot) => {
-    const { error } = await supabase.from("ad_slots").update({ code: s.code, enabled: s.enabled, show_desktop: s.show_desktop, show_mobile: s.show_mobile, updated_at: new Date().toISOString() }).eq("position", s.position);
+    const { error } = await supabase.from("ad_slots").update({ code: s.code, image_url: s.image_url, link_url: s.link_url, enabled: s.enabled, show_desktop: s.show_desktop, show_mobile: s.show_mobile, updated_at: new Date().toISOString() }).eq("position", s.position);
     if (error) return toast.error(error.message);
     toast.success(`${s.label} saved`);
     qc.invalidateQueries({ queryKey: ["ad_slots_public"] });
@@ -156,7 +156,12 @@ function AdsManager() {
         {Object.values(edit).map((s) => (
           <div key={s.position} className="space-y-3 rounded-2xl border bg-card p-5">
             <div className="flex items-center justify-between"><h2 className="font-semibold">{s.label}</h2><label className="flex items-center gap-2 text-sm">Enabled <Switch checked={s.enabled} onCheckedChange={(v) => setEdit({ ...edit, [s.position]: { ...s, enabled: v } })} /></label></div>
-            <Textarea rows={5} className="font-mono text-xs" placeholder="Paste ad unit code here" value={s.code} onChange={(e) => setEdit({ ...edit, [s.position]: { ...s, code: e.target.value } })} />
+            <Textarea rows={5} className="font-mono text-xs" placeholder="Paste ad unit code here (AdSense, Adsterra, etc.)" value={s.code} onChange={(e) => setEdit({ ...edit, [s.position]: { ...s, code: e.target.value } })} />
+            <div className="space-y-2 rounded-xl border border-dashed p-3">
+              <p className="text-xs font-medium text-muted-foreground">Custom image ad (optional — shown instead of the code above when set)</p>
+              <Input placeholder="Image URL (https://…)" value={s.image_url} onChange={(e) => setEdit({ ...edit, [s.position]: { ...s, image_url: e.target.value } })} />
+              <Input placeholder="Link URL — where the click goes (https://…)" value={s.link_url} onChange={(e) => setEdit({ ...edit, [s.position]: { ...s, link_url: e.target.value } })} />
+            </div>
             <div className="flex flex-wrap items-center gap-4 text-sm">
               <label className="flex items-center gap-2"><Switch checked={s.show_desktop} onCheckedChange={(v) => setEdit({ ...edit, [s.position]: { ...s, show_desktop: v } })} /> Desktop</label>
               <label className="flex items-center gap-2"><Switch checked={s.show_mobile} onCheckedChange={(v) => setEdit({ ...edit, [s.position]: { ...s, show_mobile: v } })} /> Mobile</label>
