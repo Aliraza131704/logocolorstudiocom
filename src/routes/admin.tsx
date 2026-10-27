@@ -149,6 +149,8 @@ function AdsManager() {
   };
   return (
     <div className="space-y-6">
+      <SettingsFields keys={[["ads_enabled", "Show ads site-wide? (type: on / off)"]]} />
+      <p className="-mt-4 text-sm text-muted-foreground">Ads are OFF by default. Type <span className="font-mono">on</span> and save to turn every ad slot, the global AdSense script and in-article ads back on — useful after your site is approved. For an approval review, keep this set to <span className="font-mono">off</span>.</p>
       <SettingsFields keys={[["adsense_head", "Global AdSense head script (with your publisher ID)", true], ["ads_txt", "ads.txt content (served at /ads.txt)", true]]} />
       <div className="grid gap-4 xl:grid-cols-2">
         {Object.values(edit).map((s) => (
