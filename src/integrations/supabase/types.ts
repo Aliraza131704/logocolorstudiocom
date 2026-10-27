@@ -18,7 +18,9 @@ export type Database = {
         Row: {
           code: string
           enabled: boolean
+          image_url: string
           label: string
+          link_url: string
           position: string
           show_desktop: boolean
           show_mobile: boolean
@@ -27,7 +29,9 @@ export type Database = {
         Insert: {
           code?: string
           enabled?: boolean
+          image_url?: string
           label: string
+          link_url?: string
           position: string
           show_desktop?: boolean
           show_mobile?: boolean
@@ -36,7 +40,9 @@ export type Database = {
         Update: {
           code?: string
           enabled?: boolean
+          image_url?: string
           label?: string
+          link_url?: string
           position?: string
           show_desktop?: boolean
           show_mobile?: boolean
