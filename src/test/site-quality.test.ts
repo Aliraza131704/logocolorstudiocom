@@ -6,6 +6,7 @@ import { renderSitemap, sitemapEntries } from "@/lib/sitemap";
 import { contrastRatio, readableOn } from "@/lib/color";
 import { TOOLS } from "@/lib/tools";
 import { paletteTextColor } from "@/lib/palette-presentation";
+import { adsEnabled } from "@/components/site/AdSlot";
 
 describe("Palette indexing", () => {
   it("makes all 1,000 palettes indexable with unique stable slugs", () => {
@@ -58,5 +59,16 @@ describe("Public URLs and sitemap", () => {
   });
   it("retains all existing non-generator tool URLs", () => {
     expect(TOOLS.filter(t => t.slug !== "palette-generator").map(t => t.path)).toEqual(["/tools/logo-extractor", "/tools/website-extractor", "/tools/contrast-checker", "/tools/theme-generator", "/tools/export-center", "/tools/website-auditor", "/tools/cms-detector", "/tools/shopify-theme-detector", "/tools/wordpress-theme-detector"]);
+  });
+});
+
+describe("Ads master switch", () => {
+  it("keeps every ad surface off by default and only on when the owner sets ads_enabled to on", () => {
+    expect(adsEnabled(undefined)).toBe(false);
+    expect(adsEnabled({})).toBe(false);
+    expect(adsEnabled({ ads_enabled: "off" })).toBe(false);
+    expect(adsEnabled({ ads_enabled: "  OFF " })).toBe(false);
+    expect(adsEnabled({ ads_enabled: "on" })).toBe(true);
+    expect(adsEnabled({ ads_enabled: " ON " })).toBe(true);
   });
 });
