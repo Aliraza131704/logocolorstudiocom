@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AdSlotRow = { position: string; label: string; code: string; enabled: boolean; show_desktop: boolean; show_mobile: boolean };
+export type AdSlotRow = { position: string; label: string; code: string; image_url: string; link_url: string; enabled: boolean; show_desktop: boolean; show_mobile: boolean };
 
 export const settingsQuery = queryOptions({
   queryKey: ["site_settings"],
