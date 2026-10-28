@@ -55,6 +55,7 @@ const TABS = [
   { id: "settings", label: "Settings", icon: Settings },
   { id: "subs", label: "Subscribers", icon: Users },
   { id: "msgs", label: "Messages", icon: Inbox },
+  { id: "giveaway", label: "Giveaway", icon: Users },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 
@@ -92,6 +93,7 @@ function Admin() {
         {tab === "settings" && <SettingsPanel />}
         {tab === "subs" && <Subscribers />}
         {tab === "msgs" && <Messages />}
+        {tab === "giveaway" && <Giveaway />}
       </main>
     </div>
   );
@@ -375,6 +377,34 @@ function Messages() {
         </div>
       ))}
       {data?.length === 0 && <p className="text-sm text-muted-foreground">No messages yet.</p>}
+    </div>
+  );
+}
+
+function Giveaway() {
+  const { data, refetch } = useQuery({ queryKey: ["admin-giveaway"], queryFn: async () => (await supabase.from("giveaway_entries").select("*").order("created_at", { ascending: false })).data ?? [] });
+  const months = [...new Set((data ?? []).map((e) => e.month))];
+  const [month, setMonth] = useState("");
+  const m = month || months[0] || "";
+  const list = (data ?? []).filter((e) => e.month === m);
+  const [winner, setWinner] = useState<(typeof list)[number] | null>(null);
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <select aria-label="Month" className="rounded-lg border bg-background px-3 py-2 text-sm" value={m} onChange={(e) => { setMonth(e.target.value); setWinner(null); }}>
+          {months.map((x) => <option key={x}>{x}</option>)}
+        </select>
+        <span className="text-sm text-muted-foreground">{list.length} entries</span>
+        <Button disabled={!list.length} onClick={() => { const a = new Uint32Array(1); crypto.getRandomValues(a); setWinner(list[a[0] % list.length]); }}>Pick random winner</Button>
+      </div>
+      {winner && <div className="rounded-2xl border-2 border-primary bg-card p-5"><p className="font-semibold">Winner: {winner.name}</p><a href={`mailto:${winner.email}`} className="text-sm text-primary">{winner.email}</a><p className="mt-1 break-all font-mono text-sm">{winner.wallet}</p></div>}
+      {list.map((e) => (
+        <div key={e.id} className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-4 text-sm">
+          <span className="font-medium">{e.name}</span><span className="text-muted-foreground">{e.email}</span><span className="break-all font-mono text-xs">{e.wallet}</span>
+          <Button size="icon" variant="ghost" className="ml-auto" aria-label="Delete" onClick={async () => { await supabase.from("giveaway_entries").delete().eq("id", e.id); refetch(); }}><Trash2 /></Button>
+        </div>
+      ))}
+      {!list.length && <p className="text-sm text-muted-foreground">No entries yet.</p>}
     </div>
   );
 }
