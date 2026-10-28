@@ -36,6 +36,13 @@
       "when": 1792607732171,
       "tag": "0004_media_storage_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793187932059,
+      "tag": "0005_giveaway_entries",
+      "breakpoints": true
     }
   ]
 }
