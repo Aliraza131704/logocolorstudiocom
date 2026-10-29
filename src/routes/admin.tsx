@@ -381,13 +381,29 @@ function Messages() {
   );
 }
 
+const maskEmail = (e: string) => { const [u, d] = e.split("@"); return `${u.slice(0, 2)}***@${d}`; };
+const maskWallet = (w: string) => `${w.slice(0, 6)}…${w.slice(-4)}`;
+
 function Giveaway() {
   const { data, refetch } = useQuery({ queryKey: ["admin-giveaway"], queryFn: async () => (await supabase.from("giveaway_entries").select("*").order("created_at", { ascending: false })).data ?? [] });
+  const { data: winners, refetch: refetchWinners } = useQuery({ queryKey: ["admin-giveaway-winners"], queryFn: async () => (await supabase.from("giveaway_winners").select("*").order("month", { ascending: false })).data ?? [] });
   const months = [...new Set((data ?? []).map((e) => e.month))];
   const [month, setMonth] = useState("");
   const m = month || months[0] || "";
   const list = (data ?? []).filter((e) => e.month === m);
   const [winner, setWinner] = useState<(typeof list)[number] | null>(null);
+  const [saving, setSaving] = useState(false);
+  const saved = (winners ?? []).find((w) => w.month === m);
+  const saveWinner = async () => {
+    if (!winner) return;
+    setSaving(true);
+    const { error } = await supabase.from("giveaway_winners").insert({ month: winner.month, name: winner.name, email: maskEmail(winner.email), wallet: maskWallet(winner.wallet) });
+    setSaving(false);
+    if (error) return toast.error(error.code === "23505" ? "A winner is already saved for this month." : "Could not save winner.");
+    toast.success("Winner published on the giveaway page.");
+    setWinner(null);
+    refetchWinners();
+  };
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
@@ -395,9 +411,10 @@ function Giveaway() {
           {months.map((x) => <option key={x}>{x}</option>)}
         </select>
         <span className="text-sm text-muted-foreground">{list.length} entries</span>
-        <Button disabled={!list.length} onClick={() => { const a = new Uint32Array(1); crypto.getRandomValues(a); setWinner(list[a[0] % list.length]); }}>Pick random winner</Button>
+        <Button disabled={!list.length || !!saved} onClick={() => { const a = new Uint32Array(1); crypto.getRandomValues(a); setWinner(list[a[0] % list.length]); }}>Pick random winner</Button>
       </div>
-      {winner && <div className="rounded-2xl border-2 border-primary bg-card p-5"><p className="font-semibold">Winner: {winner.name}</p><a href={`mailto:${winner.email}`} className="text-sm text-primary">{winner.email}</a><p className="mt-1 break-all font-mono text-sm">{winner.wallet}</p></div>}
+      {saved && <div className="rounded-2xl border bg-card p-5"><p className="text-sm font-semibold">Published winner for {saved.month}: {saved.name}</p><p className="text-sm text-muted-foreground">{saved.email} · <span className="font-mono">{saved.wallet}</span></p></div>}
+      {winner && <div className="rounded-2xl border-2 border-primary bg-card p-5"><p className="font-semibold">Winner: {winner.name}</p><a href={`mailto:${winner.email}`} className="text-sm text-primary">{winner.email}</a><p className="mt-1 break-all font-mono text-sm">{winner.wallet}</p><Button className="mt-3" disabled={saving} onClick={saveWinner}>{saving ? "Publishing…" : "Publish winner on giveaway page"}</Button></div>}
       {list.map((e) => (
         <div key={e.id} className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-4 text-sm">
           <span className="font-medium">{e.name}</span><span className="text-muted-foreground">{e.email}</span><span className="break-all font-mono text-xs">{e.wallet}</span>
