@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Gift } from "lucide-react";
+import { Gift, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +55,7 @@ function Page() {
           <Button type="submit" variant="hero" size="lg" disabled={busy}>{busy ? "Submitting…" : "Enter giveaway"}</Button>
         </form>
       )}
+      <Winners />
       <section className="mt-10 space-y-2 text-sm text-muted-foreground">
         <h2 className="text-lg font-semibold text-foreground">Rules</h2>
         <ul className="list-disc space-y-1 pl-5">
