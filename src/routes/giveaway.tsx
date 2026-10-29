@@ -70,3 +70,26 @@ function Page() {
     </main>
   );
 }
+
+function Winners() {
+  const { data } = useQuery({
+    queryKey: ["giveaway-winners"],
+    queryFn: async () => (await supabase.from("giveaway_winners").select("*").order("month", { ascending: false })).data ?? [],
+  });
+  if (!data?.length) return null;
+  return (
+    <section className="mt-10">
+      <h2 className="flex items-center gap-2 text-lg font-semibold"><Trophy className="size-5 text-primary" /> Past winners</h2>
+      <div className="mt-3 space-y-3">
+        {data.map((w) => (
+          <div key={w.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border bg-card p-4 text-sm">
+            <span className="font-semibold">{w.name}</span>
+            <span className="text-muted-foreground">{w.email}</span>
+            <span className="font-mono text-xs text-muted-foreground">{w.wallet}</span>
+            <span className="ml-auto rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">{w.month} · 50 USDT</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
