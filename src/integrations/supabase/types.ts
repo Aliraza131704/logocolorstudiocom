@@ -185,6 +185,33 @@ export type Database = {
         }
         Relationships: []
       }
+      giveaway_winners: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          month: string
+          name: string
+          wallet: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          month: string
+          name: string
+          wallet: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          month?: string
+          name?: string
+          wallet?: string
+        }
+        Relationships: []
+      }
       pages: {
         Row: {
           content: string
