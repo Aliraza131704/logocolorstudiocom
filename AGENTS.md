@@ -28,3 +28,4 @@
 - Download ZIPs and previews use Lovable Assets pointers; this is a browser-level access flow, not DRM or a private-file security boundary, because CDN files are publicly accessible.
 - The editable download catalog is validated JSON in the existing owner-write site_settings table; public SSR lists through content.functions.ts and owner CRUD uses browser RLS. Each asset has its own playback unlock, with optional video override and a shared sponsor fallback.
 - Blog images upload through src/lib/media-upload.ts into the private `media` storage bucket (public buckets are blocked in this workspace) and are served publicly by the read-only route /api/public/media/*; writes stay admin-only via storage RLS, max 10 MB per image.
+- Extra admins are created and revoked only by the owner email through server functions in src/lib/team.functions.ts (admin client after owner check); the owner can never be removed.
