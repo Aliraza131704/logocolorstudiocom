@@ -27,7 +27,7 @@ export function Newsletter() {
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-2xl font-bold">Join the LogoColorStudio newsletter list</h2>
-          <p className="mt-1 text-muted-foreground">Leave your email for future updates. Email delivery is not active yet.</p>
+          <p className="mt-1 text-muted-foreground">Leave your email for future updates.</p>
         </div>
         <form onSubmit={submit} className="flex w-full max-w-md gap-2">
           <label htmlFor="nl-email" className="sr-only">Email address</label>
