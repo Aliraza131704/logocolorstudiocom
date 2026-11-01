@@ -58,7 +58,5 @@ export const removeAdmin = createServerFn({ method: "POST" })
     if (data.userId === context.userId) throw new Error("You cannot remove the owner.");
     const { error } = await admin.from("user_roles").delete().eq("user_id", data.userId).eq("role", "admin");
     if (error) throw new Error(error.message);
-    // End their sessions immediately.
-    await admin.auth.admin.signOut?.(data.userId).catch(() => {});
     return { ok: true };
   });
