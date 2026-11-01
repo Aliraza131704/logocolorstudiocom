@@ -20,6 +20,9 @@ import { pageHead } from "@/lib/seo";
 import { MfaChallenge } from "@/components/admin/MfaChallenge";
 import { uploadMediaImage } from "@/lib/media-upload";
 import { EDITORIAL_AUTHOR } from "@/lib/editorial-config";
+import { useServerFn } from "@tanstack/react-start";
+import { listAdmins, addAdmin, removeAdmin } from "@/lib/team.functions";
+import { isOwnerEmail } from "@/lib/team";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -56,6 +59,7 @@ const TABS = [
   { id: "subs", label: "Subscribers", icon: Users },
   { id: "msgs", label: "Messages", icon: Inbox },
   { id: "giveaway", label: "Giveaway", icon: Users },
+  { id: "team", label: "Admin access", icon: Users },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
 
@@ -65,13 +69,14 @@ function Admin() {
   const [tab, setTab] = useState<Tab>("dash");
   const nav = useNavigate();
   const { email, factorId } = Route.useRouteContext();
+  const owner = isOwnerEmail(email);
   if (factorId) return <MfaChallenge factorId={factorId} />;
   return (
     <div className="min-h-screen bg-background md:grid md:grid-cols-[240px_1fr]">
       <aside className="border-b bg-card md:min-h-screen md:border-b-0 md:border-r">
         <div className="flex items-center justify-between p-4"><LogoImage className="h-8" /><ThemeToggle /></div>
         <nav className="flex gap-1 overflow-x-auto px-2 pb-2 md:flex-col md:pb-0">
-          {TABS.map((t) => (
+          {TABS.filter((t) => t.id !== "team" || owner).map((t) => (
             <button key={t.id} onClick={() => setTab(t.id)} className={cn("flex shrink-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm", tab === t.id ? "bg-primary text-primary-foreground" : "hover:bg-accent")}>
               <t.icon className="size-4" /> {t.label}
             </button>
@@ -94,6 +99,7 @@ function Admin() {
         {tab === "subs" && <Subscribers />}
         {tab === "msgs" && <Messages />}
         {tab === "giveaway" && <Giveaway />}
+        {tab === "team" && owner && <TeamPanel />}
       </main>
     </div>
   );
@@ -383,6 +389,50 @@ function Messages() {
 
 const maskEmail = (e: string) => { const [u, d] = e.split("@"); return `${u.slice(0, 2)}***@${d}`; };
 const maskWallet = (w: string) => `${w.slice(0, 6)}…${w.slice(-4)}`;
+
+function TeamPanel() {
+  const qc = useQueryClient();
+  const list = useServerFn(listAdmins);
+  const add = useServerFn(addAdmin);
+  const remove = useServerFn(removeAdmin);
+  const { data, isLoading, error } = useQuery({ queryKey: ["admins"], queryFn: () => list() });
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="max-w-2xl space-y-6">
+      <form className="space-y-3 rounded-2xl border bg-card p-6" onSubmit={async (e) => {
+        e.preventDefault(); setBusy(true);
+        try { await add({ data: { email, password: pw } }); toast.success("Admin access given"); setEmail(""); setPw(""); qc.invalidateQueries({ queryKey: ["admins"] }); }
+        catch (err) { toast.error((err as Error).message); }
+        setBusy(false);
+      }}>
+        <h2 className="font-semibold">Give admin access</h2>
+        <p className="text-sm text-muted-foreground">Enter their email and a password. Share both with them; they sign in at /login.</p>
+        <Input type="email" required placeholder="their@email.com" value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email" />
+        <Input type="text" required minLength={8} placeholder="Password (min 8 characters)" value={pw} onChange={(e) => setPw(e.target.value)} aria-label="Password" />
+        <Button type="submit" disabled={busy}><Plus className="size-4" /> {busy ? "Adding…" : "Add admin"}</Button>
+      </form>
+      <div className="rounded-2xl border bg-card p-6">
+        <h2 className="font-semibold">People with admin access</h2>
+        {isLoading && <p className="mt-3 text-sm text-muted-foreground">Loading…</p>}
+        {error && <p className="mt-3 text-sm text-destructive">{(error as Error).message}</p>}
+        <ul className="mt-3 divide-y">
+          {(data ?? []).map((a) => (
+            <li key={a.id} className="flex items-center justify-between py-3 text-sm">
+              <span>{a.email} {a.owner && <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">Owner</span>}</span>
+              {!a.owner && <Button size="sm" variant="outline" onClick={async () => {
+                if (!confirm(`Remove admin access for ${a.email}?`)) return;
+                try { await remove({ data: { userId: a.id } }); toast.success("Access removed"); qc.invalidateQueries({ queryKey: ["admins"] }); }
+                catch (err) { toast.error((err as Error).message); }
+              }}><Trash2 className="size-4" /> Remove</Button>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
 
 function Giveaway() {
   const { data, refetch } = useQuery({ queryKey: ["admin-giveaway"], queryFn: async () => (await supabase.from("giveaway_entries").select("*").order("created_at", { ascending: false })).data ?? [] });
