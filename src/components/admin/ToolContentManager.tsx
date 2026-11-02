@@ -133,8 +133,8 @@ export function ToolContentManager() {
         </div>
       </div>
       <label className="block text-sm font-medium">
-        FAQs <span className="font-normal text-muted-foreground">(one per line: Question | Answer)</span>
-        <Textarea className="mt-1 font-mono text-xs" rows={8} value={current.faqsText} onChange={(e) => set({ faqsText: e.target.value })} placeholder={"Is this tool free? | Yes, it is completely free."} />
+        FAQs <span className="font-normal text-muted-foreground">(one per line: Question || Answer)</span>
+        <Textarea className="mt-1 font-mono text-xs" rows={8} value={current.faqsText} onChange={(e) => set({ faqsText: e.target.value })} placeholder={"Is this tool free? || Yes, it is completely free."} />
       </label>
       <div className="flex gap-3">
         <Button variant="hero" onClick={save} disabled={saving}>{saving ? "Saving…" : "Save changes"}</Button>

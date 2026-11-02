@@ -53,11 +53,13 @@ export function parseToolOverrides(raw: string): Record<string, ToolOverride> {
 export const toolOverride = (raw: string | undefined | null, slug: string): ToolOverride | null =>
   parseToolOverrides(raw ?? "")[slug] ?? null;
 
-/** FAQ textarea format for the admin editor: one per line, "Question | Answer". */
-export const faqsToText = (faqs: Faq[]) => faqs.map((f) => `${f.q} | ${f.a}`).join("\n");
+/** FAQ textarea format for the admin editor: one per line, "Question || Answer". */
+export const faqsToText = (faqs: Faq[]) => faqs.map((f) => `${f.q} || ${f.a}`).join("\n");
 export const textToFaqs = (text: string): Faq[] =>
   text
     .split("\n")
-    .map((line) => line.split("|"))
-    .filter((parts) => parts.length >= 2 && parts[0].trim() && parts.slice(1).join("|").trim())
-    .map((parts) => ({ q: parts[0].trim(), a: parts.slice(1).join("|").trim() }));
+    .map((line) => {
+      const i = line.indexOf("||");
+      return i < 0 ? null : { q: line.slice(0, i).trim(), a: line.slice(i + 2).trim() };
+    })
+    .filter((f): f is Faq => !!f && !!f.q && !!f.a);
