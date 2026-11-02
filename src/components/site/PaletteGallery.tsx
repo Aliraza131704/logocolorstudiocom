@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 const PER = 24;
 
 export const likesQuery = { queryKey: ["palette_likes"], queryFn: async () => {
-  const { data } = await supabase.from("palette_like_counts").select("palette_slug,likes");
+  const { data } = await supabase.rpc("palette_like_totals");
   return Object.fromEntries((data ?? []).map((r) => [r.palette_slug!, r.likes!])) as Record<string, number>;
 } };
 
