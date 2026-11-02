@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Upload, Wand2, Download, ShieldCheck, Zap, Lock } from "lucide-react";
+import { ArrowRight, Upload, Wand2, Download, ShieldCheck, Zap, Lock, Globe } from "lucide-react";
 import hero from "@/assets/hero.webp";
 import heroSmall from "@/assets/hero-800.webp";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,12 @@ import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PageExtras } from "@/components/site/PageExtras";
 import { getFeaturedPalettes } from "@/lib/palette-editorial";
 import { getAllPalettes } from "@/lib/palettes";
+import { MEGA_GROUPS } from "@/lib/tool-groups";
+
+/** Detector & audit tools — kept in sync with the header mega menu source. */
+const DETECT = MEGA_GROUPS.find((g) => g.label === "Detect & audit") ?? MEGA_GROUPS[MEGA_GROUPS.length - 1];
+const DETECT_CHIPS = ["30+ CMS platforms", "Shopify themes & apps", "WordPress themes & plugins", "SEO, mobile & image checks"];
+
 
 const FAQS: Faq[] = [
   { q: "Is LogoColorStudio free?", a: "Yes. Every tool is free to use with no sign-up required." },
@@ -66,7 +72,46 @@ function Index() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-4 pt-16 sm:px-6">
+        <div className="relative overflow-hidden rounded-[2rem] border bg-brand-navy px-6 py-14 sm:px-10">
+          <div aria-hidden className="absolute inset-0 bg-brand-gradient opacity-[0.14]" />
+          <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_78%)]" />
+          <div className="relative grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/35 px-3 py-1 text-xs font-medium text-primary-foreground/90">
+                <Globe className="size-3.5 text-brand-green" /> {DETECT.label}
+              </span>
+              <h2 className="mt-5 text-3xl font-extrabold leading-[1.1] text-primary-foreground sm:text-4xl">
+                Find out what any website is <span className="text-gradient">really built with</span>
+              </h2>
+              <p className="mt-4 max-w-md text-primary-foreground/85">
+                {DETECT.blurb} Paste a URL and get the platform, theme, apps and a health score — with the evidence behind every answer.
+              </p>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {DETECT_CHIPS.map((c) => (
+                  <li key={c} className="rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 text-xs text-primary-foreground/90">{c}</li>
+                ))}
+              </ul>
+              <Button variant="hero" className="mt-8" asChild><Link to="/tools/cms-detector">Start a scan <ArrowRight /></Link></Button>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {DETECT.tools.map((t) => (
+                <Link key={t.path} to={t.path} className="group rounded-2xl border border-primary-foreground/25 bg-primary-foreground/[0.06] p-5 transition hover:-translate-y-0.5 hover:border-primary-foreground/45 hover:bg-primary-foreground/10">
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex rounded-xl bg-primary-foreground/10 p-2"><t.icon className={`size-5 ${t.color}`} /></span>
+                    <ArrowRight className="size-4 text-primary-foreground/40 transition group-hover:translate-x-0.5 group-hover:text-primary-foreground" />
+                  </div>
+                  <h3 className="mt-4 font-semibold text-primary-foreground">{t.name}</h3>
+                  <p className="mt-1 text-sm text-primary-foreground/80">{t.short}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+
         <SectionTitle eyebrow="Toolkit" title="All tools" sub="Everything you need to go from a logo to a production-ready color system." />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {TOOLS.map((t, i) => (
