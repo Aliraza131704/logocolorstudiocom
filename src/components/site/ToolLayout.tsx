@@ -4,12 +4,16 @@ import { ArrowRight } from "lucide-react";
 import { AdSlot } from "./AdSlot";
 import { Breadcrumbs, FaqList, Reveal, type Faq } from "./ui-bits";
 import { TOOLS } from "@/lib/tools";
-import { logEvent } from "@/lib/site-data";
+import { logEvent, useSettings } from "@/lib/site-data";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 
 export function ToolLayout({ slug, title, intro, children, about, faqs }: { slug: string; title: string; intro: string; children: ReactNode; about: ReactNode; faqs: Faq[] }) {
   const tool = TOOLS.find((t) => t.slug === slug);
   useEffect(() => { logEvent("tool", slug); }, [slug]);
   const related = TOOLS.filter((t) => t.slug !== slug).slice(0, 4);
+  // Owner-edited content from Admin → Tool pages overrides the defaults.
+  const { data: settings } = useSettings();
+  const o = toolOverride(settings?.[TOOL_CONTENT_KEY], slug);
   return (
     <div className="bg-hero">
       <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-8 sm:px-6">
@@ -18,14 +22,14 @@ export function ToolLayout({ slug, title, intro, children, about, faqs }: { slug
           <div className="min-w-0">
             <Breadcrumbs items={[{ label: "Tools", to: "/tools" }, { label: tool?.name ?? title }]} />
             <header className="mb-8 max-w-3xl">
-              <h1 className="text-3xl font-bold sm:text-5xl">{title}</h1>
-              <p className="mt-3 text-lg text-muted-foreground">{intro}</p>
+              <h1 className="text-3xl font-bold sm:text-5xl">{o?.title ?? title}</h1>
+              <p className="mt-3 text-lg text-muted-foreground">{o?.intro ?? intro}</p>
             </header>
             {children}
             <AdSlot position="below_tool" />
-            <article className="prose-content mx-auto mt-16 max-w-3xl">{about}</article>
+            <article className="prose-content mx-auto mt-16 max-w-3xl">{o?.bodyHtml ? <div dangerouslySetInnerHTML={{ __html: o.bodyHtml }} /> : about}</article>
             <AdSlot position="in_content" className="mx-auto max-w-3xl" />
-            <div className="mt-16"><FaqList faqs={faqs} /></div>
+            <div className="mt-16"><FaqList faqs={o?.faqs ?? faqs} /></div>
             <section className="mt-16">
               <h2 className="text-2xl font-bold">Related tools</h2>
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
