@@ -1,4 +1,9 @@
 # Asset downloads
+## SEO and answer-search readiness
+- [ ] Align canonical, sharing, sitemap and crawler URLs with the primary domain; retain all 1,000 palettes.
+- [ ] Improve page/entity context and blog heading hierarchy without changing tools or design.
+- [ ] Verify rendered metadata, sitemap coverage, public headings and regression tests.
+
 - [x] Add site-wide crawling beyond three pages with sitemap/link discovery, paced batches, progress, stopping and honest partial reports; real four-page crawl, Stop, export and history restore verified; 62 tests pass.
 - [x] Upgrade Website Auditor: real 1–3 page checks, coverage/statuses, filters, PDF/CSV/JSON, browser history and competitor comparison; public scans, mobile layouts and regression tests verified.
 - [ ] Rendered audit screenshots, layout/runtime checks and full grammar recommendations — require a supported browser-rendering/language service; explicitly Not Tested, never fabricated.

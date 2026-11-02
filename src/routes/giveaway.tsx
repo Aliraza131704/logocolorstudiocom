@@ -38,7 +38,7 @@ function Page() {
     toast.success("You're entered! Good luck.");
   };
   return (
-    <main className="container mx-auto max-w-2xl px-4 py-12">
+    <div className="container mx-auto max-w-2xl px-4 py-12">
       <div className="text-center">
         <Gift className="mx-auto size-10 text-primary" />
         <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Free monthly 50 USDT giveaway</h1>
@@ -67,7 +67,7 @@ function Page() {
           <li>Anyone messaging you "from LogoColorStudio" asking for payment is a scam.</li>
         </ul>
       </section>
-    </main>
+    </div>
   );
 }
 

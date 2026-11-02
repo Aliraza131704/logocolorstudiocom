@@ -1,5 +1,5 @@
 export const SITE_NAME = "LogoColorStudio";
-export const SITE_URL = "https://logocolorstudiocom.lovable.app";
+export const SITE_URL = "https://logocolorstudio.com";
 export const absoluteUrl = (path: string) => new URL(path, SITE_URL).href;
 
 type HeadOpts = {
@@ -35,6 +35,19 @@ export function pageHead({ title, description, path, type = "website", image, no
   return {
     meta,
     links: [{ rel: "canonical", href: url }],
-    scripts: jsonLd.map((j) => ({ type: "application/ld+json", children: JSON.stringify(j) })),
+    scripts: [
+      ...(!noindex ? [{
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: title,
+        description,
+        inLanguage: "en",
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        publisher: { "@id": `${SITE_URL}/#organization` },
+      }] : []),
+      ...jsonLd,
+    ].map((j) => ({ type: "application/ld+json", children: JSON.stringify(j) })),
   };
 }

@@ -18,6 +18,7 @@
 - Palette presentation chooses a readable foreground separately from color-generation algorithms; keep brand colors unchanged while satisfying text contrast.
 - Keep the generator implementation in the shared PaletteGenerator component and the gallery at /palettes; existing color algorithms remain unchanged.
 - Canonical, sharing and sitemap origins come from SITE_URL in seo.ts; page-specific revision dates are editorial records, never build timestamps.
+- Public page metadata links WebPage, WebSite and Organization through stable URL-based identifiers; private noindex pages omit public page schema so entity context stays accurate.
 - Blog content lives in the owner-editable content table; shared placeholder identities live in editorial-config.ts to avoid inventing real authors.
 - Enrolled owner MFA is challenged before panel rendering and enforced by has_role in database policies so low-assurance sessions cannot bypass the screen.
 - URL-based tools fetch sites in `createServerFn` handlers (src/lib/analyze.functions.ts) with URL validation + IP rate limiting; never fetch third-party sites from the browser (CORS).

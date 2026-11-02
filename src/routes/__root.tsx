@@ -68,7 +68,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 const ORG_LD = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": `${absoluteUrl("/")}#organization`,
   name: "LogoColorStudio",
+  legalName: "APWEB Ventures",
   url: absoluteUrl("/"),
   logo: absoluteUrl("/apple-touch-icon.png"),
   email: "apwebventures01@gmail.com",
@@ -76,8 +78,10 @@ const ORG_LD = {
 const SITE_LD = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": `${absoluteUrl("/")}#website`,
   name: "LogoColorStudio",
   url: absoluteUrl("/"),
+  publisher: { "@id": `${absoluteUrl("/")}#organization` },
   potentialAction: { "@type": "SearchAction", target: `${absoluteUrl("/palettes")}?q={search_term_string}`, "query-input": "required name=search_term_string" },
 };
 

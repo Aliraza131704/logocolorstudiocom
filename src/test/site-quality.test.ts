@@ -34,6 +34,21 @@ describe("Palette indexing", () => {
   });
 });
 describe("Public URLs and sitemap", () => {
+  it("uses the primary custom domain for canonical, sharing and every sitemap entry", () => {
+    expect(SITE_URL).toBe("https://logocolorstudio.com");
+    const head = pageHead({ title: "Guide", description: "Guide", path: "/tools/logo-extractor" });
+    expect(head.links[0].href).toBe("https://logocolorstudio.com/tools/logo-extractor");
+    expect(head.meta.find(m => m.property === "og:url")?.content).toBe("https://logocolorstudio.com/tools/logo-extractor");
+    for (const entry of sitemapEntries([], [])) expect(new URL(entry.loc).origin).toBe("https://logocolorstudio.com");
+  });
+  it("connects public page facts to stable website and publisher identities, but excludes private pages", () => {
+    const head = pageHead({ title: "Guide", description: "Useful guide", path: "/tools/logo-extractor" });
+    const page = JSON.parse(head.scripts[0].children);
+    expect(page.url).toBe("https://logocolorstudio.com/tools/logo-extractor");
+    expect(page.isPartOf["@id"]).toBe("https://logocolorstudio.com/#website");
+    expect(page.publisher["@id"]).toBe("https://logocolorstudio.com/#organization");
+    expect(pageHead({ title: "Sign in", description: "Private", path: "/login", noindex: true }).scripts).toHaveLength(0);
+  });
   it("self-references the absolute page URL for canonical and og:url", () => {
     const head = pageHead({ title: "Example", description: "Example", path: "/blog/example" });
     expect(head.links[0].href).toBe(`${SITE_URL}/blog/example`);
@@ -45,6 +60,7 @@ describe("Public URLs and sitemap", () => {
   it("includes downloads, generator and all 1,000 palette pages, and excludes admin and login", () => {
     const paths = sitemapEntries([], []).map(u => new URL(u.loc).pathname);
     expect(paths).toContain("/downloads");
+    expect(paths).toContain("/giveaway");
     expect(paths).toContain("/tools/palette-generator");
     expect(paths).not.toContain("/admin");
     expect(paths).not.toContain("/login");
