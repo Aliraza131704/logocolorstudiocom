@@ -18,7 +18,7 @@ const PAGE_PATHS: Record<string, string> = { about: "/about", contact: "/contact
 type Dated = { updated_at?: string | null; published_at?: string | null };
 export function sitemapEntries(posts: ({ slug: string } & Dated)[], pages: ({ slug: string } & Dated)[], downloadUpdated?: string) {
   const entries = new Map<string, string | undefined>();
-  for (const path of ["/", "/tools", "/palettes", "/blog", "/downloads", ...Object.values(PAGE_PATHS), ...TOOLS.map(t => t.path)]) entries.set(path, CONTENT_REVISIONS[path]);
+  for (const path of ["/", "/tools", "/palettes", "/blog", "/downloads", "/giveaway", ...Object.values(PAGE_PATHS), ...TOOLS.map(t => t.path)]) entries.set(path, CONTENT_REVISIONS[path]);
   for (const page of pages) {
     const path = PAGE_PATHS[page.slug];
     if (path) entries.set(path, [CONTENT_REVISIONS[path], page.updated_at].filter((d): d is string => Boolean(d)).sort().at(-1));

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { listPosts } from "@/lib/content.functions";
-import { Breadcrumbs, Reveal } from "@/components/site/ui-bits";
+import { Breadcrumbs, Reveal, breadcrumbLd } from "@/components/site/ui-bits";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/blog/")({
   loader: () => listPosts(),
-  head: () => pageHead({ title: "Blog — Color, Branding & Web Design Guides", description: "Practical guides on brand colors, color psychology, accessibility, palettes and website themes from the LogoColorStudio team.", path: "/blog" }),
+  head: () => pageHead({ title: "Blog — Color, Branding & Web Design Guides", description: "Practical guides on brand colors, color psychology, accessibility, palettes and website themes from the LogoColorStudio team.", path: "/blog", jsonLd: [breadcrumbLd([{ label: "Blog" }], "/blog")] }),
   component: Page,
 });
 
@@ -32,7 +32,9 @@ function Page() {
       <Breadcrumbs items={[{ label: "Blog" }]} />
       <h1 className="text-4xl font-bold sm:text-5xl">Blog</h1>
       <p className="mt-3 text-lg text-muted-foreground">Guides on brand colors, accessibility and building better websites.</p>
-      <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <section aria-labelledby="article-filters" className="mt-8">
+      <h2 id="article-filters" className="text-xl font-semibold">Explore by topic</h2>
+      <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap gap-2">
           {[null, ...cats].map((c) => <Button variant={cat === c ? "default" : "outline"} key={c ?? "all"} onClick={() => { setCat(c); setPage(1); }}>{c ?? "All"}</Button>)}
         </div>
@@ -41,14 +43,17 @@ function Page() {
       <div className="mt-3 flex flex-wrap gap-2 text-xs">
         {tags.map((t) => <Button size="sm" variant={tag === t ? "default" : "secondary"} key={t} onClick={() => setTag(tag === t ? null : t)}>#{t}</Button>)}
       </div>
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      </section>
+      <section aria-labelledby="article-list" className="mt-10">
+      <h2 id="article-list" className="text-2xl font-bold">Color and website guides</h2>
+      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((p, i) => (
           <Reveal key={p.id} delay={(i % 3) * 0.05}>
             <Link to="/blog/$slug" params={{ slug: p.slug }} className="card-hover block h-full overflow-hidden rounded-2xl border bg-card">
               {p.cover_image && <img src={p.cover_image} alt="" width={1200} height={630} loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
               <div className="p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary">{p.category}</p>
-                <h2 className="mt-2 text-lg font-bold leading-snug">{p.title}</h2>
+                <h3 className="mt-2 text-lg font-bold leading-snug">{p.title}</h3>
                 <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{p.excerpt}</p>
                 <p className="mt-4 text-xs text-muted-foreground">{new Date(p.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · {Math.max(1, Math.ceil(p.words / 220))} min read</p>
               </div>
@@ -57,8 +62,10 @@ function Page() {
         ))}
       </div>
       {list.length === 0 && <p className="mt-10 text-center text-muted-foreground">No articles match your search.</p>}
+      </section>
       {pages > 1 && (
         <nav aria-label="Pagination" className="mt-10 flex justify-center gap-2">
+          <h2 className="sr-only">More articles</h2>
           <Button variant="outline" disabled={page === 1} onClick={() => setPage(page - 1)}>Previous</Button>
           <span className="self-center px-3 text-sm">Page {page} of {pages}</span>
           <Button variant="outline" disabled={page === pages} onClick={() => setPage(page + 1)}>Next</Button>
