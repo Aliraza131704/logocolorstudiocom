@@ -4,16 +4,15 @@ import { ArrowRight } from "lucide-react";
 import { AdSlot } from "./AdSlot";
 import { Breadcrumbs, FaqList, Reveal, type Faq } from "./ui-bits";
 import { TOOLS } from "@/lib/tools";
-import { logEvent, useSettings } from "@/lib/site-data";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { logEvent } from "@/lib/site-data";
+import type { ToolOverride } from "@/lib/tool-overrides";
 
-export function ToolLayout({ slug, title, intro, children, about, faqs }: { slug: string; title: string; intro: string; children: ReactNode; about: ReactNode; faqs: Faq[] }) {
+export function ToolLayout({ slug, title, intro, children, about, faqs, override }: { slug: string; title: string; intro: string; children: ReactNode; about: ReactNode; faqs: Faq[]; override?: ToolOverride | null }) {
   const tool = TOOLS.find((t) => t.slug === slug);
   useEffect(() => { logEvent("tool", slug); }, [slug]);
   const related = TOOLS.filter((t) => t.slug !== slug).slice(0, 4);
-  // Owner-edited content from Admin → Tool pages overrides the defaults.
-  const { data: settings } = useSettings();
-  const o = toolOverride(settings?.[TOOL_CONTENT_KEY], slug);
+  // Owner-edited content from Admin → Tool pages, loaded in the route loader.
+  const o = override;
   return (
     <div className="bg-hero">
       <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-8 sm:px-6">

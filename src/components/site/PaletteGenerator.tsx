@@ -12,8 +12,9 @@ import { loadPalette, savePalette, paletteToPng } from "@/components/site/tool-p
 import { Breadcrumbs, FaqList, copyText, download, faqLd, type Faq } from "@/components/site/ui-bits";
 import { AdSlot } from "@/components/site/AdSlot";
 import { HARMONIES, adjust, exportPalette, harmony, normalizeHex, randomHex, readableOn, type Harmony } from "@/lib/color";
-import { logEvent, useSettings } from "@/lib/site-data";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { logEvent } from "@/lib/site-data";
+import { toolOverride } from "@/lib/tool-overrides";
+import { getRouteApi } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { paletteTextColor } from "@/lib/palette-presentation";
 import { absoluteUrl } from "@/lib/seo";
@@ -26,9 +27,8 @@ export function PaletteGeneratorPage() {
   useEffect(() => { setLogoColors(loadPalette()); logEvent("tool", "palette-generator"); }, []);
   const base = logoColors?.[0] ?? "#0A8CFF";
   const auto = useMemo(() => HARMONIES.map((h) => ({ ...h, colors: harmony(base, h.id) })), [base]);
-  // Owner-edited content from Admin → Tool pages overrides the defaults.
-  const { data: settings } = useSettings();
-  const o = toolOverride(settings?.[TOOL_CONTENT_KEY], "palette-generator");
+  // Owner-edited content from Admin → Tool pages, loaded in the route loader.
+  const o = toolOverride(getRouteApi("/tools/palette-generator").useLoaderData(), "palette-generator");
 
   return (
     <div className="bg-hero">
