@@ -10,6 +10,7 @@ import { getPublicSetting } from "@/lib/content.functions";
 import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PageExtras } from "@/components/site/PageExtras";
 import { getFeaturedPalettes } from "@/lib/palette-editorial";
+import { getAllPalettes } from "@/lib/palettes";
 
 const FAQS: Faq[] = [
   { q: "Is LogoColorStudio free?", a: "Yes. Every tool is free to use with no sign-up required." },
@@ -50,7 +51,7 @@ function Index() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button variant="hero" size="lg" asChild><Link to="/tools/logo-extractor">Upload a logo <ArrowRight /></Link></Button>
-              <Button variant="glass" size="lg" asChild><Link to="/palettes">Browse {getFeaturedPalettes().length} featured palettes</Link></Button>
+              <Button variant="glass" size="lg" asChild><Link to="/palettes">Browse {getAllPalettes().length.toLocaleString("en-US")} palettes</Link></Button>
             </div>
             <div className="mt-8 flex flex-wrap gap-6 text-sm text-muted-foreground">
               <span className="flex items-center gap-2"><Lock className="size-4 text-brand-green" /> Files stay on your device</span>
