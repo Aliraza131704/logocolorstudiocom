@@ -27,5 +27,5 @@
 
 ## Audience communities and listings
 - [x] Submit the sitemap to Google Search Console and confirm the new /sitemap page is live (1,031 URLs, 0 warnings, 0 errors).
-- [ ] Research qualified communities, forums and directories for the site's audience, with rules and submission routes.
-- [ ] Draft a ready-to-post message or listing for each qualified venue.
+- [x] Research qualified communities, forums and directories for the site's audience, with rules and submission routes.
+- [x] Draft a ready-to-post message or listing for each qualified venue.
