@@ -38,7 +38,7 @@ export const MEGA_GROUPS: MegaGroup[] = [
     ],
   },
   {
-    label: "Check & export",
+    label: "Design & export",
     blurb: "Make the palette safe to read, then ship it in your stack.",
     tools: [
       { name: "Contrast Checker", path: "/tools/contrast-checker", short: "Verify color pairs against WCAG AA and AAA", icon: Contrast, color: "text-brand-red" },
@@ -47,18 +47,12 @@ export const MEGA_GROUPS: MegaGroup[] = [
     ],
   },
   {
-    label: "Site detectors",
-    blurb: "See what a website is built with, in one lookup.",
+    label: "Detect & audit",
+    blurb: "See what a website runs on, and how healthy it is.",
     tools: [
       { name: "CMS Detector", path: "/tools/cms-detector", short: "WordPress, Shopify, Wix, Webflow and 30 more", icon: Layers, color: "text-brand-red" },
       { name: "Shopify Theme Detector", path: "/tools/shopify-theme-detector", short: "Theme name, version and installed apps", icon: ShoppingBag, color: "text-brand-green" },
       { name: "WordPress Theme Detector", path: "/tools/wordpress-theme-detector", short: "Theme, author and active plugin evidence", icon: Blocks, color: "text-brand-blue" },
-    ],
-  },
-  {
-    label: "Site audits",
-    blurb: "A full-page quality report with fixes, not just scores.",
-    tools: [
       { name: "Website Auditor", path: "/tools/website-auditor", short: "Score SEO, mobile, HTTPS and image health", icon: Gauge, color: "text-brand-orange", isNew: true },
     ],
   },
