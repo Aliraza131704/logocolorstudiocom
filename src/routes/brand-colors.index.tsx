@@ -29,6 +29,7 @@ function Page() {
 
   // Close the popup when the user presses the browser Back button.
   useEffect(() => {
+    (window as any).__bcMount = ((window as any).__bcMount || 0) + 1;
     const onPop = () => { (window as any).__bcPop = ((window as any).__bcPop || 0) + 1; setOpen(null); };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
