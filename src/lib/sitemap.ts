@@ -12,6 +12,7 @@ export const CONTENT_REVISIONS: Record<string, string> = {
   "/tools/theme-generator": "2026-10-19", "/tools/export-center": "2026-10-19",
   "/tools/website-auditor": "2026-10-19", "/tools/cms-detector": "2026-10-19",
   "/tools/shopify-theme-detector": "2026-10-19", "/tools/wordpress-theme-detector": "2026-10-19",
+  "/sitemap": "2026-11-02",
 };
 export const PALETTE_CONTENT_REVISION = "2026-10-19";
 const PAGE_PATHS: Record<string, string> = { about: "/about", contact: "/contact", privacy: "/privacy-policy", terms: "/terms-of-service", cookies: "/cookie-policy", disclaimer: "/disclaimer", changelog: "/changelog" };
