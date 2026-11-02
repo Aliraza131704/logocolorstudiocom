@@ -37,6 +37,7 @@ function Page() {
 
   const openBrand = (b: Brand) => {
     window.history.pushState({ brand: b.slug }, "", brandPath(b));
+    window.addEventListener("popstate", () => { (window as any).__bcPop2 = ((window as any).__bcPop2 || 0) + 1; }, { once: true });
     setOpen(b);
   };
   const closeBrand = () => {
