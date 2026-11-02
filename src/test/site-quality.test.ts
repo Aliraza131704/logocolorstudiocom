@@ -61,6 +61,7 @@ describe("Public URLs and sitemap", () => {
     const paths = sitemapEntries([], []).map(u => new URL(u.loc).pathname);
     expect(paths).toContain("/downloads");
     expect(paths).toContain("/giveaway");
+    expect(paths).toContain("/sitemap");
     expect(paths).toContain("/tools/palette-generator");
     expect(paths).not.toContain("/admin");
     expect(paths).not.toContain("/login");

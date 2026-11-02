@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 const COLS = [
   { title: "Tools", links: TOOLS.map(t => [t.name, t.path]) },
   { title: "Company", links: [["About", "/about"], ["Contact", "/contact"], ["Blog", "/blog"], ["Downloads", "/downloads"], ["Giveaway", "/giveaway"], ["Changelog", "/changelog"]] },
-  { title: "Legal", links: [["Privacy Policy", "/privacy-policy"], ["Terms of Service", "/terms-of-service"], ["Cookie Policy", "/cookie-policy"], ["Disclaimer", "/disclaimer"]] },
+  { title: "Legal", links: [["Privacy Policy", "/privacy-policy"], ["Terms of Service", "/terms-of-service"], ["Cookie Policy", "/cookie-policy"], ["Disclaimer", "/disclaimer"], ["Sitemap", "/sitemap"]] },
 ] as const;
 
 export function SiteFooter() {

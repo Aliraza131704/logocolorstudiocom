@@ -23,6 +23,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PalettesRouteImport } from './routes/palettes'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapRouteImport } from './routes/sitemap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
@@ -109,6 +110,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapRoute = SitemapRouteImport.update({
+  id: '/sitemap',
+  path: '/sitemap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -247,6 +254,7 @@ export interface FileRoutesByTo {
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -281,6 +289,7 @@ export interface FileRoutesById {
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -316,6 +325,7 @@ export interface FileRouteTypes {
     | '/palettes'
     | '/privacy-policy'
     | '/robots.txt'
+    | '/sitemap'
     | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
@@ -349,6 +359,7 @@ export interface FileRouteTypes {
     | '/palettes'
     | '/privacy-policy'
     | '/robots.txt'
+    | '/sitemap'
     | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
@@ -382,6 +393,7 @@ export interface FileRouteTypes {
     | '/palettes'
     | '/privacy-policy'
     | '/robots.txt'
+    | '/sitemap'
     | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
@@ -416,6 +428,7 @@ export interface RootRouteChildren {
   PalettesRoute: typeof PalettesRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapRoute: typeof SitemapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -533,6 +546,13 @@ declare module '@tanstack/react-router' {
       path: '/robots.txt'
       fullPath: '/robots.txt'
       preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap': {
+      id: '/sitemap'
+      path: '/sitemap'
+      fullPath: '/sitemap'
+      preLoaderRoute: typeof SitemapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -672,6 +692,7 @@ const rootRouteChildren: RootRouteChildren = {
   PalettesRoute: PalettesRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapRoute: SitemapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
