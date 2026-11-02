@@ -27,17 +27,21 @@ function Page() {
   const [cat, setCat] = useState<string>("all");
   const [open, setOpen] = useState<Brand | null>(null);
 
-  // Close the popup when the user presses the browser Back button.
+  // The popup is derived from the URL: /brand-colors/{slug} opens that brand's
+  // popup, /brand-colors closes it. This survives the route remounts that
+  // happen on back/forward navigation.
   useEffect(() => {
-    (window as any).__bcMount = ((window as any).__bcMount || 0) + 1;
-    const onPop = () => { (window as any).__bcPop = ((window as any).__bcPop || 0) + 1; setOpen(null); };
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
+    const sync = () => {
+      const m = window.location.pathname.match(/^\/brand-colors\/([^/]+)$/);
+      setOpen(m ? (getBrand(decodeURIComponent(m[1])) ?? null) : null);
+    };
+    sync();
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
   }, []);
 
   const openBrand = (b: Brand) => {
     window.history.pushState({ brand: b.slug }, "", brandPath(b));
-    window.addEventListener("popstate", () => { (window as any).__bcPop2 = ((window as any).__bcPop2 || 0) + 1; }, { once: true });
     setOpen(b);
   };
   const closeBrand = () => {
