@@ -1,5 +1,6 @@
 import { absoluteUrl } from "./seo";
 import { getIndexablePalettes } from "./palette-editorial";
+import { BRANDS } from "./brands";
 import { TOOLS } from "./tools";
 
 // Authoritative editorial revision dates, not sitemap/build timestamps.
@@ -12,14 +13,16 @@ export const CONTENT_REVISIONS: Record<string, string> = {
   "/tools/theme-generator": "2026-10-19", "/tools/export-center": "2026-10-19",
   "/tools/website-auditor": "2026-10-19", "/tools/cms-detector": "2026-10-19",
   "/tools/shopify-theme-detector": "2026-10-19", "/tools/wordpress-theme-detector": "2026-10-19",
-  "/sitemap": "2026-11-02",
+  "/sitemap": "2026-11-02", "/brand-colors": "2026-11-02",
 };
 export const PALETTE_CONTENT_REVISION = "2026-10-19";
+export const BRAND_CONTENT_REVISION = "2026-11-02";
 const PAGE_PATHS: Record<string, string> = { about: "/about", contact: "/contact", privacy: "/privacy-policy", terms: "/terms-of-service", cookies: "/cookie-policy", disclaimer: "/disclaimer", changelog: "/changelog" };
 type Dated = { updated_at?: string | null; published_at?: string | null };
 export function sitemapEntries(posts: ({ slug: string } & Dated)[], pages: ({ slug: string } & Dated)[], downloadUpdated?: string) {
   const entries = new Map<string, string | undefined>();
-  for (const path of ["/", "/tools", "/palettes", "/blog", "/downloads", "/giveaway", "/sitemap", ...Object.values(PAGE_PATHS), ...TOOLS.map(t => t.path)]) entries.set(path, CONTENT_REVISIONS[path]);
+  for (const path of ["/", "/tools", "/palettes", "/blog", "/downloads", "/giveaway", "/sitemap", "/brand-colors", ...Object.values(PAGE_PATHS), ...TOOLS.map(t => t.path)]) entries.set(path, CONTENT_REVISIONS[path]);
+  for (const b of BRANDS) entries.set(`/brand-colors/${b.slug}`, BRAND_CONTENT_REVISION);
   for (const page of pages) {
     const path = PAGE_PATHS[page.slug];
     if (path) entries.set(path, [CONTENT_REVISIONS[path], page.updated_at].filter((d): d is string => Boolean(d)).sort().at(-1));

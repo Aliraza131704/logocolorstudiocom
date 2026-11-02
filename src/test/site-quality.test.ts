@@ -7,6 +7,8 @@ import { contrastRatio, readableOn } from "@/lib/color";
 import { TOOLS } from "@/lib/tools";
 import { paletteTextColor } from "@/lib/palette-presentation";
 import { adsEnabled } from "@/components/site/AdSlot";
+import { BRANDS, getBrand, relatedBrands } from "@/lib/brands";
+import { brandStory } from "@/lib/brand-text";
 
 describe("Palette indexing", () => {
   it("makes all 1,000 palettes indexable with unique stable slugs", () => {
@@ -87,5 +89,34 @@ describe("Ads master switch", () => {
     expect(adsEnabled({ ads_enabled: "  OFF " })).toBe(false);
     expect(adsEnabled({ ads_enabled: "on" })).toBe(true);
     expect(adsEnabled({ ads_enabled: " ON " })).toBe(true);
+  });
+});
+
+describe("Brand colors section", () => {
+  it("has unique slugs, valid hex colors and a domain for every brand", () => {
+    expect(BRANDS.length).toBeGreaterThanOrEqual(190);
+    expect(new Set(BRANDS.map(b => b.slug)).size).toBe(BRANDS.length);
+    for (const b of BRANDS) {
+      expect(b.domain).toMatch(/^[a-z0-9.-]+\.[a-z]{2,}$/);
+      expect(b.colors.length).toBeGreaterThan(0);
+      for (const c of b.colors) expect(c.hex).toMatch(/^#[0-9A-F]{6}$/);
+    }
+  });
+  it("lists every brand page and the index in the sitemap", () => {
+    const paths = sitemapEntries([], []).map(u => new URL(u.loc).pathname);
+    expect(paths).toContain("/brand-colors");
+    for (const slug of ["spotify", "coca-cola", "nike", "tesla"]) expect(paths).toContain(`/brand-colors/${slug}`);
+  });
+  it("writes at least 100 words of unique copy per brand page", () => {
+    for (const slug of ["spotify", "apple", "ikea"]) {
+      const b = getBrand(slug)!;
+      const words = brandStory(b).join(" ").split(/\s+/).length;
+      expect(words).toBeGreaterThanOrEqual(100);
+      expect(brandStory(b).join(" ")).toContain(b.name);
+    }
+  });
+  it("links related brands from the same category only", () => {
+    const spotify = getBrand("spotify")!;
+    for (const r of relatedBrands(spotify)) expect(r.category).toBe(spotify.category);
   });
 });

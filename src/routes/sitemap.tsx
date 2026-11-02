@@ -4,6 +4,7 @@ import { Breadcrumbs, breadcrumbLd } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
 import { TOOLS } from "@/lib/tools";
 import { getIndexablePalettes } from "@/lib/palette-editorial";
+import { BRAND_CATEGORIES, BRANDS } from "@/lib/brands";
 
 export const Route = createFileRoute("/sitemap")({
   loader: () => listPosts(),
@@ -23,6 +24,7 @@ const MAIN = [
   ["All tools", "/tools"],
   ["Palette gallery", "/palettes"],
   ["Blog", "/blog"],
+  ["Brand Colors", "/brand-colors"],
   ["Downloads", "/downloads"],
   ["Giveaway", "/giveaway"],
   ["About", "/about"],
@@ -95,6 +97,34 @@ function Page() {
             ))}
           </ul>
         )}
+      </section>
+
+      <section aria-labelledby="sitemap-brands" className="mt-12">
+        <h2 id="sitemap-brands" className="text-2xl font-bold">Brand colors</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {BRANDS.length} brand palette pages, grouped by category. Browse them with search and filters on the{" "}
+          <Link to="/brand-colors" className="text-primary hover:underline">Brand Colors page</Link>.
+        </p>
+        <div className="mt-6 space-y-8">
+          {BRAND_CATEGORIES.map((c) => {
+            const items = BRANDS.filter((b) => b.category === c.id);
+            if (!items.length) return null;
+            return (
+              <section key={c.id} aria-labelledby={`brands-${c.id}`}>
+                <h3 id={`brands-${c.id}`} className="text-lg font-bold">
+                  {c.label} <span className="text-sm font-normal text-muted-foreground">({items.length})</span>
+                </h3>
+                <ul className="mt-2 columns-2 gap-8 text-sm md:columns-3 lg:columns-4">
+                  {items.map((b) => (
+                    <li key={b.slug} className="break-inside-avoid py-0.5">
+                      <Link to="/brand-colors/$slug" params={{ slug: b.slug }} className="text-foreground/80 hover:text-primary">{b.name}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
       </section>
 
       <section aria-labelledby="sitemap-palettes" className="mt-12">
