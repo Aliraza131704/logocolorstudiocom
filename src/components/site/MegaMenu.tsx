@@ -58,9 +58,9 @@ export function MegaMenu({ open, onOpenChange }: { open: boolean; onOpenChange: 
         <div className="fixed left-1/2 top-full z-50 w-full max-w-[calc(100vw-2rem)] -translate-x-1/2 px-4">
           <div className="mt-2 overflow-hidden rounded-2xl border bg-popover shadow-soft">
             <div className="grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_15rem]">
-              <div className="grid gap-6 sm:grid-cols-2">
-                {MEGA_GROUPS.map((group) => (
-                  <div key={group.label}>
+              <div className="grid gap-5 sm:grid-cols-3">
+                {MEGA_GROUPS.map((group, i) => (
+                  <div key={group.label} className={cn(i > 0 && "sm:border-l sm:pl-5")}>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       {group.label}
                     </p>
