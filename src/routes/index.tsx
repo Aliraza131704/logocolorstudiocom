@@ -92,7 +92,7 @@ function Index() {
                   <li key={c} className="rounded-full border border-primary-foreground/15 bg-primary-foreground/5 px-3 py-1 text-xs text-primary-foreground/75">{c}</li>
                 ))}
               </ul>
-              <Button variant="hero" className="mt-8" asChild><Link to="/tools/cms-detector">Start a scan <ArrowRight /></Button>
+              <Button variant="hero" className="mt-8" asChild><Link to="/tools/cms-detector">Start a scan <ArrowRight /></Link></Button>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {DETECT.tools.map((t) => (
