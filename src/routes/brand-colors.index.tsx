@@ -115,6 +115,3 @@ function Page() {
     </div>
   );
 }
-
-// Re-exported so the detail route can deep-link into the same data without a flash.
-export { getBrand };
