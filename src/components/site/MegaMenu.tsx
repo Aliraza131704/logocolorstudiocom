@@ -1,0 +1,153 @@
+import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowUpRight, ChevronDown, Download, Gift, Rss, SwatchBook } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { MEGA_GROUPS } from "@/lib/tool-groups";
+
+
+/**
+ * Full-width mega menu for the Tools section. Opens on hover or click on
+ * desktop, closes on Escape, outside click, route change or pointer leave.
+ */
+export function MegaMenu({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<number | undefined>(undefined);
+
+  const show = () => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    onOpenChange(true);
+  };
+  const hide = () => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => onOpenChange(false), 140);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onOpenChange(false);
+    };
+    const onDown = (e: MouseEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) onOpenChange(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDown);
+    };
+  }, [open, onOpenChange]);
+
+  return (
+    <div ref={wrapRef} className="relative" onMouseEnter={show} onMouseLeave={hide}>
+      <Button
+        variant="ghost"
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => onOpenChange(!open)}
+        className={cn("gap-1.5 font-medium", open && "bg-accent text-accent-foreground")}
+      >
+        Tools
+        <ChevronDown className={cn("size-4 transition-transform duration-200", open && "rotate-180")} />
+      </Button>
+
+      {/* Panel is fixed to the sticky header so it is always viewport-centered. */}
+      {open && (
+        <div className="fixed left-1/2 top-full z-50 w-full max-w-[calc(100vw-2rem)] -translate-x-1/2 px-4">
+          <div className="mt-2 overflow-hidden rounded-2xl border bg-popover shadow-soft">
+            <div className="grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_15rem]">
+              <div className="grid items-stretch gap-5 sm:grid-cols-3">
+                {MEGA_GROUPS.map((group, i) => (
+                  <div key={group.label} className={cn(i > 0 && "sm:border-l sm:pl-5")}>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      {group.label}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">{group.blurb}</p>
+                    <ul className="mt-3 space-y-0.5">
+                      {group.tools.map((tool) => (
+                        <li key={tool.path}>
+                          <Link
+                            to={tool.path}
+                            onClick={() => onOpenChange(false)}
+                            className="group -mx-2 flex gap-3 rounded-xl p-2 transition-colors hover:bg-accent"
+                          >
+                            <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg border bg-background">
+                              <tool.icon className={cn("size-4", tool.color)} />
+                            </span>
+                            <span className="min-w-0">
+                              <span className="flex items-center gap-2 text-sm font-medium">
+                                {tool.name}
+                                {tool.isNew && (
+                                  <span className="rounded-full bg-brand-green/15 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-brand-green">
+                                    New
+                                  </span>
+                                )}
+                              </span>
+                              <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">
+                                {tool.short}
+                              </span>
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col border-t pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+                <div className="flex flex-1 flex-col rounded-xl border bg-card p-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Explore</p>
+                  <div className="mt-2 space-y-1">
+                    {[
+                      { to: "/palettes", label: "Palette gallery", icon: SwatchBook, color: "text-brand-blue" },
+                      { to: "/downloads", label: "Asset downloads", icon: Download, color: "text-brand-green" },
+                      { to: "/blog", label: "Latest posts", icon: Rss, color: "text-brand-orange" },
+                      { to: "/giveaway", label: "Monthly giveaway", icon: Gift, color: "text-brand-red" },
+                    ].map((l) => (
+                      <Link
+                        key={l.to}
+                        to={l.to}
+                        onClick={() => onOpenChange(false)}
+                        className="flex items-center gap-2 rounded-lg px-1 py-1.5 text-sm transition-colors hover:bg-accent"
+                      >
+                        <l.icon className={cn("size-4", l.color)} /> {l.label}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="mt-auto pt-4">
+                    <div className="h-8 w-full rounded-lg bg-brand-gradient" aria-hidden="true" />
+                    <p className="mt-2.5 text-xs leading-snug text-muted-foreground">
+                      1,000 curated palettes and official brand color pages — free to copy, export and reuse.
+                    </p>
+                    <Link
+                      to="/brand-colors"
+                      onClick={() => onOpenChange(false)}
+                      className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                    >
+                      Browse brand colors <ArrowUpRight className="size-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t bg-muted/40 px-6 py-3">
+              <p className="text-xs text-foreground/80">
+                Every tool is free to use — no account, no watermark, no upload limits.
+              </p>
+              <Link
+                to="/sitemap"
+                onClick={() => onOpenChange(false)}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+              >
+                See everything on the site <ArrowUpRight className="size-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
