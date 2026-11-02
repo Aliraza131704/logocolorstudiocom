@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowRight, Upload, Wand2, Download, ShieldCheck, Zap, Lock } from "lucide-react";
 import hero from "@/assets/hero.webp";
+import heroSmall from "@/assets/hero-800.webp";
 import { Button } from "@/components/ui/button";
 import { TOOLS } from "@/lib/tools";
 import { FaqList, Reveal, SectionTitle, faqLd, type Faq } from "@/components/site/ui-bits";
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/")({
       path: "/",
       jsonLd: [faqLd(FAQS)],
     }),
+  // preload hero handled by fetchPriority
   component: Index,
 });
 
@@ -34,7 +36,7 @@ function Index() {
     <>
       <section className="relative overflow-hidden bg-hero">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-2 lg:pt-20">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <div>
             <span className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-3 py-1 text-xs font-medium">
               <span className="h-2 w-2 rounded-full bg-brand-green" /> 10 free tools · No sign-up
             </span>
@@ -53,11 +55,11 @@ function Index() {
               <span className="flex items-center gap-2"><ShieldCheck className="size-4 text-brand-blue" /> WCAG checks built in</span>
               <span className="flex items-center gap-2"><Zap className="size-4 text-brand-orange" /> Instant exports</span>
             </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.1 }} className="relative">
+          </div>
+          <div className="relative">
             <div className="absolute -inset-6 rounded-[2.5rem] bg-brand-gradient opacity-20 blur-3xl" />
-            <img src={hero} alt="Floating brand color swatches in blue, green, orange and red" width={1280} height={960} fetchPriority="high" className="relative w-full rounded-[2rem] border shadow-soft" />
-          </motion.div>
+            <img src={heroSmall} srcSet={`${heroSmall} 800w, ${hero} 1280w`} sizes="(min-width: 1024px) 600px, 100vw" decoding="async" alt="Floating brand color swatches in blue, green, orange and red" width={1280} height={960} fetchPriority="high" className="relative w-full rounded-[2rem] border shadow-soft" />
+          </div>
         </div>
       </section>
 
