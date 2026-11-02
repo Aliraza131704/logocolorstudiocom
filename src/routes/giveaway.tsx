@@ -8,6 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PageExtras } from "@/components/site/PageExtras";
 
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100),
@@ -16,11 +19,13 @@ const schema = z.object({
 });
 
 export const Route = createFileRoute("/giveaway")({
-  head: () => pageHead({ title: "Free Monthly 50 USDT Giveaway — LogoColorStudio", description: "Enter the free LogoColorStudio monthly giveaway. No payment or purchase needed — one lucky winner receives 50 USDT at the end of every month.", path: "/giveaway" }),
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-giveaway"), { title: "Free Monthly 50 USDT Giveaway — LogoColorStudio", description: "Enter the free LogoColorStudio monthly giveaway. No payment or purchase needed — one lucky winner receives 50 USDT at the end of every month.", path: "/giveaway" })),
   component: Page,
 });
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "page-giveaway");
   const [f, setF] = useState({ name: "", email: "", wallet: "" });
   const [agree, setAgree] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -41,8 +46,8 @@ function Page() {
     <div className="container mx-auto max-w-2xl px-4 py-12">
       <div className="text-center">
         <Gift className="mx-auto size-10 text-primary" />
-        <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Free monthly 50 USDT giveaway</h1>
-        <p className="mt-3 text-muted-foreground">Enter for free. At the end of every month, one lucky winner receives <strong>50 USDT</strong>. No payment, deposit or purchase is ever required.</p>
+        <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{o?.title ?? <>Free monthly 50 USDT giveaway</>}</h1>
+        <p className="mt-3 text-muted-foreground">{o?.intro ?? <>Enter for free. At the end of every month, one lucky winner receives <strong>50 USDT</strong>. No payment, deposit or purchase is ever required.</>}</p>
       </div>
       {sent ? (
         <p role="status" className="mt-8 rounded-2xl border bg-card p-6 text-center font-medium">You're entered for this month. We'll email the winner after the draw.</p>
@@ -67,6 +72,7 @@ function Page() {
           <li>Anyone messaging you "from LogoColorStudio" asking for payment is a scam.</li>
         </ul>
       </section>
+      <PageExtras o={o} />
     </div>
   );
 }

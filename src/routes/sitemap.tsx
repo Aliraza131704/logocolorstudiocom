@@ -2,20 +2,22 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { listPosts } from "@/lib/content.functions";
 import { Breadcrumbs, breadcrumbLd } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PageExtras } from "@/components/site/PageExtras";
 import { TOOLS } from "@/lib/tools";
 import { getIndexablePalettes } from "@/lib/palette-editorial";
 import { BRAND_CATEGORIES, BRANDS } from "@/lib/brands";
 
 export const Route = createFileRoute("/sitemap")({
-  loader: () => listPosts(),
-  head: () =>
-    pageHead({
+  loader: async () => { const [posts, ov] = await Promise.all([listPosts(), getPublicSetting({ data: { key: TOOL_CONTENT_KEY } })]); return { posts, ov }; },
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData?.ov, "page-sitemap"), {
       title: "Sitemap — Every Page on LogoColorStudio",
       description:
         "Complete sitemap of LogoColorStudio: all free color tools, the 1,000-palette gallery, every guide and article, downloads, giveaway and legal pages in one place.",
       path: "/sitemap",
       jsonLd: [breadcrumbLd([{ label: "Sitemap" }], "/sitemap")],
-    }),
+    })),
   component: Page,
 });
 
@@ -52,7 +54,8 @@ function LinkList({ items }: { items: readonly (readonly [string, string])[] }) 
 }
 
 function Page() {
-  const posts = Route.useLoaderData();
+  const { posts, ov } = Route.useLoaderData();
+  const o = toolOverride(ov, "page-sitemap");
   const palettes = getIndexablePalettes();
   const letters = [...new Set(palettes.map((p) => p.name[0].toUpperCase()))].sort();
   const byLetter = (l: string) => palettes.filter((p) => p.name[0].toUpperCase() === l);
@@ -60,7 +63,7 @@ function Page() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <Breadcrumbs items={[{ label: "Sitemap" }]} />
-      <h1 className="text-4xl font-bold sm:text-5xl">Site map</h1>
+      <h1 className="text-4xl font-bold sm:text-5xl">{o?.title ?? "Site map"}</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted-foreground">
         Every page on LogoColorStudio in one place — {MAIN.length} main pages, {TOOLS.length} free tools,{" "}
         {posts.length} {posts.length === 1 ? "guide" : "guides"}, {palettes.length} palette pages and {LEGAL.length} policy pages.
@@ -175,6 +178,7 @@ function Page() {
           <a href="/robots.txt" className="text-primary hover:underline">robots.txt</a> file.
         </p>
       </section>
+      <PageExtras o={o} />
     </div>
   );
 }

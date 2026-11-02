@@ -12,16 +12,20 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import { useConsent } from '@/components/site/consent';
 import { useSettings } from '@/lib/site-data';
 import { pageHead } from '@/lib/seo';
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PageExtras } from "@/components/site/PageExtras";
 import { rewardEarned, watchedProgress, safeSponsorVideo } from '@/lib/download-reward';
 const catalogQuery = queryOptions({ queryKey: ['download-catalog'], queryFn: () => listDownloadAssets(), staleTime: 30_000 });
 
 export const Route = createFileRoute('/downloads')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
-  head: () => pageHead({ title: 'Asset Downloads — LogoColorStudio', description: 'Browse website assets including the WoodMart WordPress theme, with sponsor videos, banners and website promotions.', path: '/downloads' }),
+  loader: async ({ context }) => { await context.queryClient.ensureQueryData(catalogQuery); return getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }); },
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-downloads"), { title: 'Asset Downloads — LogoColorStudio', description: 'Browse website assets including the WoodMart WordPress theme, with sponsor videos, banners and website promotions.', path: '/downloads' })),
   component: Downloads,
 });
 
 function Downloads() {
+  const o = toolOverride(Route.useLoaderData(), "page-downloads");
   const { data: settings, isPending } = useSettings();
   const { consent, open: openConsent } = useConsent();
   const [show, setShow] = useState(false);
@@ -69,8 +73,8 @@ function Downloads() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       <div className="flex items-center gap-2 text-sm font-semibold text-brand-green"><Package className="size-4" /> Website resources</div>
-      <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Asset downloads</h1>
-      <p className="mt-3 max-w-2xl text-muted-foreground">Themes and resources for your next website.</p>
+      <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{o?.title ?? <>Asset downloads</>}</h1>
+      <p className="mt-3 max-w-2xl text-muted-foreground">{o?.intro ?? <>Themes and resources for your next website.</>}</p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Input aria-label="Search assets" placeholder="Search themes, plugins, resources…" value={search} onChange={e => setSearch(e.target.value)} className="sm:max-w-md" />
         <Select value={category} onValueChange={setCategory}><SelectTrigger aria-label="Filter category" className="w-full sm:w-60"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All categories</SelectItem>{categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
@@ -111,6 +115,7 @@ function Downloads() {
           <Button variant="outline" onClick={() => setShow(false)}>Cancel</Button>
         </DialogContent>
       </Dialog>
+      <PageExtras o={o} />
     </div>
   );
 }

@@ -6,23 +6,27 @@ import { BrandLogo } from "@/components/site/BrandLogo";
 import { BrandDetail } from "@/components/site/BrandDetail";
 import { breadcrumbLd } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PageExtras } from "@/components/site/PageExtras";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/brand-colors/")({
-  head: () =>
-    pageHead({
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-brand-colors"), {
       title: `Brand Colors: Official Logo Palettes of ${BRANDS.length}+ Famous Brands`,
       description: `Explore the official logo colors of ${BRANDS.length}+ world-famous brands. Copy HEX, RGB and HSL, pick colors straight from each logo, and download palettes as PNG, CSS or Tailwind.`,
       path: "/brand-colors",
       jsonLd: [breadcrumbLd([{ label: "Brand Colors" }], "/brand-colors")],
-    }),
+    })),
   component: Page,
 });
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "page-brand-colors");
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<string>("all");
   const [open, setOpen] = useState<Brand | null>(null);
@@ -58,11 +62,11 @@ function Page() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-      <h1 className="text-4xl font-bold">Brand colors</h1>
-      <p className="mt-3 max-w-2xl text-muted-foreground">
+      <h1 className="text-4xl font-bold">{o?.title ?? "Brand colors"}</h1>
+      <p className="mt-3 max-w-2xl text-muted-foreground">{o?.intro ?? <>
         The official logo palettes of {BRANDS.length} world-famous brands. Click any brand to copy its HEX, RGB and HSL
         values, pick colors directly from the logo, and download the palette as PNG, CSS variables or a Tailwind config.
-      </p>
+      </>}</p>
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative sm:w-72">
@@ -118,6 +122,7 @@ function Page() {
           {open && <BrandDetail brand={open} headingLevel={2} />}
         </DialogContent>
       </Dialog>
+      <PageExtras o={o} />
     </div>
   );
 }
