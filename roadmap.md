@@ -24,3 +24,8 @@
 - [x] Logo Extractor guide + 12 FAQs
 - [x] Finalize Website Extractor, Palette Generator, Contrast Checker, Theme Generator, Shopify Theme Detector, WordPress Theme Detector and Export Center with expanded guides, 12 FAQs and two pictures each; all seven verified in desktop/mobile preview, with loaded pictures and server-rendered FAQs; 10 regression tests pass.
 - [x] Verify the already-added Website Auditor guide and pictures in desktop/mobile preview.
+
+## Audience communities and listings
+- [x] Submit the sitemap to Google Search Console and confirm the new /sitemap page is live (1,031 URLs, 0 warnings, 0 errors).
+- [x] Research qualified communities, forums and directories for the site's audience, with rules and submission routes.
+- [x] Draft a ready-to-post message or listing for each qualified venue.
