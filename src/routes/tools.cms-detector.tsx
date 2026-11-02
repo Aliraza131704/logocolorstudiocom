@@ -6,6 +6,8 @@ import { ErrorNote, ResultSkeleton, UrlForm } from "@/components/site/tool-parts
 import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { detectCms } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 import cmsDetectImg from "@/assets/guide-cms-detect.jpg";
 import cmsFrameworkImg from "@/assets/guide-cms-vs-framework.jpg";
 
@@ -25,19 +27,23 @@ const FAQS: Faq[] = [
 ];
 
 export const Route = createFileRoute("/tools/cms-detector")({
-  head: () =>
-    pageHead({
-      title: "Free CMS Detector — What CMS Is This Website Using?",
-      description: "Detect whether a website uses WordPress, Shopify, Wix, Squarespace, Webflow, Drupal, Magento, Ghost and more, with a confidence score.",
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "cms-detector");
+    return pageHead({
+      title: o?.metaTitle ?? "Free CMS Detector — What CMS Is This Website Using?",
+      description: o?.metaDescription ?? "Detect whether a website uses WordPress, Shopify, Wix, Squarespace, Webflow, Drupal, Magento, Ghost and more, with a confidence score.",
       path: "/tools/cms-detector",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "CMS Detector" }], "/tools/cms-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "CMS Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "CMS Detector" }], "/tools/cms-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "CMS Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
+    });
+  },
   component: Page,
 });
 
 type Res = Awaited<ReturnType<typeof detectCms>>;
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "cms-detector");
   const fn = useServerFn(detectCms);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
@@ -48,7 +54,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout slug="cms-detector" title="Free CMS Detector – Identify Any Website's Platform" intro="Find out which content management system or site builder powers any website." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="cms-detector" title="Free CMS Detector – Identify Any Website's Platform" intro="Find out which content management system or site builder powers any website." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Detect" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

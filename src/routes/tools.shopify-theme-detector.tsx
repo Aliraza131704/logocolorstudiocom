@@ -8,23 +8,29 @@ import { ErrorNote, ResultSkeleton, UrlForm } from "@/components/site/tool-parts
 import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { detectShopify } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 
 const FAQS: Faq[] = TOOL_GUIDES["shopify-theme-detector"].faqs;
 
 export const Route = createFileRoute("/tools/shopify-theme-detector")({
-  head: () =>
-    pageHead({
-      title: "Free Shopify Theme Detector — Find Any Store's Theme & Apps",
-      description: "Free Shopify theme detector: paste any store URL to see its theme name, version, Theme Store link and installed apps in seconds. No signup.",
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "shopify-theme-detector");
+    return pageHead({
+      title: o?.metaTitle ?? "Free Shopify Theme Detector — Find Any Store's Theme & Apps",
+      description: o?.metaDescription ?? "Free Shopify theme detector: paste any store URL to see its theme name, version, Theme Store link and installed apps in seconds. No signup.",
       path: "/tools/shopify-theme-detector",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Shopify Theme Detector" }], "/tools/shopify-theme-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Shopify Theme Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Shopify Theme Detector" }], "/tools/shopify-theme-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Shopify Theme Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
+    });
+  },
   component: Page,
 });
 
 type Res = Awaited<ReturnType<typeof detectShopify>>;
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "shopify-theme-detector");
   const fn = useServerFn(detectShopify);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
@@ -35,7 +41,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout slug="shopify-theme-detector" title={TOOL_GUIDES["shopify-theme-detector"].title} intro="See which theme a Shopify store uses, its version and the apps it runs." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="shopify-theme-detector" title={TOOL_GUIDES["shopify-theme-detector"].title} intro="See which theme a Shopify store uses, its version and the apps it runs." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} placeholder="store.com" cta="Detect theme" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

@@ -10,27 +10,33 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { normalizeHex, randomHex } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 
 const FAQS: Faq[] = TOOL_GUIDES["export-center"].faqs;
 
 export const Route = createFileRoute("/tools/export-center")({
-  head: () =>
-    pageHead({
-      title: "Export Center — CSS, Tailwind, SCSS & JSON",
-      description: "Export any color palette as CSS variables, Tailwind config, SCSS, JSON or a PNG swatch image. Rename tokens and copy in one click.",
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "export-center");
+    return pageHead({
+      title: o?.metaTitle ?? "Export Center — CSS, Tailwind, SCSS & JSON",
+      description: o?.metaDescription ?? "Export any color palette as CSS variables, Tailwind config, SCSS, JSON or a PNG swatch image. Rename tokens and copy in one click.",
       path: "/tools/export-center",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Export Center" }], "/tools/export-center")],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Export Center" }], "/tools/export-center")],
+    });
+  },
   component: Page,
 });
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "export-center");
   const [colors, setColors] = useState<string[]>(["#0A8CFF", "#4CC53F", "#FFB11A", "#FF3B4E", "#0F1B3D"]);
   const [name, setName] = useState("brand");
   useEffect(() => { const p = loadPalette(); if (p?.length) setColors(p); }, []);
   useEffect(() => { savePalette(colors); }, [colors]);
   return (
-    <ToolLayout slug="export-center" title={TOOL_GUIDES["export-center"].title} intro="Turn any palette into production-ready code or a shareable image." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="export-center" title={TOOL_GUIDES["export-center"].title} intro="Turn any palette into production-ready code or a shareable image." faqs={FAQS} about={<About />}>
       <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
         <div className="space-y-4 rounded-2xl border bg-card p-6">
           <div>

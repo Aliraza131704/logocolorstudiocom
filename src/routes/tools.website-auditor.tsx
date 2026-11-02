@@ -13,6 +13,8 @@ import { AUDIT_HISTORY_KEY, readAuditHistory } from "@/lib/audit-report";
 import type { AuditReport } from "@/lib/audit-types";
 import { crawlUrl, mergeAuditBatches, SITE_AUDIT_LIMIT } from "@/lib/audit-crawl";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 import auditScanImg from "@/assets/guide-audit-scan.jpg";
 import seoReportImg from "@/assets/guide-seo-report.jpg";
 
@@ -32,17 +34,21 @@ const FAQS: Faq[] = [
 ];
 
 export const Route = createFileRoute("/tools/website-auditor")({
-  head: () =>
-    pageHead({
-      title: "Website Auditor — Evidence & Reports | LogoColorStudio",
-      description: "Audit public website HTML with real evidence, category scores, coverage, link checks and CMS detection. Compare scans and export PDF, CSV or JSON.",
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "website-auditor");
+    return pageHead({
+      title: o?.metaTitle ?? "Website Auditor — Evidence & Reports | LogoColorStudio",
+      description: o?.metaDescription ?? "Audit public website HTML with real evidence, category scores, coverage, link checks and CMS detection. Compare scans and export PDF, CSV or JSON.",
       path: "/tools/website-auditor",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Auditor" }], "/tools/website-auditor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Auditor", applicationCategory: "BusinessApplication", operatingSystem: "Any" }],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Auditor" }], "/tools/website-auditor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Auditor", applicationCategory: "BusinessApplication", operatingSystem: "Any" }],
+    });
+  },
   component: Page,
 });
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "website-auditor");
   const fn = useServerFn(auditWebsite);
   const [url, setUrl] = useState("");
   const [competitorUrl, setCompetitorUrl] = useState("");
@@ -120,7 +126,7 @@ function Page() {
   };
   const previous = res ? history.find(r => r.url === res.url && r.checkedAt !== res.checkedAt) : undefined;
   return (
-    <ToolLayout slug="website-auditor" title="Free Website Auditor – SEO & Site Health Check" intro="Inspect your website. Find the evidence. Prioritize what matters." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="website-auditor" title="Free Website Auditor – SEO & Site Health Check" intro="Inspect your website. Find the evidence. Prioritize what matters." faqs={FAQS} about={<About />}>
       <div className="mb-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground"><span className="flex items-center gap-2"><Globe className="size-4 text-primary" /> Public websites</span><span>17 audit categories</span><span>Evidence-based recommendations</span></div>
       <form onSubmit={e => { e.preventDefault(); void run(); }} className="space-y-4">
         <div className="flex flex-wrap gap-2" aria-label="Scan scope"><Button type="button" variant={siteWide ? "default" : "outline"} aria-pressed={siteWide} disabled={loading} onClick={() => setSiteWide(true)}>Site-wide scan</Button><Button type="button" variant={!siteWide ? "default" : "outline"} aria-pressed={!siteWide} disabled={loading} onClick={() => setSiteWide(false)}>Focused scan</Button></div>

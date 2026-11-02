@@ -9,23 +9,29 @@ import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { Button } from "@/components/ui/button";
 import { extractWebsite } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 
 const FAQS: Faq[] = TOOL_GUIDES["website-extractor"].faqs;
 
 export const Route = createFileRoute("/tools/website-extractor")({
-  head: () =>
-    pageHead({
-      title: "Website Color Extractor — Colors, Fonts & Logo",
-      description: "Enter any URL to extract the website's brand colors, fonts and logo. Copy HEX and RGB values or export CSS, Tailwind and JSON.",
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "website-extractor");
+    return pageHead({
+      title: o?.metaTitle ?? "Website Color Extractor — Colors, Fonts & Logo",
+      description: o?.metaDescription ?? "Enter any URL to extract the website's brand colors, fonts and logo. Copy HEX and RGB values or export CSS, Tailwind and JSON.",
       path: "/tools/website-extractor",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Extractor" }], "/tools/website-extractor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Color Extractor", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Extractor" }], "/tools/website-extractor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Color Extractor", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
+    });
+  },
   component: Page,
 });
 
 type Res = Awaited<ReturnType<typeof extractWebsite>>;
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "website-extractor");
   const fn = useServerFn(extractWebsite);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
@@ -37,7 +43,7 @@ function Page() {
   };
   const hexes = res?.colors.slice(0, 10).map((c) => c.hex) ?? [];
   return (
-    <ToolLayout slug="website-extractor" title={TOOL_GUIDES["website-extractor"].title} intro="Paste a website address to discover its brand colors, fonts and logo in seconds." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="website-extractor" title={TOOL_GUIDES["website-extractor"].title} intro="Paste a website address to discover its brand colors, fonts and logo in seconds." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Extract" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

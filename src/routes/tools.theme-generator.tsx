@@ -8,17 +8,22 @@ import { CopyButton, faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-
 import { Button } from "@/components/ui/button";
 import { adjust, contrastRatio, hexToHsl, hslToHex, normalizeHex, readableOn } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 
 const FAQS: Faq[] = TOOL_GUIDES["theme-generator"].faqs;
 
 export const Route = createFileRoute("/tools/theme-generator")({
-  head: () =>
-    pageHead({
-      title: "Theme Generator — Light & Dark UI Themes",
-      description: "Turn a brand palette into accessible light and dark UI themes with live preview. Copy CSS variables for Tailwind and shadcn/ui.",
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "theme-generator");
+    return pageHead({
+      title: o?.metaTitle ?? "Theme Generator — Light & Dark UI Themes",
+      description: o?.metaDescription ?? "Turn a brand palette into accessible light and dark UI themes with live preview. Copy CSS variables for Tailwind and shadcn/ui.",
       path: "/tools/theme-generator",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Theme Generator" }], "/tools/theme-generator"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Theme Generator", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Theme Generator" }], "/tools/theme-generator"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Theme Generator", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
+    });
+  },
   component: Page,
 });
 
@@ -34,6 +39,7 @@ function buildTheme(primary: string, accent: string, mode: "light" | "dark") {
 }
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "theme-generator");
   const [primary, setPrimary] = useState("#0A8CFF");
   const [accent, setAccent] = useState("#FFB11A");
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -44,7 +50,7 @@ function Page() {
   const css = `:root {\n${Object.entries(light).map(([k, v]) => `  --${k}: ${v};`).join("\n")}\n}\n.dark {\n${Object.entries(dark).map(([k, v]) => `  --${k}: ${v};`).join("\n")}\n}`;
 
   return (
-    <ToolLayout slug="theme-generator" title={TOOL_GUIDES["theme-generator"].title} intro="Generate matching light and dark UI themes from your brand colors and preview them live." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="theme-generator" title={TOOL_GUIDES["theme-generator"].title} intro="Generate matching light and dark UI themes from your brand colors and preview them live." faqs={FAQS} about={<About />}>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <div className="space-y-5 rounded-2xl border bg-card p-6">
           {[["Primary", primary, setPrimary], ["Accent", accent, setAccent]].map(([l, v, set]) => (

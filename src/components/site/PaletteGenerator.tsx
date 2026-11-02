@@ -13,6 +13,8 @@ import { Breadcrumbs, FaqList, copyText, download, faqLd, type Faq } from "@/com
 import { AdSlot } from "@/components/site/AdSlot";
 import { HARMONIES, adjust, exportPalette, harmony, normalizeHex, randomHex, readableOn, type Harmony } from "@/lib/color";
 import { logEvent } from "@/lib/site-data";
+import { toolOverride } from "@/lib/tool-overrides";
+import { getRouteApi } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { paletteTextColor } from "@/lib/palette-presentation";
 import { absoluteUrl } from "@/lib/seo";
@@ -25,13 +27,15 @@ export function PaletteGeneratorPage() {
   useEffect(() => { setLogoColors(loadPalette()); logEvent("tool", "palette-generator"); }, []);
   const base = logoColors?.[0] ?? "#0A8CFF";
   const auto = useMemo(() => HARMONIES.map((h) => ({ ...h, colors: harmony(base, h.id) })), [base]);
+  // Owner-edited content from Admin → Tool pages, loaded in the route loader.
+  const o = toolOverride(getRouteApi("/tools/palette-generator").useLoaderData(), "palette-generator");
 
   return (
     <div className="bg-hero">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <Breadcrumbs items={[{ label: "Tools", to: "/tools" }, { label: "Palette Generator" }]} />
-        <h1 className="text-4xl font-bold sm:text-5xl">{TOOL_GUIDES["palette-generator"].title}</h1>
-        <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Build color harmonies from your logo and create a custom palette.</p>
+        <h1 className="text-4xl font-bold sm:text-5xl">{o?.title ?? TOOL_GUIDES["palette-generator"].title}</h1>
+        <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{o?.intro ?? "Build color harmonies from your logo and create a custom palette."}</p>
 
         <section className="mt-12">
           <div className="flex flex-wrap items-end justify-between gap-3">
@@ -56,9 +60,9 @@ export function PaletteGeneratorPage() {
         <div className="mt-10"><Button asChild variant="outline"><Link to="/palettes">Browse the palette gallery</Link></Button></div>
 
         <article className="prose-content mx-auto mt-20 max-w-3xl">
-          <ToolGuide slug="palette-generator" />
+          {o?.bodyHtml ? <div dangerouslySetInnerHTML={{ __html: o.bodyHtml }} /> : <ToolGuide slug="palette-generator" />}
         </article>
-        <div className="mt-16"><FaqList faqs={GENERATOR_FAQS} /></div>
+        <div className="mt-16"><FaqList faqs={o?.faqs ?? GENERATOR_FAQS} /></div>
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ export function ThemeToggle() {
 
 const NAV = [
   { to: "/palettes", label: "Palettes" },
+  { to: "/brand-colors", label: "Brand Colors" },
   { to: "/downloads", label: "Downloads" },
   { to: "/blog", label: "Blog" },
   { to: "/about", label: "About" },

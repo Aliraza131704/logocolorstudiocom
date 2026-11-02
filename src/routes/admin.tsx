@@ -3,12 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import { toast } from "sonner";
-import { LayoutDashboard, Megaphone, FileText, FileCog, Settings, Users, Inbox, LogOut, ExternalLink, Trash2, Plus } from "lucide-react";
+import { LayoutDashboard, Megaphone, FileText, FileCog, Settings, Users, Inbox, LogOut, ExternalLink, Trash2, Plus, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { LogoImage } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/SiteHeader";
 import { RichEditor } from "@/components/admin/RichEditor";
 import { DownloadManager } from '@/components/admin/DownloadManager';
+import { ToolContentManager } from "@/components/admin/ToolContentManager";
 import { download } from "@/components/site/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +56,7 @@ const TABS = [
   { id: "downloads", label: "Downloads", icon: FileCog },
   { id: "blog", label: "Blog", icon: FileText },
   { id: "pages", label: "Pages", icon: FileCog },
+  { id: "tools", label: "Tool pages", icon: Wrench },
   { id: "settings", label: "Settings", icon: Settings },
   { id: "subs", label: "Subscribers", icon: Users },
   { id: "msgs", label: "Messages", icon: Inbox },
@@ -95,6 +97,7 @@ function Admin() {
         {tab === "downloads" && <DownloadSettings />}
         {tab === "blog" && <BlogManager />}
         {tab === "pages" && <PageManager />}
+        {tab === "tools" && <ToolContentManager />}
         {tab === "settings" && <SettingsPanel />}
         {tab === "subs" && <Subscribers />}
         {tab === "msgs" && <Messages />}
