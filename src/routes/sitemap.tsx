@@ -23,6 +23,7 @@ const MAIN = [
   ["All tools", "/tools"],
   ["Palette gallery", "/palettes"],
   ["Blog", "/blog"],
+  ["Brand Colors", "/brand-colors"],
   ["Downloads", "/downloads"],
   ["Giveaway", "/giveaway"],
   ["About", "/about"],
