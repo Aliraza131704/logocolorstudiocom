@@ -9,6 +9,7 @@ import { paletteTextColor } from "@/lib/palette-presentation";
 import { adsEnabled } from "@/components/site/AdSlot";
 import { BRANDS, getBrand, relatedBrands } from "@/lib/brands";
 import { brandStory } from "@/lib/brand-text";
+import { parseToolOverrides, faqsToText, textToFaqs } from "@/lib/tool-overrides";
 
 describe("Palette indexing", () => {
   it("makes all 1,000 palettes indexable with unique stable slugs", () => {
@@ -118,5 +119,28 @@ describe("Brand colors section", () => {
   it("links related brands from the same category only", () => {
     const spotify = getBrand("spotify")!;
     for (const r of relatedBrands(spotify)) expect(r.category).toBe(spotify.category);
+  });
+});
+describe("Tool page content overrides", () => {
+  it("parses valid overrides and ignores malformed entries", () => {
+    const raw = JSON.stringify({
+      "cms-detector": { metaTitle: "Custom title", faqs: [{ q: "Q?", a: "A." }, { q: "", a: "skip" }, "junk"] },
+      "bad slug!": { title: "x" },
+      "logo-extractor": { bodyHtml: "<p>Hello</p>" },
+      empty: {},
+    });
+    const parsed = parseToolOverrides(raw);
+    expect(parsed["cms-detector"].metaTitle).toBe("Custom title");
+    expect(parsed["cms-detector"].faqs).toHaveLength(1);
+    expect(parsed["bad slug!"]).toBeUndefined();
+    expect(parsed["logo-extractor"].bodyHtml).toBe("<p>Hello</p>");
+    expect(parsed["empty"]).toBeUndefined();
+    expect(parseToolOverrides("not json")).toEqual({});
+    expect(parseToolOverrides("")).toEqual({});
+  });
+  it("round-trips FAQs through the admin textarea format", () => {
+    const faqs = [{ q: "Is it free?", a: "Yes, completely." }, { q: "Pipe | in answer", a: "Kept | intact" }];
+    expect(textToFaqs(faqsToText(faqs))).toEqual(faqs);
+    expect(textToFaqs("no pipe here\n | empty q\nQ | ")).toEqual([]);
   });
 });
