@@ -57,7 +57,7 @@ export function SiteHeader() {
         </div>
       </div>
       {open && (
-        <nav aria-label="Mobile" className="max-h-[80vh] overflow-y-auto border-b glass px-4 pb-6 pt-1 md:hidden">
+        <nav aria-label="Mobile" className="overflow-y-auto border-b glass px-4 pb-6 pt-1 md:hidden">
           <button
             type="button"
             onClick={() => setToolsOpen(!toolsOpen)}

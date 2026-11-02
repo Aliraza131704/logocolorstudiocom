@@ -54,7 +54,8 @@ export function MegaMenu({ open, onOpenChange }: { open: boolean; onOpenChange: 
       </Button>
 
       {open && (
-        <div className="absolute left-1/2 top-full z-50 w-screen max-w-[min(62rem,calc(100vw-2rem))] -translate-x-1/2 px-4">
+        {/* Fixed to the sticky header so the panel is always viewport-centered. */}
+        <div className="fixed left-1/2 top-full z-50 w-full max-w-[calc(100vw-2rem)] -translate-x-1/2 px-4">
           <div className="mt-2 overflow-hidden rounded-2xl border bg-popover shadow-soft">
             <div className="grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_15rem]">
               <div className="grid gap-6 sm:grid-cols-2">
