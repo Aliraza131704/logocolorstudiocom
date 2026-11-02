@@ -33,8 +33,7 @@ export const Route = createFileRoute("/tools/logo-extractor")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "logo-extractor");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Logo Color Extractor — Get HEX, RGB & HSL",
       description: o?.metaDescription ?? "Upload any logo and instantly extract its exact brand colors in HEX, RGB and HSL. Export to CSS, Tailwind, SCSS or JSON. Free and private.",
       path: "/tools/logo-extractor",

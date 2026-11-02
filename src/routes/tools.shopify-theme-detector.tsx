@@ -17,8 +17,7 @@ export const Route = createFileRoute("/tools/shopify-theme-detector")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "shopify-theme-detector");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Free Shopify Theme Detector — Find Any Store's Theme & Apps",
       description: o?.metaDescription ?? "Free Shopify theme detector: paste any store URL to see its theme name, version, Theme Store link and installed apps in seconds. No signup.",
       path: "/tools/shopify-theme-detector",

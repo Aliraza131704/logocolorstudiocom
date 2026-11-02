@@ -17,8 +17,7 @@ export const Route = createFileRoute("/tools/theme-generator")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "theme-generator");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Theme Generator — Light & Dark UI Themes",
       description: o?.metaDescription ?? "Turn a brand palette into accessible light and dark UI themes with live preview. Copy CSS variables for Tailwind and shadcn/ui.",
       path: "/tools/theme-generator",

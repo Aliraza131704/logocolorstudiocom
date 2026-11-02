@@ -18,8 +18,7 @@ export const Route = createFileRoute("/tools/contrast-checker")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "contrast-checker");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Color Contrast Checker — WCAG AA & AAA",
       description: o?.metaDescription ?? "Check text and background color contrast against WCAG 2.2 AA and AAA. Live preview, ratio score and instant fix suggestions.",
       path: "/tools/contrast-checker",

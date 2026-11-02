@@ -18,8 +18,7 @@ export const Route = createFileRoute("/tools/website-extractor")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "website-extractor");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Website Color Extractor — Colors, Fonts & Logo",
       description: o?.metaDescription ?? "Enter any URL to extract the website's brand colors, fonts and logo. Copy HEX and RGB values or export CSS, Tailwind and JSON.",
       path: "/tools/website-extractor",

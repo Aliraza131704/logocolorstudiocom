@@ -37,8 +37,7 @@ export const Route = createFileRoute("/tools/website-auditor")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "website-auditor");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Website Auditor — Evidence & Reports | LogoColorStudio",
       description: o?.metaDescription ?? "Audit public website HTML with real evidence, category scores, coverage, link checks and CMS detection. Compare scans and export PDF, CSV or JSON.",
       path: "/tools/website-auditor",

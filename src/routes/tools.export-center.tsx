@@ -19,8 +19,7 @@ export const Route = createFileRoute("/tools/export-center")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "export-center");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Export Center — CSS, Tailwind, SCSS & JSON",
       description: o?.metaDescription ?? "Export any color palette as CSS variables, Tailwind config, SCSS, JSON or a PNG swatch image. Rename tokens and copy in one click.",
       path: "/tools/export-center",

@@ -17,8 +17,7 @@ export const Route = createFileRoute("/tools/wordpress-theme-detector")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "wordpress-theme-detector");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Free WordPress Theme Detector — Find Theme & Plugins",
       description: o?.metaDescription ?? "Find the WordPress theme any site uses: name, version, author, theme URI, parent theme and detected plugins. Free WP theme checker.",
       path: "/tools/wordpress-theme-detector",

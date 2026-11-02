@@ -30,8 +30,7 @@ export const Route = createFileRoute("/tools/cms-detector")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "cms-detector");
-    return
-    pageHead({
+    return pageHead({
       title: o?.metaTitle ?? "Free CMS Detector — What CMS Is This Website Using?",
       description: o?.metaDescription ?? "Detect whether a website uses WordPress, Shopify, Wix, Squarespace, Webflow, Drupal, Magento, Ghost and more, with a confidence score.",
       path: "/tools/cms-detector",
