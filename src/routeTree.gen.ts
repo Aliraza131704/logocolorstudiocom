@@ -28,6 +28,8 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as BrandColorsIndexRouteImport } from './routes/brand-colors.index'
+import { Route as BrandColorsSlugRouteImport } from './routes/brand-colors.$slug'
 import { Route as PaletteSlugRouteImport } from './routes/palette.$slug'
 import { Route as ToolsIndexRouteImport } from './routes/tools.index'
 import { Route as ToolsCmsDetectorRouteImport } from './routes/tools.cms-detector'
@@ -137,6 +139,16 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BrandColorsIndexRoute = BrandColorsIndexRouteImport.update({
+  id: '/brand-colors/',
+  path: '/brand-colors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrandColorsSlugRoute = BrandColorsSlugRouteImport.update({
+  id: '/brand-colors/$slug',
+  path: '/brand-colors/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PaletteSlugRoute = PaletteSlugRouteImport.update({
   id: '/palette/$slug',
   path: '/palette/$slug',
@@ -224,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/brand-colors/$slug': typeof BrandColorsSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
@@ -236,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog/': typeof BlogIndexRoute
+  '/brand-colors/': typeof BrandColorsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -258,6 +272,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/brand-colors/$slug': typeof BrandColorsSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
@@ -270,6 +285,7 @@ export interface FileRoutesByTo {
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog': typeof BlogIndexRoute
+  '/brand-colors': typeof BrandColorsIndexRoute
   '/tools': typeof ToolsIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -293,6 +309,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/brand-colors/$slug': typeof BrandColorsSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
@@ -305,6 +322,7 @@ export interface FileRoutesById {
   '/tools/website-extractor': typeof ToolsWebsiteExtractorRoute
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog/': typeof BlogIndexRoute
+  '/brand-colors/': typeof BrandColorsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -329,6 +347,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
+    | '/brand-colors/$slug'
     | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
@@ -341,6 +360,7 @@ export interface FileRouteTypes {
     | '/tools/website-extractor'
     | '/tools/wordpress-theme-detector'
     | '/blog/'
+    | '/brand-colors/'
     | '/tools/'
     | '/api/public/media/$'
   fileRoutesByTo: FileRoutesByTo
@@ -363,6 +383,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
+    | '/brand-colors/$slug'
     | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
@@ -375,6 +396,7 @@ export interface FileRouteTypes {
     | '/tools/website-extractor'
     | '/tools/wordpress-theme-detector'
     | '/blog'
+    | '/brand-colors'
     | '/tools'
     | '/api/public/media/$'
   id:
@@ -397,6 +419,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms-of-service'
     | '/blog/$slug'
+    | '/brand-colors/$slug'
     | '/palette/$slug'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
@@ -409,6 +432,7 @@ export interface FileRouteTypes {
     | '/tools/website-extractor'
     | '/tools/wordpress-theme-detector'
     | '/blog/'
+    | '/brand-colors/'
     | '/tools/'
     | '/api/public/media/$'
   fileRoutesById: FileRoutesById
@@ -432,6 +456,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  BrandColorsSlugRoute: typeof BrandColorsSlugRoute
   PaletteSlugRoute: typeof PaletteSlugRoute
   ToolsCmsDetectorRoute: typeof ToolsCmsDetectorRoute
   ToolsContrastCheckerRoute: typeof ToolsContrastCheckerRoute
@@ -444,6 +469,7 @@ export interface RootRouteChildren {
   ToolsWebsiteExtractorRoute: typeof ToolsWebsiteExtractorRoute
   ToolsWordpressThemeDetectorRoute: typeof ToolsWordpressThemeDetectorRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  BrandColorsIndexRoute: typeof BrandColorsIndexRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
@@ -583,6 +609,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/brand-colors/': {
+      id: '/brand-colors/'
+      path: '/brand-colors'
+      fullPath: '/brand-colors/'
+      preLoaderRoute: typeof BrandColorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brand-colors/$slug': {
+      id: '/brand-colors/$slug'
+      path: '/brand-colors/$slug'
+      fullPath: '/brand-colors/$slug'
+      preLoaderRoute: typeof BrandColorsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/palette/$slug': {
       id: '/palette/$slug'
       path: '/palette/$slug'
@@ -696,6 +736,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
   BlogSlugRoute: BlogSlugRoute,
+  BrandColorsSlugRoute: BrandColorsSlugRoute,
   PaletteSlugRoute: PaletteSlugRoute,
   ToolsCmsDetectorRoute: ToolsCmsDetectorRoute,
   ToolsContrastCheckerRoute: ToolsContrastCheckerRoute,
@@ -708,6 +749,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsWebsiteExtractorRoute: ToolsWebsiteExtractorRoute,
   ToolsWordpressThemeDetectorRoute: ToolsWordpressThemeDetectorRoute,
   BlogIndexRoute: BlogIndexRoute,
+  BrandColorsIndexRoute: BrandColorsIndexRoute,
   ToolsIndexRoute: ToolsIndexRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
