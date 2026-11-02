@@ -29,3 +29,6 @@
 - [x] Submit the sitemap to Google Search Console and confirm the new /sitemap page is live (1,031 URLs, 0 warnings, 0 errors).
 - [x] Research qualified communities, forums and directories for the site's audience, with rules and submission routes.
 - [x] Draft a ready-to-post message or listing for each qualified venue.
+
+## Homepage detector & audit spotlight
+- [x] Add a homepage spotlight for the four detector/audit tools sourced from the mega-menu groups, verified in desktop/mobile preview; 70 tests pass.
