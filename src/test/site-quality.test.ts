@@ -7,6 +7,8 @@ import { contrastRatio, readableOn } from "@/lib/color";
 import { TOOLS } from "@/lib/tools";
 import { paletteTextColor } from "@/lib/palette-presentation";
 import { adsEnabled } from "@/components/site/AdSlot";
+import { BRANDS, getBrand, relatedBrands } from "@/lib/brands";
+import { brandStory } from "@/lib/brand-text";
 
 describe("Palette indexing", () => {
   it("makes all 1,000 palettes indexable with unique stable slugs", () => {
