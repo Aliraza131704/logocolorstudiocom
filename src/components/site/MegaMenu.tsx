@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MEGA_GROUPS } from "@/lib/tool-groups";
 
-const SWATCHES = ["bg-brand-blue", "bg-brand-green", "bg-brand-orange", "bg-brand-red"] as const;
 
 /**
  * Full-width mega menu for the Tools section. Opens on hover or click on
@@ -64,7 +63,7 @@ export function MegaMenu({ open, onOpenChange }: { open: boolean; onOpenChange: 
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       {group.label}
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground/80">{group.blurb}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{group.blurb}</p>
                     <ul className="mt-3 space-y-0.5">
                       {group.tools.map((tool) => (
                         <li key={tool.path}>
@@ -135,7 +134,7 @@ export function MegaMenu({ open, onOpenChange }: { open: boolean; onOpenChange: 
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-3 border-t bg-muted/40 px-6 py-3">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-foreground/80">
                 Every tool is free to use — no account, no watermark, no upload limits.
               </p>
               <Link
