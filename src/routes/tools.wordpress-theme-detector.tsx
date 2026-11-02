@@ -14,7 +14,7 @@ const FAQS: Faq[] = TOOL_GUIDES["wordpress-theme-detector"].faqs;
 export const Route = createFileRoute("/tools/wordpress-theme-detector")({
   head: () =>
     pageHead({
-      title: "WordPress Theme Detector — Theme & Plugins",
+      title: "Free WordPress Theme Detector — Find Theme & Plugins",
       description: "Find the WordPress theme any site uses: name, version, author, theme URI, parent theme and detected plugins. Free WP theme checker.",
       path: "/tools/wordpress-theme-detector",
       jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "WordPress Theme Detector" }], "/tools/wordpress-theme-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "WordPress Theme Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],

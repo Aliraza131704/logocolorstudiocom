@@ -14,8 +14,8 @@ const FAQS: Faq[] = TOOL_GUIDES["shopify-theme-detector"].faqs;
 export const Route = createFileRoute("/tools/shopify-theme-detector")({
   head: () =>
     pageHead({
-      title: "Shopify Theme Detector — Theme Name & Apps",
-      description: "Detect any Shopify store's theme name, version, Theme Store link and installed apps. Free Shopify theme checker.",
+      title: "Free Shopify Theme Detector — Find Any Store's Theme & Apps",
+      description: "Free Shopify theme detector: paste any store URL to see its theme name, version, Theme Store link and installed apps in seconds. No signup.",
       path: "/tools/shopify-theme-detector",
       jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Shopify Theme Detector" }], "/tools/shopify-theme-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Shopify Theme Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
     }),

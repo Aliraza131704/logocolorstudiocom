@@ -27,7 +27,7 @@ const FAQS: Faq[] = [
 export const Route = createFileRoute("/tools/cms-detector")({
   head: () =>
     pageHead({
-      title: "CMS Detector — What Platform Is This Site Built On?",
+      title: "Free CMS Detector — What CMS Is This Website Using?",
       description: "Detect whether a website uses WordPress, Shopify, Wix, Squarespace, Webflow, Drupal, Magento, Ghost and more, with a confidence score.",
       path: "/tools/cms-detector",
       jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "CMS Detector" }], "/tools/cms-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "CMS Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
