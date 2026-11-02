@@ -74,7 +74,7 @@ function Page() {
 function Winners() {
   const { data } = useQuery({
     queryKey: ["giveaway-winners"],
-    queryFn: async () => (await supabase.from("giveaway_winners").select("*").order("month", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.rpc("public_giveaway_winners")).data ?? [],
   });
   if (!data?.length) return null;
   return (
@@ -84,7 +84,6 @@ function Winners() {
         {data.map((w) => (
           <div key={w.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border bg-card p-4 text-sm">
             <span className="font-semibold">{w.name}</span>
-            <span className="text-muted-foreground">{w.email}</span>
             <span className="font-mono text-xs text-muted-foreground">{w.wallet}</span>
             <span className="ml-auto rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">{w.month} · 50 USDT</span>
           </div>

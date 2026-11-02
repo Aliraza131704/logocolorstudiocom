@@ -57,6 +57,13 @@
       "when": 1793629394518,
       "tag": "0007_media_admin_only_read",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793629948581,
+      "tag": "0008_restrict_likes_and_winner_reads",
+      "breakpoints": true
     }
   ]
 }
