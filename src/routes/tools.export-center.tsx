@@ -30,12 +30,13 @@ export const Route = createFileRoute("/tools/export-center")({
 });
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "export-center");
   const [colors, setColors] = useState<string[]>(["#0A8CFF", "#4CC53F", "#FFB11A", "#FF3B4E", "#0F1B3D"]);
   const [name, setName] = useState("brand");
   useEffect(() => { const p = loadPalette(); if (p?.length) setColors(p); }, []);
   useEffect(() => { savePalette(colors); }, [colors]);
   return (
-    <ToolLayout slug="export-center" title={TOOL_GUIDES["export-center"].title} intro="Turn any palette into production-ready code or a shareable image." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="export-center" title={TOOL_GUIDES["export-center"].title} intro="Turn any palette into production-ready code or a shareable image." faqs={FAQS} about={<About />}>
       <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
         <div className="space-y-4 rounded-2xl border bg-card p-6">
           <div>

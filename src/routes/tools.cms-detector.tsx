@@ -43,6 +43,7 @@ export const Route = createFileRoute("/tools/cms-detector")({
 type Res = Awaited<ReturnType<typeof detectCms>>;
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "cms-detector");
   const fn = useServerFn(detectCms);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
@@ -53,7 +54,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout slug="cms-detector" title="Free CMS Detector – Identify Any Website's Platform" intro="Find out which content management system or site builder powers any website." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="cms-detector" title="Free CMS Detector – Identify Any Website's Platform" intro="Find out which content management system or site builder powers any website." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Detect" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

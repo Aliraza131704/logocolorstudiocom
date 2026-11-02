@@ -51,6 +51,7 @@ function Badge({ ok, label }: { ok: boolean; label: string }) {
 }
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "contrast-checker");
   const [fg, setFg] = useState("#0F1B3D");
   const [bg, setBg] = useState("#FFB11A");
   const r = contrastRatio(fg, bg);
@@ -62,7 +63,7 @@ function Page() {
     return c;
   };
   return (
-    <ToolLayout slug="contrast-checker" title={TOOL_GUIDES["contrast-checker"].title} intro="Test any text and background pair against WCAG 2.2 accessibility levels." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="contrast-checker" title={TOOL_GUIDES["contrast-checker"].title} intro="Test any text and background pair against WCAG 2.2 accessibility levels." faqs={FAQS} about={<About />}>
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-5 rounded-2xl border bg-card p-6">
           <ColorField key={`f${fg}`} label="Text color" value={fg} onChange={setFg} />
