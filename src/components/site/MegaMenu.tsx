@@ -53,8 +53,8 @@ export function MegaMenu({ open, onOpenChange }: { open: boolean; onOpenChange: 
         <ChevronDown className={cn("size-4 transition-transform duration-200", open && "rotate-180")} />
       </Button>
 
+      {/* Panel is fixed to the sticky header so it is always viewport-centered. */}
       {open && (
-        {/* Fixed to the sticky header so the panel is always viewport-centered. */}
         <div className="fixed left-1/2 top-full z-50 w-full max-w-[calc(100vw-2rem)] -translate-x-1/2 px-4">
           <div className="mt-2 overflow-hidden rounded-2xl border bg-popover shadow-soft">
             <div className="grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_15rem]">
