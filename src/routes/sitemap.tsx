@@ -142,7 +142,7 @@ function Page() {
         <p className="mt-2 text-sm text-muted-foreground">
           Search engines can crawl the machine-readable version at{" "}
           <a href="/sitemap.xml" className="text-primary hover:underline">/sitemap.xml</a>, or read it through the{" "}
-          <Link to="/robots.txt" className="text-primary hover:underline">robots.txt</Link> file.
+          <a href="/robots.txt" className="text-primary hover:underline">robots.txt</a> file.
         </p>
       </section>
     </div>
