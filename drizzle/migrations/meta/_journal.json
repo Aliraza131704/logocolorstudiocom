@@ -50,6 +50,13 @@
       "when": 1793302079959,
       "tag": "0006_create_giveaway_winners",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793629394518,
+      "tag": "0007_media_admin_only_read",
+      "breakpoints": true
     }
   ]
 }
