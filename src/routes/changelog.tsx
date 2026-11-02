@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CmsPage } from "@/components/site/CmsPage";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PageExtras } from "@/components/site/PageExtras";
 
 const LOG = [
   { v: "2.0", d: "October 2026", items: ["New Website Auditor with SEO, mobile, security and performance checks", "New CMS Detector, Shopify Theme Detector and WordPress Theme Detector", "1,000-palette gallery with likes, search, tags and sorting", "Palettes generated automatically from your logo colors", "Light and dark mode", "Rewritten blog with table of contents and related articles"] },
@@ -9,9 +12,15 @@ const LOG = [
 ];
 
 export const Route = createFileRoute("/changelog")({
-  head: () => pageHead({ title: "Changelog — What's New in LogoColorStudio", description: "Release notes for LogoColorStudio: new tools, features and improvements to our free brand color toolkit.", path: "/changelog" }),
-  component: () => (
-    <CmsPage title="Changelog">
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-changelog"), { title: "Changelog — What's New in LogoColorStudio", description: "Release notes for LogoColorStudio: new tools, features and improvements to our free brand color toolkit.", path: "/changelog" })),
+  component: Changelog,
+});
+
+function Changelog() {
+  const o = toolOverride(Route.useLoaderData(), "page-changelog");
+  return (
+    <CmsPage title={o?.title ?? "Changelog"}>
       <ol className="mt-8 space-y-8 border-l pl-6">
         {LOG.map((r) => (
           <li key={r.v} className="relative">
@@ -21,6 +30,7 @@ export const Route = createFileRoute("/changelog")({
           </li>
         ))}
       </ol>
+      <PageExtras o={o} />
     </CmsPage>
-  ),
-});
+  );
+}

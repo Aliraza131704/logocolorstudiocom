@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { TOOLS } from "@/lib/tools";
 import { FaqList, Reveal, SectionTitle, faqLd, type Faq } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PageExtras } from "@/components/site/PageExtras";
 import { getFeaturedPalettes } from "@/lib/palette-editorial";
 
 const FAQS: Faq[] = [
@@ -18,17 +21,18 @@ const FAQS: Faq[] = [
 ];
 
 export const Route = createFileRoute("/")({
-  head: () =>
-    pageHead({
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-home"), {
       title: "LogoColorStudio — Extract & Generate Brand Colors",
       description: "Extract colors from any logo or website, generate palettes, check WCAG contrast and export CSS, Tailwind and JSON. Free brand color tools.",
       path: "/",
       jsonLd: [faqLd(FAQS)],
-    }),
+    })),
   component: Index,
 });
 
 function Index() {
+  const o = toolOverride(Route.useLoaderData(), "page-home");
   const featured = getFeaturedPalettes().filter((_, i) => i % 15 === 0).slice(0, 6);
   return (
     <>
@@ -39,10 +43,10 @@ function Index() {
               <span className="h-2 w-2 rounded-full bg-brand-green" /> 10 free tools · No sign-up
             </span>
             <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] sm:text-6xl">
-              Extract, generate &amp; ship <span className="text-gradient">brand colors</span> in seconds
+              {o?.title ?? <>Extract, generate &amp; ship <span className="text-gradient">brand colors</span> in seconds</>}
             </h1>
             <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-              Upload a logo or paste a website URL. Get exact HEX, RGB and HSL values, harmonious palettes, accessible themes and ready-to-paste code.
+              {o?.intro ?? <>Upload a logo or paste a website URL. Get exact HEX, RGB and HSL values, harmonious palettes, accessible themes and ready-to-paste code.</>}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button variant="hero" size="lg" asChild><Link to="/tools/logo-extractor">Upload a logo <ArrowRight /></Link></Button>
@@ -126,6 +130,7 @@ function Index() {
           </div>
         </div>
       </section>
+      <PageExtras o={o} />
     </>
   );
 }

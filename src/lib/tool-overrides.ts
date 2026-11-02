@@ -63,3 +63,23 @@ export const textToFaqs = (text: string): Faq[] =>
       return i < 0 ? null : { q: line.slice(0, i).trim(), a: line.slice(i + 2).trim() };
     })
     .filter((f): f is Faq => !!f && !!f.q && !!f.a);
+
+/** Non-tool pages editable from the same Admin → Tool pages editor. */
+export const EDITABLE_PAGES = [
+  { slug: "page-home", name: "Homepage" },
+  { slug: "page-tools", name: "All tools page" },
+  { slug: "page-palettes", name: "Palettes gallery" },
+  { slug: "page-brand-colors", name: "Brand Colors" },
+  { slug: "page-blog", name: "Blog list" },
+  { slug: "page-downloads", name: "Downloads" },
+  { slug: "page-giveaway", name: "Giveaway" },
+  { slug: "page-changelog", name: "Changelog" },
+  { slug: "page-sitemap", name: "Site map" },
+] as const;
+
+/** Applies an owner-edited SEO title/description over route defaults. */
+export const withMeta = <T extends { title: string; description: string }>(o: ToolOverride | null, opts: T): T => ({
+  ...opts,
+  title: o?.metaTitle ?? opts.title,
+  description: o?.metaDescription ?? opts.description,
+});

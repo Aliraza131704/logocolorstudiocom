@@ -4,7 +4,7 @@ import DOMPurify from "dompurify";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { TOOLS } from "@/lib/tools";
-import { TOOL_CONTENT_KEY, faqsToText, parseToolOverrides, textToFaqs, type ToolOverride } from "@/lib/tool-overrides";
+import { EDITABLE_PAGES, TOOL_CONTENT_KEY, faqsToText, parseToolOverrides, textToFaqs, type ToolOverride } from "@/lib/tool-overrides";
 import { RichEditor } from "./RichEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,11 +88,11 @@ export function ToolContentManager() {
   return (
     <div className="max-w-3xl space-y-5">
       <p className="text-sm text-muted-foreground">
-        Edit the text of any tool page. Empty fields keep the built-in default content. The body replaces the whole
-        long guide under the tool; FAQs replace the default questions.
+        Edit the text of any tool page or main page (homepage, gallery, giveaway and more). Empty fields keep the built-in default content. The body replaces the whole
+        long guide under a tool; on main pages, body and FAQs are added at the bottom.
       </p>
       <label className="block text-sm font-medium">
-        Tool page
+        Page
         <Select
           value={slug}
           onValueChange={(v) => {
@@ -102,7 +102,7 @@ export function ToolContentManager() {
         >
           <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {TOOLS.map((t) => (
+            {[...TOOLS, ...EDITABLE_PAGES].map((t) => (
               <SelectItem key={t.slug} value={t.slug}>
                 {t.name} {all[t.slug] ? "· edited" : ""}
               </SelectItem>

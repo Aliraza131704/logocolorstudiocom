@@ -6,18 +6,22 @@ import { Breadcrumbs, Reveal, breadcrumbLd } from "@/components/site/ui-bits";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PageExtras } from "@/components/site/PageExtras";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/blog/")({
-  loader: () => listPosts(),
-  head: () => pageHead({ title: "Blog — Color, Branding & Web Design Guides", description: "Practical guides on brand colors, color psychology, accessibility, palettes and website themes from the LogoColorStudio team.", path: "/blog", jsonLd: [breadcrumbLd([{ label: "Blog" }], "/blog")] }),
+  loader: async () => { const [posts, ov] = await Promise.all([listPosts(), getPublicSetting({ data: { key: TOOL_CONTENT_KEY } })]); return { posts, ov }; },
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData?.ov, "page-blog"), { title: "Blog — Color, Branding & Web Design Guides", description: "Practical guides on brand colors, color psychology, accessibility, palettes and website themes from the LogoColorStudio team.", path: "/blog", jsonLd: [breadcrumbLd([{ label: "Blog" }], "/blog")] })),
   component: Page,
 });
 
 const PER = 9;
 
 function Page() {
-  const posts = Route.useLoaderData();
+  const { posts, ov } = Route.useLoaderData();
+  const o = toolOverride(ov, "page-blog");
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string | null>(null);
   const [tag, setTag] = useState<string | null>(null);
@@ -30,8 +34,8 @@ function Page() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <Breadcrumbs items={[{ label: "Blog" }]} />
-      <h1 className="text-4xl font-bold sm:text-5xl">Blog</h1>
-      <p className="mt-3 text-lg text-muted-foreground">Guides on brand colors, accessibility and building better websites.</p>
+      <h1 className="text-4xl font-bold sm:text-5xl">{o?.title ?? "Blog"}</h1>
+      <p className="mt-3 text-lg text-muted-foreground">{o?.title ?? <>Guides on brand colors, accessibility and building better websites.</>}</p>
       <section aria-labelledby="article-filters" className="mt-8">
       <h2 id="article-filters" className="text-xl font-semibold">Explore by topic</h2>
       <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -71,6 +75,7 @@ function Page() {
           <Button variant="outline" disabled={page === pages} onClick={() => setPage(page + 1)}>Next</Button>
         </nav>
       )}
+      <PageExtras o={o} />
     </div>
   );
 }

@@ -2,14 +2,23 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { TOOLS } from "@/lib/tools";
 import { Breadcrumbs, Reveal } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PageExtras } from "@/components/site/PageExtras";
 
 export const Route = createFileRoute("/tools/")({
-  head: () => pageHead({ title: "All Color & Website Tools — LogoColorStudio", description: "Browse every free LogoColorStudio tool: logo and website color extraction, palettes, contrast, themes, exports, audits and theme detectors.", path: "/tools" }),
-  component: () => (
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-tools"), { title: "All Color & Website Tools — LogoColorStudio", description: "Browse every free LogoColorStudio tool: logo and website color extraction, palettes, contrast, themes, exports, audits and theme detectors.", path: "/tools" })),
+  component: ToolsIndex,
+});
+
+function ToolsIndex() {
+  const o = toolOverride(Route.useLoaderData(), "page-tools");
+  return (
     <div className="mx-auto max-w-7xl bg-hero px-4 py-10 sm:px-6">
       <Breadcrumbs items={[{ label: "Tools" }]} />
-      <h1 className="text-4xl font-bold sm:text-5xl">All tools</h1>
-      <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Ten free tools for brand colors and website research.</p>
+      <h1 className="text-4xl font-bold sm:text-5xl">{o?.title ?? "All tools"}</h1>
+      <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{o?.title ?? <>Ten free tools for brand colors and website research.</>}</p>
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {TOOLS.map((t, i) => (
           <Reveal key={t.slug} delay={(i % 3) * 0.05}>
@@ -21,6 +30,7 @@ export const Route = createFileRoute("/tools/")({
           </Reveal>
         ))}
       </div>
+      <PageExtras o={o} />
     </div>
-  ),
-});
+  );
+}
