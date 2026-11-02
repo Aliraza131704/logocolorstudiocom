@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Upload, Wand2, Download, ShieldCheck, Zap, Lock } from "lucide-react";
+import { ArrowRight, Upload, Wand2, Download, ShieldCheck, Zap, Lock, Globe } from "lucide-react";
 import hero from "@/assets/hero.webp";
 import heroSmall from "@/assets/hero-800.webp";
 import { Button } from "@/components/ui/button";
