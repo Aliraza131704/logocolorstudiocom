@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, ChevronDown, Download, Grid2x2, Sparkles } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Download, Gift, Rss, SwatchBook } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MEGA_GROUPS } from "@/lib/tool-groups";
@@ -58,7 +58,7 @@ export function MegaMenu({ open, onOpenChange }: { open: boolean; onOpenChange: 
         <div className="fixed left-1/2 top-full z-50 w-full max-w-[calc(100vw-2rem)] -translate-x-1/2 px-4">
           <div className="mt-2 overflow-hidden rounded-2xl border bg-popover shadow-soft">
             <div className="grid gap-6 p-6 md:grid-cols-[minmax(0,1fr)_15rem]">
-              <div className="grid gap-5 sm:grid-cols-3">
+              <div className="grid items-stretch gap-5 sm:grid-cols-3">
                 {MEGA_GROUPS.map((group, i) => (
                   <div key={group.label} className={cn(i > 0 && "sm:border-l sm:pl-5")}>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
@@ -97,48 +97,37 @@ export function MegaMenu({ open, onOpenChange }: { open: boolean; onOpenChange: 
                 ))}
               </div>
 
-              <div className="flex flex-col gap-3 border-t pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0">
-                <div className="rounded-xl border bg-card p-4">
-                  <div className="flex gap-1.5" aria-hidden="true">
-                    {SWATCHES.map((c, i) => (
-                      <span
-                        key={c}
-                        className={cn("size-5 rounded", c)}
-                        style={{ transform: `rotate(${(i - 1.5) * 4}deg)` }}
-                      />
-                    ))}
-                  </div>
-                  <p className="mt-3 flex items-center gap-1.5 text-sm font-semibold">
-                    <Sparkles className="size-4 text-brand-orange" /> Brand Colors
-                  </p>
-                  <p className="mt-1 text-xs leading-snug text-muted-foreground">
-                    Official HEX, RGB and HSL values for 199 well-known brands.
-                  </p>
-                  <Link
-                    to="/brand-colors"
-                    onClick={() => onOpenChange(false)}
-                    className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
-                  >
-                    Browse brands <ArrowUpRight className="size-3.5" />
-                  </Link>
-                </div>
-
-                <div className="rounded-xl border bg-card p-4">
+              <div className="flex flex-col border-t pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+                <div className="flex flex-1 flex-col rounded-xl border bg-card p-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Explore</p>
                   <div className="mt-2 space-y-1">
+                    {[
+                      { to: "/palettes", label: "Palette gallery", icon: SwatchBook, color: "text-brand-blue" },
+                      { to: "/downloads", label: "Asset downloads", icon: Download, color: "text-brand-green" },
+                      { to: "/blog", label: "Latest posts", icon: Rss, color: "text-brand-orange" },
+                      { to: "/giveaway", label: "Monthly giveaway", icon: Gift, color: "text-brand-red" },
+                    ].map((l) => (
+                      <Link
+                        key={l.to}
+                        to={l.to}
+                        onClick={() => onOpenChange(false)}
+                        className="flex items-center gap-2 rounded-lg px-1 py-1.5 text-sm transition-colors hover:bg-accent"
+                      >
+                        <l.icon className={cn("size-4", l.color)} /> {l.label}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="mt-auto pt-4">
+                    <div className="h-8 w-full rounded-lg bg-brand-gradient" aria-hidden="true" />
+                    <p className="mt-2.5 text-xs leading-snug text-muted-foreground">
+                      1,000 curated palettes and official brand color pages — free to copy, export and reuse.
+                    </p>
                     <Link
-                      to="/palettes"
+                      to="/brand-colors"
                       onClick={() => onOpenChange(false)}
-                      className="flex items-center gap-2 rounded-lg px-1 py-1.5 text-sm transition-colors hover:bg-accent"
+                      className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
                     >
-                      <Grid2x2 className="size-4 text-brand-blue" /> Palette gallery
-                    </Link>
-                    <Link
-                      to="/downloads"
-                      onClick={() => onOpenChange(false)}
-                      className="flex items-center gap-2 rounded-lg px-1 py-1.5 text-sm transition-colors hover:bg-accent"
-                    >
-                      <Download className="size-4 text-brand-green" /> Asset downloads
+                      Browse brand colors <ArrowUpRight className="size-3.5" />
                     </Link>
                   </div>
                 </div>
