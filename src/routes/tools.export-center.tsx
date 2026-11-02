@@ -10,17 +10,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { normalizeHex, randomHex } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 
 const FAQS: Faq[] = TOOL_GUIDES["export-center"].faqs;
 
 export const Route = createFileRoute("/tools/export-center")({
-  head: () =>
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "export-center");
+    return
     pageHead({
-      title: "Export Center — CSS, Tailwind, SCSS & JSON",
-      description: "Export any color palette as CSS variables, Tailwind config, SCSS, JSON or a PNG swatch image. Rename tokens and copy in one click.",
+      title: o?.metaTitle ?? "Export Center — CSS, Tailwind, SCSS & JSON",
+      description: o?.metaDescription ?? "Export any color palette as CSS variables, Tailwind config, SCSS, JSON or a PNG swatch image. Rename tokens and copy in one click.",
       path: "/tools/export-center",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Export Center" }], "/tools/export-center")],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Export Center" }], "/tools/export-center")],
+    });
+  },
   component: Page,
 });
 

@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { extractColors } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 import logoExtractImg from "@/assets/guide-logo-extract.jpg";
 import colorWheelImg from "@/assets/guide-color-wheel.jpg";
 import { toast } from "sonner";
@@ -28,17 +30,21 @@ const FAQS: Faq[] = [
 ];
 
 export const Route = createFileRoute("/tools/logo-extractor")({
-  head: () =>
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "logo-extractor");
+    return
     pageHead({
-      title: "Logo Color Extractor — Get HEX, RGB & HSL",
-      description: "Upload any logo and instantly extract its exact brand colors in HEX, RGB and HSL. Export to CSS, Tailwind, SCSS or JSON. Free and private.",
+      title: o?.metaTitle ?? "Logo Color Extractor — Get HEX, RGB & HSL",
+      description: o?.metaDescription ?? "Upload any logo and instantly extract its exact brand colors in HEX, RGB and HSL. Export to CSS, Tailwind, SCSS or JSON. Free and private.",
       path: "/tools/logo-extractor",
       jsonLd: [
         { "@context": "https://schema.org", "@type": "WebApplication", name: "Logo Color Extractor", applicationCategory: "DesignApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },
-        faqLd(FAQS),
+        faqLd(o?.faqs ?? FAQS),
         breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Logo Extractor" }], "/tools/logo-extractor"),
       ],
-    }),
+    });
+  },
   component: Page,
 });
 

@@ -9,17 +9,23 @@ import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { Button } from "@/components/ui/button";
 import { extractWebsite } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 
 const FAQS: Faq[] = TOOL_GUIDES["website-extractor"].faqs;
 
 export const Route = createFileRoute("/tools/website-extractor")({
-  head: () =>
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "website-extractor");
+    return
     pageHead({
-      title: "Website Color Extractor — Colors, Fonts & Logo",
-      description: "Enter any URL to extract the website's brand colors, fonts and logo. Copy HEX and RGB values or export CSS, Tailwind and JSON.",
+      title: o?.metaTitle ?? "Website Color Extractor — Colors, Fonts & Logo",
+      description: o?.metaDescription ?? "Enter any URL to extract the website's brand colors, fonts and logo. Copy HEX and RGB values or export CSS, Tailwind and JSON.",
       path: "/tools/website-extractor",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Extractor" }], "/tools/website-extractor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Color Extractor", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Extractor" }], "/tools/website-extractor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Color Extractor", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
+    });
+  },
   component: Page,
 });
 

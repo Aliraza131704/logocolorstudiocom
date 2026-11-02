@@ -9,17 +9,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { adjust, contrastRatio, normalizeHex, wcag } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 
 const FAQS: Faq[] = TOOL_GUIDES["contrast-checker"].faqs;
 
 export const Route = createFileRoute("/tools/contrast-checker")({
-  head: () =>
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "contrast-checker");
+    return
     pageHead({
-      title: "Color Contrast Checker — WCAG AA & AAA",
-      description: "Check text and background color contrast against WCAG 2.2 AA and AAA. Live preview, ratio score and instant fix suggestions.",
+      title: o?.metaTitle ?? "Color Contrast Checker — WCAG AA & AAA",
+      description: o?.metaDescription ?? "Check text and background color contrast against WCAG 2.2 AA and AAA. Live preview, ratio score and instant fix suggestions.",
       path: "/tools/contrast-checker",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Contrast Checker" }], "/tools/contrast-checker"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Contrast Checker", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Contrast Checker" }], "/tools/contrast-checker"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Contrast Checker", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
+    });
+  },
   component: Page,
 });
 

@@ -13,6 +13,8 @@ import { AUDIT_HISTORY_KEY, readAuditHistory } from "@/lib/audit-report";
 import type { AuditReport } from "@/lib/audit-types";
 import { crawlUrl, mergeAuditBatches, SITE_AUDIT_LIMIT } from "@/lib/audit-crawl";
 import { pageHead } from "@/lib/seo";
+import { getPublicSetting } from "@/lib/content.functions";
+import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
 import auditScanImg from "@/assets/guide-audit-scan.jpg";
 import seoReportImg from "@/assets/guide-seo-report.jpg";
 
@@ -32,13 +34,17 @@ const FAQS: Faq[] = [
 ];
 
 export const Route = createFileRoute("/tools/website-auditor")({
-  head: () =>
+  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
+  head: ({ loaderData }) => {
+    const o = toolOverride(loaderData, "website-auditor");
+    return
     pageHead({
-      title: "Website Auditor — Evidence & Reports | LogoColorStudio",
-      description: "Audit public website HTML with real evidence, category scores, coverage, link checks and CMS detection. Compare scans and export PDF, CSV or JSON.",
+      title: o?.metaTitle ?? "Website Auditor — Evidence & Reports | LogoColorStudio",
+      description: o?.metaDescription ?? "Audit public website HTML with real evidence, category scores, coverage, link checks and CMS detection. Compare scans and export PDF, CSV or JSON.",
       path: "/tools/website-auditor",
-      jsonLd: [faqLd(FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Auditor" }], "/tools/website-auditor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Auditor", applicationCategory: "BusinessApplication", operatingSystem: "Any" }],
-    }),
+      jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Auditor" }], "/tools/website-auditor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Auditor", applicationCategory: "BusinessApplication", operatingSystem: "Any" }],
+    });
+  },
   component: Page,
 });
 
