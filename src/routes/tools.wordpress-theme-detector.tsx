@@ -30,6 +30,7 @@ export const Route = createFileRoute("/tools/wordpress-theme-detector")({
 type Res = Awaited<ReturnType<typeof detectWordpress>>;
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "wordpress-theme-detector");
   const fn = useServerFn(detectWordpress);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
@@ -40,7 +41,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout slug="wordpress-theme-detector" title={TOOL_GUIDES["wordpress-theme-detector"].title} intro="Reveal the theme, version, author and plugins behind any WordPress website." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="wordpress-theme-detector" title={TOOL_GUIDES["wordpress-theme-detector"].title} intro="Reveal the theme, version, author and plugins behind any WordPress website." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Detect theme" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

@@ -48,6 +48,7 @@ export const Route = createFileRoute("/tools/website-auditor")({
 });
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "website-auditor");
   const fn = useServerFn(auditWebsite);
   const [url, setUrl] = useState("");
   const [competitorUrl, setCompetitorUrl] = useState("");
@@ -125,7 +126,7 @@ function Page() {
   };
   const previous = res ? history.find(r => r.url === res.url && r.checkedAt !== res.checkedAt) : undefined;
   return (
-    <ToolLayout slug="website-auditor" title="Free Website Auditor – SEO & Site Health Check" intro="Inspect your website. Find the evidence. Prioritize what matters." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="website-auditor" title="Free Website Auditor – SEO & Site Health Check" intro="Inspect your website. Find the evidence. Prioritize what matters." faqs={FAQS} about={<About />}>
       <div className="mb-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground"><span className="flex items-center gap-2"><Globe className="size-4 text-primary" /> Public websites</span><span>17 audit categories</span><span>Evidence-based recommendations</span></div>
       <form onSubmit={e => { e.preventDefault(); void run(); }} className="space-y-4">
         <div className="flex flex-wrap gap-2" aria-label="Scan scope"><Button type="button" variant={siteWide ? "default" : "outline"} aria-pressed={siteWide} disabled={loading} onClick={() => setSiteWide(true)}>Site-wide scan</Button><Button type="button" variant={!siteWide ? "default" : "outline"} aria-pressed={!siteWide} disabled={loading} onClick={() => setSiteWide(false)}>Focused scan</Button></div>

@@ -48,6 +48,7 @@ export const Route = createFileRoute("/tools/logo-extractor")({
 });
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "logo-extractor");
   const [img, setImg] = useState<string | null>(null);
   const [k, setK] = useState(6);
   const [colors, setColors] = useState<{ hex: string; share: number }[]>([]);
@@ -81,6 +82,7 @@ function Page() {
 
   return (
     <ToolLayout
+      override={o}
       slug="logo-extractor"
       title="Free Logo Color Extractor – Get HEX Codes From Any Image"
       intro="Drop your logo to get its exact brand colors with HEX, RGB and HSL values, then export them as code."

@@ -30,6 +30,7 @@ export const Route = createFileRoute("/tools/shopify-theme-detector")({
 type Res = Awaited<ReturnType<typeof detectShopify>>;
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "shopify-theme-detector");
   const fn = useServerFn(detectShopify);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
@@ -40,7 +41,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout slug="shopify-theme-detector" title={TOOL_GUIDES["shopify-theme-detector"].title} intro="See which theme a Shopify store uses, its version and the apps it runs." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="shopify-theme-detector" title={TOOL_GUIDES["shopify-theme-detector"].title} intro="See which theme a Shopify store uses, its version and the apps it runs." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} placeholder="store.com" cta="Detect theme" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

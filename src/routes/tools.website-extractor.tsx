@@ -31,6 +31,7 @@ export const Route = createFileRoute("/tools/website-extractor")({
 type Res = Awaited<ReturnType<typeof extractWebsite>>;
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "website-extractor");
   const fn = useServerFn(extractWebsite);
   const [res, setRes] = useState<Res | null>(null);
   const [err, setErr] = useState("");
@@ -42,7 +43,7 @@ function Page() {
   };
   const hexes = res?.colors.slice(0, 10).map((c) => c.hex) ?? [];
   return (
-    <ToolLayout slug="website-extractor" title={TOOL_GUIDES["website-extractor"].title} intro="Paste a website address to discover its brand colors, fonts and logo in seconds." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="website-extractor" title={TOOL_GUIDES["website-extractor"].title} intro="Paste a website address to discover its brand colors, fonts and logo in seconds." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Extract" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

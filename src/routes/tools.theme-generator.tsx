@@ -39,6 +39,7 @@ function buildTheme(primary: string, accent: string, mode: "light" | "dark") {
 }
 
 function Page() {
+  const o = toolOverride(Route.useLoaderData(), "theme-generator");
   const [primary, setPrimary] = useState("#0A8CFF");
   const [accent, setAccent] = useState("#FFB11A");
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -49,7 +50,7 @@ function Page() {
   const css = `:root {\n${Object.entries(light).map(([k, v]) => `  --${k}: ${v};`).join("\n")}\n}\n.dark {\n${Object.entries(dark).map(([k, v]) => `  --${k}: ${v};`).join("\n")}\n}`;
 
   return (
-    <ToolLayout slug="theme-generator" title={TOOL_GUIDES["theme-generator"].title} intro="Generate matching light and dark UI themes from your brand colors and preview them live." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="theme-generator" title={TOOL_GUIDES["theme-generator"].title} intro="Generate matching light and dark UI themes from your brand colors and preview them live." faqs={FAQS} about={<About />}>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <div className="space-y-5 rounded-2xl border bg-card p-6">
           {[["Primary", primary, setPrimary], ["Accent", accent, setAccent]].map(([l, v, set]) => (
