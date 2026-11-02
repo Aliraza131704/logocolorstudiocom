@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { ArrowRight, Upload, Wand2, Download, ShieldCheck, Zap, Lock } from "lucide-react";
 import hero from "@/assets/hero.webp";
 import heroSmall from "@/assets/hero-800.webp";
@@ -26,7 +25,6 @@ export const Route = createFileRoute("/")({
       path: "/",
       jsonLd: [faqLd(FAQS)],
     }),
-  // preload hero handled by fetchPriority
   component: Index,
 });
 
