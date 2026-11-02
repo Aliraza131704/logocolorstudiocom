@@ -345,6 +345,22 @@ export type Database = {
         }
         Returns: boolean
       }
+      palette_like_totals: {
+        Args: never
+        Returns: {
+          likes: number
+          palette_slug: string
+        }[]
+      }
+      public_giveaway_winners: {
+        Args: never
+        Returns: {
+          id: string
+          month: string
+          name: string
+          wallet: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user"
