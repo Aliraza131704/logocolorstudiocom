@@ -87,7 +87,7 @@ function Page() {
           <div className="mt-6 grid gap-6 sm:grid-cols-3">
             {related.map((r) => (
               <Link key={r.slug} to="/blog/$slug" params={{ slug: r.slug }} className="card-hover overflow-hidden rounded-2xl border bg-card">
-                {r.cover_image && <img src={r.cover_image} alt="" width={1200} height={630} loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
+                {r.cover_image && <img src={r.cover_image} alt={`Cover image for ${r.title}`} width={1200} height={630} loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
                 <p className="p-4 font-semibold">{r.title}</p>
               </Link>
             ))}
