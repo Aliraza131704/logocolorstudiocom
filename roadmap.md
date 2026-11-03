@@ -32,3 +32,9 @@
 
 ## Homepage detector & audit spotlight
 - [x] Add a homepage spotlight for the four detector/audit tools sourced from the mega-menu groups, verified in desktop/mobile preview; 70 tests pass.
+
+## Downloads catalog additions
+- [x] Add Frutin (Themeholy) and Elito (wpoceans) to the downloads library with their preview pictures.
+- [x] File Elito under a separate "Template kits" category; verified in the Downloads category filter.
+- [ ] Elito sponsor step — its button stays disabled until a sponsor type with real content is set (currently Video with no video).
+- [ ] Confirm Elito's stored file — the archive is the theme + child theme, while the ThemeForest item is an Elementor Template Kit.
