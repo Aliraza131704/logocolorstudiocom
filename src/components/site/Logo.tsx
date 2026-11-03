@@ -6,11 +6,12 @@ import { useTheme } from "@/lib/theme";
 
 /** Dark-text logo shows in light mode, white-text logo in dark mode (CSS-driven, no flash). */
 export function LogoImage({ className }: { className?: string }) {
-  const { theme } = useTheme();
+  // The hidden variant is display:none, so screen readers never read both; both keep real alt text for crawlers.
+  useTheme();
   return (
     <>
-      <img src={dark.url} alt={theme === "light" ? "LogoColorStudio" : ""} aria-hidden={theme !== "light"} width={480} height={180} className={cn("h-9 w-auto dark:hidden", className)} />
-      <img src={light.url} alt={theme === "dark" ? "LogoColorStudio" : ""} aria-hidden={theme !== "dark"} width={480} height={180} className={cn("hidden h-9 w-auto dark:block", className)} />
+      <img src={dark.url} alt="LogoColorStudio" width={480} height={180} className={cn("h-9 w-auto dark:hidden", className)} />
+      <img src={light.url} alt="LogoColorStudio" width={480} height={180} className={cn("hidden h-9 w-auto dark:block", className)} />
     </>
   );
 }
