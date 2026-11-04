@@ -5,7 +5,7 @@ import { Breadcrumbs, breadcrumbLd, copyText } from "@/components/site/ui-bits";
 import { AdSlot, InlineAdCode, splitAdMarkers } from "@/components/site/AdSlot";
 import { LogoImage } from "@/components/site/Logo";
 import { pageHead, absoluteUrl } from "@/lib/seo";
-import { EDITORIAL_AUTHOR } from "@/lib/editorial-config";
+import { EDITORIAL_AUTHOR, editorialAuthorName } from "@/lib/editorial-config";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/blog/$slug")({
       type: "article",
       image: p.og_image || p.cover_image || undefined,
       jsonLd: [
-        { "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.excerpt, datePublished: p.published_at, dateModified: p.updated_at, author: { "@type": "Person", name: p.author === "LogoColorStudio Team" ? EDITORIAL_AUTHOR.name : p.author, url: absoluteUrl("/about") }, publisher: { "@type": "Organization", name: "LogoColorStudio" }, image: p.og_image || p.cover_image ? absoluteUrl(p.og_image || p.cover_image) : undefined, mainEntityOfPage: absoluteUrl(path) },
+        { "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.excerpt, datePublished: p.published_at, dateModified: p.updated_at, author: { "@type": "Person", name: editorialAuthorName(p.author), url: absoluteUrl("/about") }, publisher: { "@type": "Organization", name: "LogoColorStudio" }, image: p.og_image || p.cover_image ? absoluteUrl(p.og_image || p.cover_image) : undefined, mainEntityOfPage: absoluteUrl(path) },
         breadcrumbLd([{ label: "Blog", to: "/blog" }, { label: p.title }], path),
       ],
     });
@@ -43,7 +43,7 @@ function Page() {
   const html = post.content.replace(/<h2>(.*?)<\/h2>/g, (_, t: string) => { const id = slugify(t); toc.push({ id, text: t.replace(/<[^>]+>/g, "") }); return `<h2 id="${id}">${t}</h2>`; });
   const words = post.content.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length;
   const share = absoluteUrl(`/blog/${post.slug}`);
-  const author = post.author === "LogoColorStudio Team" ? EDITORIAL_AUTHOR.name : post.author;
+  const author = editorialAuthorName(post.author) || EDITORIAL_AUTHOR.name;
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <Breadcrumbs items={[{ label: "Blog", to: "/blog" }, { label: post.title }]} />

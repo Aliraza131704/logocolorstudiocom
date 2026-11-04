@@ -21,6 +21,13 @@ import { absoluteUrl } from "@/lib/seo";
 
 export const GENERATOR_FAQS: Faq[] = TOOL_GUIDES["palette-generator"].faqs;
 
+/** Labels for the live brand preview so the panel reads like a real product surface. */
+const PREVIEW_CARDS = [
+  { title: "Primary", body: "Headlines and main buttons" },
+  { title: "Secondary", body: "Cards, panels and dividers" },
+  { title: "Accent", body: "Highlights, links and badges" },
+];
+
 export function PaletteGeneratorPage() {
   const [logoColors, setLogoColors] = useState<string[] | null>(null);
   const [removed, setRemoved] = useState<Record<string, number[]>>({});
@@ -148,11 +155,14 @@ function Generator({ initial }: { initial: string[] | null }) {
               <span className="rounded-full px-4 py-1.5 text-sm font-semibold" style={{ backgroundColor: shown[0], color: paletteTextColor(shown[0]) }}>Sign up</span>
             </div>
             <div className="grid gap-4 px-6 pb-6 sm:grid-cols-3">
-              {shown.slice(0, 3).map((c, i) => (
-                <div key={i} className="rounded-xl p-4" style={{ backgroundColor: c, color: paletteTextColor(c) }}>
-                  <p className="font-semibold">Card {i + 1}</p><p className="text-sm">Sample content</p>
-                </div>
-              ))}
+              {shown.slice(0, 3).map((c, i) => {
+                const card = PREVIEW_CARDS[i % PREVIEW_CARDS.length];
+                return (
+                  <div key={i} className="rounded-xl p-4" style={{ backgroundColor: c, color: paletteTextColor(c) }}>
+                    <p className="font-semibold">{card.title}</p><p className="text-sm">{card.body}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

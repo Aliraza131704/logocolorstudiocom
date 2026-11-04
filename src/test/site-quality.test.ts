@@ -10,6 +10,24 @@ import { adsEnabled } from "@/components/site/AdSlot";
 import { BRANDS, getBrand, relatedBrands } from "@/lib/brands";
 import { brandStory } from "@/lib/brand-text";
 import { parseToolOverrides, faqsToText, textToFaqs } from "@/lib/tool-overrides";
+import { EDITORIAL_AUTHOR, TEAM, editorialAuthorName } from "@/lib/editorial-config";
+
+describe("Published identity", () => {
+  it("keeps the shared byline and studio details free of placeholder wording", () => {
+    for (const value of [EDITORIAL_AUTHOR.name, EDITORIAL_AUTHOR.bio, TEAM.name, TEAM.role]) {
+      expect(value.toLowerCase()).not.toMatch(/placeholder|lorem|coming soon|\btbd\b|sample/);
+      expect(value.trim().length).toBeGreaterThan(0);
+    }
+    expect(EDITORIAL_AUTHOR.name).toBe("LogoColorStudio Team");
+  });
+  it("renders stored team bylines as the published name and keeps a real author name", () => {
+    expect(editorialAuthorName("logo color studio team")).toBe("LogoColorStudio Team");
+    expect(editorialAuthorName("LogoColorStudio Team")).toBe("LogoColorStudio Team");
+    expect(editorialAuthorName("")).toBe("LogoColorStudio Team");
+    expect(editorialAuthorName(null)).toBe("LogoColorStudio Team");
+    expect(editorialAuthorName("Priya Nair")).toBe("Priya Nair");
+  });
+});
 
 describe("Palette indexing", () => {
   it("makes all 1,000 palettes indexable with unique stable slugs", () => {

@@ -42,3 +42,7 @@
 ## Site icon (favicon)
 - [x] Rebuild the icon set from the high-resolution brand mark on an opaque white tile (16/32/48/180/192/512 PNG, multi-size favicon.ico, site.webmanifest) and declare every size in the root head.
 - [ ] Publish so the live site serves the new icon files, then ask Google/Bing to recrawl the favicon.
+
+## Placeholder content removal
+- [x] Replace the placeholder byline, author bio and About-page founder name with the site's own brand identity, keep any real author name intact, and give the palette generator's preview cards real labels; 22 pages re-checked with no placeholder wording, 72 tests pass.
+- [ ] Personal byline — the owner can supply a real name, photo and bio for the blog and About page whenever they want.
