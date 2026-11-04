@@ -38,3 +38,7 @@
 - [x] File Elito under a separate "Template kits" category; verified in the Downloads category filter.
 - [ ] Elito sponsor step — its button stays disabled until a sponsor type with real content is set (currently Video with no video).
 - [ ] Confirm Elito's stored file — the archive is the theme + child theme, while the ThemeForest item is an Elementor Template Kit.
+
+## Site icon (favicon)
+- [x] Rebuild the icon set from the high-resolution brand mark on an opaque white tile (16/32/48/180/192/512 PNG, multi-size favicon.ico, site.webmanifest) and declare every size in the root head.
+- [ ] Publish so the live site serves the new icon files, then ask Google/Bing to recrawl the favicon.
