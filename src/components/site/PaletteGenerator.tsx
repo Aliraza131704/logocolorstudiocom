@@ -148,11 +148,14 @@ function Generator({ initial }: { initial: string[] | null }) {
               <span className="rounded-full px-4 py-1.5 text-sm font-semibold" style={{ backgroundColor: shown[0], color: paletteTextColor(shown[0]) }}>Sign up</span>
             </div>
             <div className="grid gap-4 px-6 pb-6 sm:grid-cols-3">
-              {shown.slice(0, 3).map((c, i) => (
-                <div key={i} className="rounded-xl p-4" style={{ backgroundColor: c, color: paletteTextColor(c) }}>
-                  <p className="font-semibold">Card {i + 1}</p><p className="text-sm">Sample content</p>
-                </div>
-              ))}
+              {shown.slice(0, 3).map((c, i) => {
+                const card = PREVIEW_CARDS[i % PREVIEW_CARDS.length];
+                return (
+                  <div key={i} className="rounded-xl p-4" style={{ backgroundColor: c, color: paletteTextColor(c) }}>
+                    <p className="font-semibold">{card.title}</p><p className="text-sm">{card.body}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
