@@ -38,7 +38,7 @@ export function AdSlot({ position, className }: { position: string; className?: 
     if (active && hasCode && ref.current) inject(ref.current, slot!.code);
   }, [active, hasCode, slot?.code]);
 
-  if (!on) return null;
+  if (!active) return null;
   const vis = cn(slot && !slot.show_desktop && "md:hidden", slot && !slot.show_mobile && "hidden md:block");
   return (
     <aside aria-label="Advertisement" className={cn("my-6 w-full", vis, className)}>
@@ -47,12 +47,8 @@ export function AdSlot({ position, className }: { position: string; className?: 
         <a href={slot!.link_url.trim() || "#"} target="_blank" rel="sponsored noopener" className="block overflow-hidden rounded-xl">
           <img src={slot!.image_url} alt="Advertisement" loading="lazy" className="mx-auto max-h-[250px] w-auto max-w-full rounded-xl object-contain" />
         </a>
-      ) : hasCode ? (
-        <div ref={ref} className={cn("flex w-full items-center justify-center overflow-hidden rounded-xl", SIZES[position])} />
       ) : (
-        <div className={cn("flex w-full items-center justify-center rounded-xl border border-dashed text-xs text-muted-foreground", SIZES[position])}>
-          Ad space
-        </div>
+        <div ref={ref} className={cn("flex w-full items-center justify-center overflow-hidden rounded-xl", SIZES[position])} />
       )}
     </aside>
   );
