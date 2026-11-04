@@ -1,24 +1,27 @@
-// Shared byline and studio identity used across blog posts and the About page.
-// The site publishes under its brand and studio name; a personal name, photo or
-// bio can be supplied by the owner later and simply replaces these values.
+// Shared byline and owner identity used across blog posts and the About page.
+// The site is owned and run by Ali Raza (APWEB Ventures); these values are the
+// single source for every published byline, so changing them here updates the
+// whole site.
+export const OWNER = { name: "Ali Raza", studio: "APWEB Ventures", email: "apwebventures01@gmail.com" };
 export const EDITORIAL_AUTHOR = {
-  name: "LogoColorStudio Team",
-  bio: "The LogoColorStudio team at APWEB Ventures builds the free color and website tools on this site and writes practical guides to color systems, accessibility and website research.",
+  name: OWNER.name,
+  bio: "Ali Raza builds and maintains LogoColorStudio, the free color and website tools on this site, and writes the practical guides to color systems, accessibility and website research.",
   photo: "",
 };
-export const TEAM = { name: "APWEB Ventures", role: "The studio behind LogoColorStudio", photo: "" };
+export const TEAM = { name: OWNER.name, role: `Founder of LogoColorStudio · ${OWNER.studio}`, photo: "" };
 
 const TEAM_ALIASES = new Set([
   "",
   "logocolorstudioteam",
   "logocolorstudio",
-  "logocolorstudioteam",
   "logo color studio team",
+  "logo color studio",
   "apwebventures",
+  "apweb ventures",
   "team",
 ]);
 
-/** Maps stored author values to the published byline; keeps any real personal name intact. */
+/** Maps stored team bylines to the owner's published name; keeps any other real author name intact. */
 export function editorialAuthorName(raw?: string | null) {
   const value = (raw ?? "").trim();
   if (TEAM_ALIASES.has(value.toLowerCase().replace(/[^a-z0-9]/g, ""))) return EDITORIAL_AUTHOR.name;

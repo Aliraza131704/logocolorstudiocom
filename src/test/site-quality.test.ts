@@ -18,13 +18,14 @@ describe("Published identity", () => {
       expect(value.toLowerCase()).not.toMatch(/placeholder|lorem|coming soon|\btbd\b|sample/);
       expect(value.trim().length).toBeGreaterThan(0);
     }
-    expect(EDITORIAL_AUTHOR.name).toBe("LogoColorStudio Team");
+    expect(EDITORIAL_AUTHOR.name).toBe("Ali Raza");
   });
-  it("renders stored team bylines as the published name and keeps a real author name", () => {
-    expect(editorialAuthorName("logo color studio team")).toBe("LogoColorStudio Team");
-    expect(editorialAuthorName("LogoColorStudio Team")).toBe("LogoColorStudio Team");
-    expect(editorialAuthorName("")).toBe("LogoColorStudio Team");
-    expect(editorialAuthorName(null)).toBe("LogoColorStudio Team");
+  it("renders stored team bylines as the owner's name and keeps a real author name", () => {
+    expect(editorialAuthorName("logo color studio team")).toBe("Ali Raza");
+    expect(editorialAuthorName("LogoColorStudio Team")).toBe("Ali Raza");
+    expect(editorialAuthorName("APWEB Ventures")).toBe("Ali Raza");
+    expect(editorialAuthorName("")).toBe("Ali Raza");
+    expect(editorialAuthorName(null)).toBe("Ali Raza");
     expect(editorialAuthorName("Priya Nair")).toBe("Priya Nair");
   });
 });

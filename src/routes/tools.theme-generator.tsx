@@ -80,7 +80,7 @@ function Page() {
         <div className="space-y-4">
           <div className="overflow-hidden rounded-2xl border" style={{ backgroundColor: t.background, color: t.foreground }}>
             <div className="flex items-center justify-between border-b px-6 py-4" style={{ borderColor: t.border }}>
-              <span className="font-bold">Acme Studio</span>
+              <span className="font-bold">Your Brand</span>
               <div className="hidden gap-5 text-sm sm:flex" style={{ color: t.muted }}><span>Product</span><span>Pricing</span><span>Docs</span></div>
               <span className="rounded-full px-4 py-1.5 text-sm font-semibold" style={{ backgroundColor: t.primary, color: t["primary-foreground"] }}>Get started</span>
             </div>
