@@ -71,6 +71,7 @@ const ORG_LD = {
   "@id": `${absoluteUrl("/")}#organization`,
   name: "LogoColorStudio",
   legalName: "APWEB Ventures",
+  founder: { "@type": "Person", name: "Ali Raza" },
   url: absoluteUrl("/"),
   logo: absoluteUrl("/apple-touch-icon.png"),
   email: "apwebventures01@gmail.com",
