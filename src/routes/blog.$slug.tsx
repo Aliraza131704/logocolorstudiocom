@@ -5,7 +5,7 @@ import { Breadcrumbs, breadcrumbLd, copyText } from "@/components/site/ui-bits";
 import { AdSlot, InlineAdCode, splitAdMarkers } from "@/components/site/AdSlot";
 import { LogoImage } from "@/components/site/Logo";
 import { pageHead, absoluteUrl } from "@/lib/seo";
-import { EDITORIAL_AUTHOR } from "@/lib/editorial-config";
+import { EDITORIAL_AUTHOR, editorialAuthorName } from "@/lib/editorial-config";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/blog/$slug")({

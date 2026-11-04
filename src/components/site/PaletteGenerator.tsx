@@ -21,6 +21,13 @@ import { absoluteUrl } from "@/lib/seo";
 
 export const GENERATOR_FAQS: Faq[] = TOOL_GUIDES["palette-generator"].faqs;
 
+/** Labels for the live brand preview so the panel reads like a real product surface. */
+const PREVIEW_CARDS = [
+  { title: "Primary", body: "Headlines and main buttons" },
+  { title: "Secondary", body: "Cards, panels and dividers" },
+  { title: "Accent", body: "Highlights, links and badges" },
+];
+
 export function PaletteGeneratorPage() {
   const [logoColors, setLogoColors] = useState<string[] | null>(null);
   const [removed, setRemoved] = useState<Record<string, number[]>>({});
