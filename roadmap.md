@@ -45,4 +45,8 @@
 
 ## Placeholder content removal
 - [x] Replace the placeholder byline, author bio and About-page founder name with the site's own brand identity, keep any real author name intact, and give the palette generator's preview cards real labels; 22 pages re-checked with no placeholder wording, 72 tests pass.
-- [ ] Personal byline — the owner can supply a real name, photo and bio for the blog and About page whenever they want.
+- [x] Personal byline — the owner's name is Ali Raza (APWEB Ventures): set as the blog byline, About-page founder identity, privacy operator line and Organization founder, and stored on all seven published posts.
+
+## Dummy content removal
+- [x] Remove the last invented content: the theme generator's preview card no longer shows the fake "Acme Studio" brand, and the byline/About/Privacy no longer carry a stand-in team name; preview-checked blog, About, Privacy, theme generator, blog list and homepage with no placeholder wording and no page errors, 72 tests pass.
+- [ ] Publish so the live site shows Ali Raza as the byline and the corrected theme preview label.
