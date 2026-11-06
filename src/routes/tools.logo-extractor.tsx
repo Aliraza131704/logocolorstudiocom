@@ -16,6 +16,8 @@ import { toast } from "sonner";
 
 const FAQS: Faq[] = [
   { q: "Is the Logo Color Extractor free?", a: "Yes. It is free with no account, watermark or usage limit." },
+  { q: "Can I change my logo color online?", a: "Yes. Upload your logo, extract its colors, then send the palette to the Theme Generator to preview the logo in new colors and export the result — all in your browser." },
+  { q: "Does it work as a photo color changer?", a: "Yes. It reads any photo or image, not just logos, and shows the exact colors it contains so you can recolor or match them." },
   { q: "Is my logo uploaded to a server?", a: "No. The image is read by your browser and analysed locally, so it never leaves your device." },
   { q: "Which file types work?", a: "PNG, JPG, WebP, GIF and SVG files up to 10 MB." },
   { q: "How do I get the HEX code from a picture?", a: "Drop the image into the tool and every extracted color shows its HEX code. Click a value to copy it." },

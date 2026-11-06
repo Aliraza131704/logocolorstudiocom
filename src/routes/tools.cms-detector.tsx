@@ -13,6 +13,7 @@ import cmsFrameworkImg from "@/assets/guide-cms-vs-framework.jpg";
 
 const FAQS: Faq[] = [
   { q: "Is this CMS detector free?", a: "Yes. It is completely free, needs no account and has no daily credit system. A fair-use limit of about 20 checks per minute per visitor keeps it fast for everyone." },
+  { q: "How do I check what CMS a website uses?", a: "Paste the website address into the box above and press Detect. The tool reads the page's public fingerprints and shows the most likely CMS with a confidence score and the evidence behind it." },
   { q: "Which platforms can be detected?", a: "WordPress, Shopify, Wix, Squarespace, Webflow, Joomla, Drupal, Magento, Ghost, BigCommerce, PrestaShop, WooCommerce, OpenCart, Ecwid, HubSpot CMS, Framer, Weebly, Duda, Tilda, Blogger, TYPO3, headless CMSs like Contentful and Sanity, plus 40+ frameworks, analytics tools, hosts and page builders." },
   { q: "What does the confidence score mean?", a: "It reflects how many independent fingerprints matched, such as generator tags, asset paths and server headers. 80% or more is a very strong match." },
   { q: "How accurate is the CMS detector?", a: "For mainstream platforms with clear fingerprints, results are very reliable. Accuracy drops for custom-built sites, headless setups and sites that intentionally hide their signals, which is why every match shows its evidence." },
