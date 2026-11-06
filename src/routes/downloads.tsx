@@ -20,7 +20,7 @@ const catalogQuery = queryOptions({ queryKey: ['download-catalog'], queryFn: () 
 
 export const Route = createFileRoute('/downloads')({
   loader: async ({ context }) => { await context.queryClient.ensureQueryData(catalogQuery); return getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }); },
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-downloads"), { title: 'Asset Downloads — LogoColorStudio', description: 'Browse website assets including the WoodMart WordPress theme, with sponsor videos, banners and website promotions.', path: '/downloads' })),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-downloads"), { title: 'Free WordPress Themes Download — WoodMart, Newspaper & More', description: 'Download free WordPress themes and template kits: WooCommerce, magazine, food and portfolio themes like WoodMart, Newspaper, Frutin and Elito.', path: '/downloads' })),
   component: Downloads,
 });
 
@@ -73,8 +73,8 @@ function Downloads() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       <div className="flex items-center gap-2 text-sm font-semibold text-brand-green"><Package className="size-4" /> Website resources</div>
-      <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{o?.title ?? <>Asset downloads</>}</h1>
-      <p className="mt-3 max-w-2xl text-muted-foreground">{o?.intro ?? <>Themes and resources for your next website.</>}</p>
+      <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{o?.title ?? <>Free WordPress themes & template kits</>}</h1>
+      <p className="mt-3 max-w-2xl text-muted-foreground">{o?.intro ?? <>Download free WordPress themes for WooCommerce stores, news sites, food brands and portfolios — plus Elementor template kits.</>}</p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Input aria-label="Search assets" placeholder="Search themes, plugins, resources…" value={search} onChange={e => setSearch(e.target.value)} className="sm:max-w-md" />
         <Select value={category} onValueChange={setCategory}><SelectTrigger aria-label="Filter category" className="w-full sm:w-60"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All categories</SelectItem>{categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
@@ -99,6 +99,14 @@ function Downloads() {
       </div>
       {filtered.length === 0 && <p className="py-16 text-center text-muted-foreground">{items.length ? 'No assets match your search.' : 'New resources are coming soon.'}</p>}
       {items.filter(a => a.sponsor_type === 'adsense').map(a => <DownloadAd key={a.id} code={a.sponsor_code} />)}
+      <section className="mt-10 space-y-3 border-t pt-6 text-sm text-muted-foreground">
+        <h2 className="text-lg font-semibold text-foreground">How to choose the best free WordPress theme</h2>
+        <p>These WordPress free themes cover common site types: WoodMart for WooCommerce shops, Newspaper for blogs and magazines, Frutin for organic food stores, and Elito as a free portfolio theme kit. Pick the theme that matches your content first, then check speed, mobile layout and plugin needs.</p>
+        <h3 className="font-semibold text-foreground">Installing a downloaded theme</h3>
+        <p>In WordPress go to Appearance → Themes → Add New → Upload Theme, choose the theme ZIP, then activate it. Install the child theme too if you plan to edit code, and install any bundled plugins the theme asks for.</p>
+        <h3 className="font-semibold text-foreground">Before you go live</h3>
+        <p>Test the theme on a staging site, scan files, keep a backup, and use our <a className="text-brand-blue underline" href="/tools/wordpress-theme-detector">WordPress Theme Detector</a> to see which themes similar sites use.</p>
+      </section>
       <aside className="mt-10 space-y-3 border-t pt-6 text-sm text-muted-foreground"><h2 className="flex items-center gap-2 font-semibold text-foreground"><LockKeyhole className="size-4 text-brand-blue" /> Sponsored access</h2><p>Video sponsors require completed viewing. Website sponsors require opening their website. Banner visits are optional. AdSense does not restrict downloads.</p><p>Files are supplied by the site owner. Review licenses and scan files before installing. Vendor support, purchase codes and automatic updates are not promised.</p></aside>
       <Dialog open={show} onOpenChange={(v) => { setShow(v); if (!v) video.current?.pause(); }}>
         <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-lg">
