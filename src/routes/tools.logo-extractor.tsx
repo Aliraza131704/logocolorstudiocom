@@ -34,8 +34,8 @@ export const Route = createFileRoute("/tools/logo-extractor")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "logo-extractor");
     return pageHead({
-      title: o?.metaTitle ?? "Logo Color Extractor — Get HEX, RGB & HSL",
-      description: o?.metaDescription ?? "Upload any logo and instantly extract its exact brand colors in HEX, RGB and HSL. Export to CSS, Tailwind, SCSS or JSON. Free and private.",
+      title: o?.metaTitle ?? "Logo Color Changer — Change Logo Color Online Free",
+      description: o?.metaDescription ?? "Free logo color changer: upload any logo or photo, extract its exact colors in HEX, RGB & HSL and recolor it online. Export to CSS, Tailwind, SCSS or JSON.",
       path: "/tools/logo-extractor",
       jsonLd: [
         { "@context": "https://schema.org", "@type": "WebApplication", name: "Logo Color Extractor", applicationCategory: "DesignApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },

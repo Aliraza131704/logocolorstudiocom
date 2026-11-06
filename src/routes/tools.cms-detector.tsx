@@ -31,8 +31,8 @@ export const Route = createFileRoute("/tools/cms-detector")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "cms-detector");
     return pageHead({
-      title: o?.metaTitle ?? "Free CMS Detector — What CMS Is This Website Using?",
-      description: o?.metaDescription ?? "Detect whether a website uses WordPress, Shopify, Wix, Squarespace, Webflow, Drupal, Magento, Ghost and more, with a confidence score.",
+      title: o?.metaTitle ?? "CMS Detector Online — Free Website CMS Checker",
+      description: o?.metaDescription ?? "Free CMS detector online: check what CMS any website uses — WordPress, Shopify, Wix, Squarespace, Webflow, Drupal, Magento, Ghost and 30+ more, with evidence.",
       path: "/tools/cms-detector",
       jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "CMS Detector" }], "/tools/cms-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "CMS Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
     });
