@@ -86,8 +86,8 @@ function Page() {
     <ToolLayout
       override={o}
       slug="logo-extractor"
-      title="Free Logo Color Extractor – Get HEX Codes From Any Image"
-      intro="Drop your logo to get its exact brand colors with HEX, RGB and HSL values, then export them as code."
+      title="Logo Color Changer – Change Logo Color Online Free"
+      intro="Drop your logo or photo to get its exact colors with HEX, RGB and HSL values, recolor it with the Theme Generator and export the result as code."
       faqs={FAQS}
       about={<About />}
     >
