@@ -131,6 +131,17 @@ function Page() {
         </div>
       </section>
 
+      <section aria-labelledby="sitemap-colors" className="mt-12">
+        <h2 id="sitemap-colors" className="text-2xl font-bold">Color names</h2>
+        <ul className="mt-4 columns-2 gap-8 text-sm md:columns-3 lg:columns-5">
+          {NAMED_COLORS.map((c) => (
+            <li key={c.slug} className="break-inside-avoid py-0.5">
+              <Link to="/colors/$slug" params={{ slug: c.slug }} className="text-foreground/80 hover:text-primary">{c.name} color</Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section aria-labelledby="sitemap-palettes" className="mt-12">
         <h2 id="sitemap-palettes" className="text-2xl font-bold">Color palettes</h2>
         <p className="mt-2 text-sm text-muted-foreground">
