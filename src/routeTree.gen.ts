@@ -30,6 +30,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as BrandColorsIndexRouteImport } from './routes/brand-colors.index'
 import { Route as BrandColorsSlugRouteImport } from './routes/brand-colors.$slug'
+import { Route as ColorsIndexRouteImport } from './routes/colors.index'
 import { Route as ColorsSlugRouteImport } from './routes/colors.$slug'
 import { Route as PaletteSlugRouteImport } from './routes/palette.$slug'
 import { Route as RCodeRouteImport } from './routes/r.$code'
@@ -151,6 +152,11 @@ const BrandColorsSlugRoute = BrandColorsSlugRouteImport.update({
   path: '/brand-colors/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ColorsIndexRoute = ColorsIndexRouteImport.update({
+  id: '/colors/',
+  path: '/colors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ColorsSlugRoute = ColorsSlugRouteImport.update({
   id: '/colors/$slug',
   path: '/colors/$slug',
@@ -264,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog/': typeof BlogIndexRoute
   '/brand-colors/': typeof BrandColorsIndexRoute
+  '/colors/': typeof ColorsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -302,6 +309,7 @@ export interface FileRoutesByTo {
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog': typeof BlogIndexRoute
   '/brand-colors': typeof BrandColorsIndexRoute
+  '/colors': typeof ColorsIndexRoute
   '/tools': typeof ToolsIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/tools/wordpress-theme-detector': typeof ToolsWordpressThemeDetectorRoute
   '/blog/': typeof BlogIndexRoute
   '/brand-colors/': typeof BrandColorsIndexRoute
+  '/colors/': typeof ColorsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
@@ -381,6 +390,7 @@ export interface FileRouteTypes {
     | '/tools/wordpress-theme-detector'
     | '/blog/'
     | '/brand-colors/'
+    | '/colors/'
     | '/tools/'
     | '/api/public/media/$'
   fileRoutesByTo: FileRoutesByTo
@@ -419,6 +429,7 @@ export interface FileRouteTypes {
     | '/tools/wordpress-theme-detector'
     | '/blog'
     | '/brand-colors'
+    | '/colors'
     | '/tools'
     | '/api/public/media/$'
   id:
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/tools/wordpress-theme-detector'
     | '/blog/'
     | '/brand-colors/'
+    | '/colors/'
     | '/tools/'
     | '/api/public/media/$'
   fileRoutesById: FileRoutesById
@@ -496,6 +508,7 @@ export interface RootRouteChildren {
   ToolsWordpressThemeDetectorRoute: typeof ToolsWordpressThemeDetectorRoute
   BlogIndexRoute: typeof BlogIndexRoute
   BrandColorsIndexRoute: typeof BrandColorsIndexRoute
+  ColorsIndexRoute: typeof ColorsIndexRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
   ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
@@ -649,6 +662,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BrandColorsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/colors/': {
+      id: '/colors/'
+      path: '/colors'
+      fullPath: '/colors/'
+      preLoaderRoute: typeof ColorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/colors/$slug': {
       id: '/colors/$slug'
       path: '/colors/$slug'
@@ -792,6 +812,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsWordpressThemeDetectorRoute: ToolsWordpressThemeDetectorRoute,
   BlogIndexRoute: BlogIndexRoute,
   BrandColorsIndexRoute: BrandColorsIndexRoute,
+  ColorsIndexRoute: ColorsIndexRoute,
   ToolsIndexRoute: ToolsIndexRoute,
   ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
