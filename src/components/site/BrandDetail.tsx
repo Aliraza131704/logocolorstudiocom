@@ -137,7 +137,7 @@ export function BrandDetail({ brand, headingLevel = 1 }: { brand: Brand; heading
       <div className="flex flex-wrap items-center gap-6">
         <BrandLogo brand={brand} size={256} className="h-24 w-24 sm:h-32 sm:w-32" />
         <div>
-          <H className="text-3xl font-bold sm:text-4xl">{brand.name} brand colors</H>
+          <H className="text-3xl font-bold sm:text-4xl">{brand.name} logo & brand colors</H>
           <p className="mt-2 text-muted-foreground">
             {categoryLabel(brand.category)} · {brand.colors.length} logo colors
             {brand.guidelines && (

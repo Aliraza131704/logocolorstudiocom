@@ -27,6 +27,7 @@ const MAIN = [
   ["Palette gallery", "/palettes"],
   ["Blog", "/blog"],
   ["Brand Colors", "/brand-colors"],
+  ["Color names", "/colors"],
   ["Downloads", "/downloads"],
   ["Giveaway", "/giveaway"],
   ["About", "/about"],
