@@ -227,7 +227,7 @@ function SettingsPanel() {
   return (
     <div className="space-y-6">
       <SettingsFields keys={[["site_title", "Site title"], ["site_description", "Site description", true], ["contact_email", "Contact email"]]} />
-      <SettingsFields keys={[["social_twitter", "X / Twitter URL"], ["social_instagram", "Instagram URL"], ["social_github", "GitHub URL"], ["social_dribbble", "Dribbble URL"]]} />
+      <SettingsFields keys={[["social_twitter", "X / Twitter URL"], ["social_instagram", "Instagram URL"], ["social_github", "GitHub URL"], ["social_dribbble", "Dribbble URL"], ["social_pinterest", "Pinterest URL"]]} />
       <SettingsFields keys={[["header_scripts", "Custom header scripts (Google Analytics, Search Console verification meta)", true], ["footer_scripts", "Custom footer scripts", true], ["robots_extra", "Extra robots.txt rules", true]]} />
       <h3 className="pt-2 font-semibold">Promotion popup</h3>
       <SettingsFields keys={[["promo_enabled", "Show popup? (type: on / off)"], ["promo_title", "Popup title"], ["promo_text", "Popup text", true], ["promo_button", "Button text"], ["promo_link", "Button link (e.g. /contact or https://...)"], ["promo_delay", "Delay before showing (seconds)"]]} />
