@@ -21,6 +21,7 @@ import { AdSlot, GlobalScripts } from "@/components/site/AdSlot";
 import { Toaster } from "@/components/ui/sonner";
 import { logEvent } from "@/lib/site-data";
 import { PromoPopup } from "@/components/site/PromoPopup";
+import { LanguagePrompt, TranslateLoader } from "@/components/site/SiteTranslate";
 import { absoluteUrl } from "@/lib/seo";
 
 function NotFoundComponent() {
@@ -149,7 +150,8 @@ function RootComponent() {
       <ThemeProvider>
         <ConsentProvider>
           {bare ? (
-            <Outlet />
+            // Admin and sign-in stay untranslated so editors never save translated text.
+            <div translate="no" className="notranslate"><Outlet /></div>
           ) : (
             <div className="flex min-h-screen flex-col">
               <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-[70] focus:rounded focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground">Skip to content</a>
@@ -161,6 +163,8 @@ function RootComponent() {
               <SiteFooter />
               <div className="fixed inset-x-0 bottom-0 z-40 bg-background/95 md:hidden"><AdSlot position="mobile_sticky" className="my-1" /></div>
               <PromoPopup />
+              <LanguagePrompt />
+              <TranslateLoader />
             </div>
           )}
           <GlobalScripts />

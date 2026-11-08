@@ -24,7 +24,8 @@ export function ToolLayout({ slug, title, intro, children, about, faqs, override
               <h1 className="text-3xl font-bold sm:text-5xl">{o?.title ?? title}</h1>
               <p className="mt-3 text-lg text-muted-foreground">{o?.intro ?? intro}</p>
             </header>
-            {children}
+            {/* Live tool results change in place; translation would leave stale text, so the workspace stays in English. */}
+            <div translate="no" className="notranslate">{children}</div>
             <AdSlot position="below_tool" />
             <article className="prose-content mx-auto mt-16 max-w-3xl">{o?.bodyHtml ? <div dangerouslySetInnerHTML={{ __html: o.bodyHtml }} /> : about}</article>
             <AdSlot position="in_content" className="mx-auto max-w-3xl" />

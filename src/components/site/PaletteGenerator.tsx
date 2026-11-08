@@ -44,7 +44,7 @@ export function PaletteGeneratorPage() {
         <h1 className="text-4xl font-bold sm:text-5xl">{o?.title ?? TOOL_GUIDES["palette-generator"].title}</h1>
         <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{o?.intro ?? "Build color harmonies from your logo and create a custom palette."}</p>
 
-        <section className="mt-12">
+        <section className="mt-12 notranslate" translate="no">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <h2 className="text-2xl font-bold">{logoColors ? "Generated from your logo" : "Generated from a sample color"}</h2>
@@ -126,7 +126,7 @@ function Generator({ initial }: { initial: string[] | null }) {
   useEffect(() => { savePalette(shown); }, [shown.join()]);
 
   return (
-    <section className="mt-16" aria-labelledby="gen">
+    <section className="mt-16 notranslate" translate="no" aria-labelledby="gen">
       <h2 id="gen" className="text-2xl font-bold">Custom palette generator</h2>
       <p className="text-sm text-muted-foreground">Pick 1–5 colors, choose a harmony, lock and shuffle (press Space), drag to reorder.</p>
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">

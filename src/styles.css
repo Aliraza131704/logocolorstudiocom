@@ -189,6 +189,14 @@
 
 .ProseMirror { min-height: 320px; outline: none; }
 
+/* Automatic translation: hide the translator's own bar, tooltips and highlights. */
+.goog-te-banner-frame, iframe.skiptranslate, .skiptranslate > iframe, #goog-gt-tt, .goog-te-balloon-frame,
+.VIpgJd-ZVi9od-ORHb-OEVmcd, .VIpgJd-ZVi9od-aZ2wEe-wOHMyf, .VIpgJd-yAWNEb-L7lbkb, #google_translate_element { display: none !important; }
+body { top: 0 !important; }
+.goog-text-highlight { background: transparent !important; box-shadow: none !important; }
+/* Right-to-left translations (Urdu): each paragraph follows its own text direction. */
+html.translated-rtl :is(p, li, h1, h2, h3, h4, dd, dt, blockquote, figcaption, td, th, summary) { unicode-bidi: plaintext; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

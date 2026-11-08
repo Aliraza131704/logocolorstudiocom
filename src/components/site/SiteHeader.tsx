@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { MegaMenu } from "./MegaMenu";
+import { LanguageSwitcher } from "./SiteTranslate";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme";
 import { TOOLS } from "@/lib/tools";
@@ -46,6 +47,7 @@ export function SiteHeader() {
             ))}
           </nav>
           <div className="flex items-center gap-1">
+            <LanguageSwitcher />
             <ThemeToggle />
             <Button variant="hero" className="hidden lg:inline-flex" asChild>
               <Link to="/tools/logo-extractor">Start free</Link>
