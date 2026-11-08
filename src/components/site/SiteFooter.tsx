@@ -15,6 +15,16 @@ const COLS = [
 ] as const;
 
 export const PINTEREST_URL = "https://www.pinterest.com/logocolorstudio/";
+export const INSTAGRAM_URL = "https://www.instagram.com/logocolorstudio/";
+export const THREADS_URL = "https://www.threads.com/@logocolorstudio";
+
+function ThreadsIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M17.69 11.23c-.1-.05-.21-.1-.31-.14-.18-3.37-2.03-5.3-5.12-5.32h-.04c-1.85 0-3.39.79-4.33 2.22l1.7 1.17c.71-1.07 1.81-1.3 2.63-1.3h.03c1.02.01 1.78.3 2.28.88.36.42.6 1 .72 1.73-.9-.15-1.88-.2-2.92-.14-2.94.17-4.83 1.88-4.7 4.27.06 1.21.67 2.25 1.7 2.93.88.58 2 .86 3.17.8 1.54-.08 2.75-.67 3.6-1.75.64-.82 1.05-1.89 1.23-3.23.73.44 1.28 1.03 1.58 1.73.51 1.2.54 3.17-1.07 4.78-1.41 1.41-3.11 2.02-5.67 2.04-2.85-.02-5-.93-6.4-2.72-1.31-1.67-1.98-4.08-2.01-7.17.03-3.09.7-5.5 2.01-7.17 1.4-1.79 3.55-2.7 6.4-2.72 2.86.02 5.05.94 6.5 2.73.71.88 1.25 1.98 1.6 3.27l1.99-.53c-.42-1.58-1.09-2.94-2.01-4.07C17.19 1.2 14.44.02 10.92 0h-.01C7.4.02 4.69 1.2 2.86 3.53 1.23 5.6.39 8.48.36 12.09v.02c.03 3.61.87 6.49 2.5 8.56C4.69 23 7.4 24.18 10.91 24.2h.01c3.12-.02 5.32-.84 7.13-2.65 2.37-2.37 2.3-5.33 1.52-7.15-.56-1.31-1.63-2.37-3.08-3.07l1.2-.1Zm-5.39 5.06c-1.3.07-2.65-.51-2.72-1.76-.05-.93.66-1.96 2.8-2.09.25-.01.49-.02.72-.02.78 0 1.5.08 2.16.22-.25 3.06-1.69 3.58-2.96 3.65Z" />
+    </svg>
+  );
+}
 
 function PinterestIcon({ className }: { className?: string }) {
   return (
@@ -31,7 +41,8 @@ export function SiteFooter() {
   const { data: s } = useSettings();
   const socials = [
     { href: s?.social_twitter, icon: Twitter, label: "Twitter" },
-    { href: s?.social_instagram, icon: Instagram, label: "Instagram" },
+    { href: s?.social_instagram || INSTAGRAM_URL, icon: Instagram, label: "Instagram" },
+    { href: s?.social_threads || THREADS_URL, icon: ThreadsIcon, label: "Threads" },
     { href: s?.social_github, icon: Github, label: "GitHub" },
     { href: s?.social_dribbble, icon: Dribbble, label: "Dribbble" },
     { href: s?.social_pinterest || PINTEREST_URL, icon: PinterestIcon, label: "Pinterest" },

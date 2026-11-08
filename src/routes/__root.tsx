@@ -76,7 +76,7 @@ const ORG_LD = {
   url: absoluteUrl("/"),
   logo: absoluteUrl("/apple-touch-icon.png"),
   email: "apwebventures01@gmail.com",
-  sameAs: ["https://www.pinterest.com/logocolorstudio/"],
+  sameAs: ["https://www.pinterest.com/logocolorstudio/", "https://www.instagram.com/logocolorstudio/", "https://www.threads.com/@logocolorstudio"],
 };
 const SITE_LD = {
   "@context": "https://schema.org",
