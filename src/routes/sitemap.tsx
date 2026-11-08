@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { listPosts } from "@/lib/content.functions";
+import { NAMED_COLORS } from "@/lib/color-names";
 import { Breadcrumbs, breadcrumbLd } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
