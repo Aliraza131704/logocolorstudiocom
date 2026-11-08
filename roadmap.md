@@ -50,3 +50,6 @@
 ## Dummy content removal
 - [x] Remove the last invented content: the theme generator's preview card no longer shows the fake "Acme Studio" brand, and the byline/About/Privacy no longer carry a stand-in team name; preview-checked blog, About, Privacy, theme generator, blog list and homepage with no placeholder wording and no page errors, 72 tests pass.
 - [ ] Publish so the live site shows Ali Raza as the byline and the corrected theme preview label.
+
+## Referral links
+- [x] Admin → Referral links: create /r/{code} links, see total/unique/today/7d/30d clicks and top source
