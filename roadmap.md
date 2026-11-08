@@ -53,3 +53,8 @@
 
 ## Referral links
 - [x] Admin → Referral links: create /r/{code} links, see total/unique/today/7d/30d clicks and top source
+
+## Keyword pages (Nov 8)
+- [x] Color name pages (/colors and 30 /colors/{slug} pages: burgundy, teal, beige, indigo, periwinkle and more) with codes, shades, palettes, contrast, matching brands and FAQ; in sitemap, footer and site map page.
+- [x] Brand Colors: "brand color palette / logo colors" titles, logo-color filter and "Brand logos by color" section; brand pages titled "{Brand} Logo Colors"; palette generator titled "Color Palette Generator".
+- [ ] Giveaway thank-you email — waiting on the owner to set up the sender email domain (logocolorstudio.com) in email setup.
