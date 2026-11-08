@@ -13,12 +13,13 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { COLOR_FAMILIES, brandFamilies, type ColorFamily } from "@/lib/color-names";
 
 export const Route = createFileRoute("/brand-colors/")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
   head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-brand-colors"), {
-      title: `Brand Colors: Official Logo Palettes of ${BRANDS.length}+ Famous Brands`,
-      description: `Explore the official logo colors of ${BRANDS.length}+ world-famous brands. Copy HEX, RGB and HSL, pick colors straight from each logo, and download palettes as PNG, CSS or Tailwind.`,
+      title: `Brand Color Palettes: Official Logo Colors of ${BRANDS.length}+ Brands`,
+      description: `Brand color palettes and logo colors of ${BRANDS.length}+ famous brands — tech, fashion, luxury and more. Find brand logos by color, copy HEX, RGB and HSL, and download each palette.`,
       path: "/brand-colors",
       jsonLd: [breadcrumbLd([{ label: "Brand Colors" }], "/brand-colors")],
     })),
@@ -29,6 +30,7 @@ function Page() {
   const o = toolOverride(Route.useLoaderData(), "page-brand-colors");
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<string>("all");
+  const [fam, setFam] = useState<ColorFamily | "all">("all");
   const [open, setOpen] = useState<Brand | null>(null);
 
   // The popup is derived from the URL: /brand-colors/{slug} opens that brand's
@@ -56,16 +58,16 @@ function Page() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return BRANDS.filter(
-      (b) => (cat === "all" || b.category === cat) && (!q || b.name.toLowerCase().includes(q)),
+      (b) => (cat === "all" || b.category === cat) && (fam === "all" || brandFamilies(b).includes(fam)) && (!q || b.name.toLowerCase().includes(q)),
     );
-  }, [query, cat]);
+  }, [query, cat, fam]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-      <h1 className="text-4xl font-bold">{o?.title ?? "Brand colors"}</h1>
+      <h1 className="text-4xl font-bold">{o?.title ?? "Brand colors & logo color palettes"}</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">{o?.intro ?? <>
-        The official logo palettes of {BRANDS.length} world-famous brands. Click any brand to copy its HEX, RGB and HSL
-        values, pick colors directly from the logo, and download the palette as PNG, CSS variables or a Tailwind config.
+        The official brand color palettes and logo colors of {BRANDS.length} world-famous brands. Click any brand logo to copy its
+        HEX, RGB and HSL values, pick colors directly from the logo, and download the palette as PNG, CSS variables or a Tailwind config.
       </>}</p>
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -87,6 +89,14 @@ function Page() {
             </Button>
           ))}
         </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="Filter by logo color">
+        <span className="text-sm font-medium text-muted-foreground">Logo color:</span>
+        <Button size="sm" variant={fam === "all" ? "hero" : "outline"} onClick={() => setFam("all")}>Any</Button>
+        {COLOR_FAMILIES.map((f) => (
+          <Button key={f.id} size="sm" variant={fam === f.id ? "hero" : "outline"} onClick={() => setFam(f.id)}>{f.label}</Button>
+        ))}
       </div>
 
       <p className="mt-4 text-sm text-muted-foreground" aria-live="polite">
@@ -122,6 +132,37 @@ function Page() {
           {open && <BrandDetail brand={open} headingLevel={2} />}
         </DialogContent>
       </Dialog>
+      <section className="mt-16" aria-labelledby="by-color">
+        <h2 id="by-color" className="text-2xl font-bold">Brand logos by color</h2>
+        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+          Looking for inspiration for a new brand color palette? These famous logos are grouped by the colors they use, from red and
+          purple brand logos to black-and-white luxury marks.
+        </p>
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          {COLOR_FAMILIES.map((f) => {
+            const items = BRANDS.filter((b) => brandFamilies(b).includes(f.id));
+            if (!items.length) return null;
+            return (
+              <div key={f.id}>
+                <h3 className="font-semibold">{f.label} brand logos <span className="text-sm font-normal text-muted-foreground">({items.length})</span></h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {items.slice(0, 24).map((b, i) => (
+                    <span key={b.slug}>
+                      {i > 0 && ", "}
+                      <a href={brandPath(b)} className="text-foreground/80 hover:text-primary" onClick={(e) => { e.preventDefault(); openBrand(b); }}>{b.name}</a>
+                    </span>
+                  ))}
+                  {items.length > 24 && " and more"}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+        <p className="mt-6 text-sm text-muted-foreground">
+          Need the exact code for a single color? See <a href="/colors" className="text-primary hover:underline">color names and HEX codes</a> such as
+          burgundy, teal and periwinkle.
+        </p>
+      </section>
       <PageExtras o={o} />
     </div>
   );
