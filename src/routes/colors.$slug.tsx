@@ -1,10 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import {
-  brandsUsingColor, colorPath, getNamedColor, shadesAndTints, similarColors, temperature, textContrast, toCmyk, type NamedColor,
+  brandsUsingColor, getNamedColor, shadesAndTints, similarColors, temperature, textContrast, toCmyk, type NamedColor,
 } from "@/lib/color-names";
-import { brandPath } from "@/lib/brands";
-import { fmtHsl, fmtRgb, harmony, readableOn, wcag } from "@/lib/color";
+import { fmtHsl, fmtRgb, harmony, hexToHsl, readableOn, wcag } from "@/lib/color";
 import { BrandLogo } from "@/components/site/BrandLogo";
 import { AdSlot } from "@/components/site/AdSlot";
 import { Breadcrumbs, CopyButton, FaqList, breadcrumbLd, faqLd, type Faq } from "@/components/site/ui-bits";
@@ -24,7 +23,7 @@ function faqsFor(c: NamedColor): Faq[] {
   return [
     { q: `What is the HEX code for ${c.name.toLowerCase()}?`, a: `The standard HEX code for ${c.name.toLowerCase()} is ${c.hex}. In RGB it is ${fmtRgb(c.hex)}, in HSL ${fmtHsl(c.hex)} and in CMYK ${cmykText(c.hex)}.` },
     { q: `What colors go with ${c.name.toLowerCase()}?`, a: `Its complementary color is ${comp}, which gives the strongest contrast. For a calmer look, use the analogous palette (${harmony(c.hex, "analogous").join(", ")}) or the shades and tints of ${c.name.toLowerCase()} shown on this page.` },
-    { q: `Is ${c.name.toLowerCase()} a warm or cool color?`, a: temp === "neutral" ? `${c.name} has very low saturation, so it behaves as a neutral and works with both warm and cool palettes.` : `${c.name} is a ${temp} color, based on where its hue (${fmtHsl(c.hex).split(",")[0].replace("hsl(", "")}°) sits on the color wheel.` },
+    { q: `Is ${c.name.toLowerCase()} a warm or cool color?`, a: temp === "neutral" ? `${c.name} has very low saturation, so it behaves as a neutral and works with both warm and cool palettes.` : `${c.name} is a ${temp} color, based on where its hue (${hexToHsl(c.hex).h}°) sits on the color wheel.` },
     { q: `Which text color is readable on ${c.name.toLowerCase()}?`, a: `${best === "white" ? "White" : "Black"} text has the higher contrast on ${c.hex}, at ${bestRatio}:1. ${Number(bestRatio) >= 4.5 ? "That passes WCAG AA for normal text." : Number(bestRatio) >= 3 ? "That passes WCAG AA only for large text, so keep small text off this background." : "That fails WCAG AA, so avoid placing text directly on this color."}` },
     { q: `How do I use ${c.name.toLowerCase()} in CSS?`, a: `Use the HEX value directly, for example color: ${c.hex}; or background-color: ${c.hex};. You can also store it as a variable: --${c.slug}: ${c.hex};.` },
   ];
@@ -159,7 +158,7 @@ function Page() {
           <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {brands.map(({ brand, color }) => (
               <li key={brand.slug}>
-                <Link to={brandPath(brand)} className="flex items-center gap-3 rounded-xl border bg-card p-3 hover:border-primary">
+                <Link to="/brand-colors/$slug" params={{ slug: brand.slug }} className="flex items-center gap-3 rounded-xl border bg-card p-3 hover:border-primary">
                   <BrandLogo brand={brand} size={64} className="h-9 w-9" />
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-semibold">{brand.name}</span>
@@ -180,7 +179,7 @@ function Page() {
         <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
           {similar.map((s) => (
             <li key={s.slug}>
-              <Link to={colorPath(s)} className="block overflow-hidden rounded-xl border hover:border-primary">
+              <Link to="/colors/$slug" params={{ slug: s.slug }} className="block overflow-hidden rounded-xl border hover:border-primary">
                 <span className="block h-14" style={{ backgroundColor: s.hex }} aria-hidden />
                 <span className="block px-2 py-1.5 text-sm font-medium">{s.name}</span>
                 <span className="block px-2 pb-2 font-mono text-xs text-muted-foreground">{s.hex}</span>
