@@ -196,6 +196,9 @@ body { top: 0 !important; }
 .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
 /* Right-to-left translations (Urdu): each paragraph follows its own text direction. */
 html.translated-rtl :is(p, li, h1, h2, h3, h4, dd, dt, blockquote, figcaption, td, th, summary) { unicode-bidi: plaintext; }
+/* Urdu script is taller than Latin; give lines room so they never overlap. */
+html.translated-rtl :is(h1, h2, h3, h4) { line-height: 1.7 !important; }
+html.translated-rtl :is(p, li, dd, blockquote, figcaption, summary, a, span, label) { line-height: 1.9; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
