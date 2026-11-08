@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 const COLS = [
   { title: "Tools", links: TOOLS.map(t => [t.name, t.path]) },
-  { title: "Company", links: [["About", "/about"], ["Contact", "/contact"], ["Blog", "/blog"], ["Brand Colors", "/brand-colors"], ["Downloads", "/downloads"], ["Giveaway", "/giveaway"], ["Changelog", "/changelog"]] },
+  { title: "Company", links: [["About", "/about"], ["Contact", "/contact"], ["Blog", "/blog"], ["Brand Colors", "/brand-colors"], ["Color Names", "/colors"], ["Downloads", "/downloads"], ["Giveaway", "/giveaway"], ["Changelog", "/changelog"]] },
   { title: "Legal", links: [["Privacy Policy", "/privacy-policy"], ["Terms of Service", "/terms-of-service"], ["Cookie Policy", "/cookie-policy"], ["Disclaimer", "/disclaimer"], ["Sitemap", "/sitemap"]] },
 ] as const;
 

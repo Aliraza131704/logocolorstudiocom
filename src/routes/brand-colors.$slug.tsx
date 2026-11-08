@@ -14,8 +14,8 @@ export const Route = createFileRoute("/brand-colors/$slug")({
   head: ({ loaderData: b, params }) =>
     b
       ? pageHead({
-          title: `${b.name} Brand Colors: HEX, RGB & Logo Palette`.slice(0, 60),
-          description: `The official ${b.name} logo colors: ${b.colors.map((c) => `${c.name} ${c.hex}`).join(", ")}. Copy HEX, RGB and HSL, pick colors from the logo, and download the palette.`,
+          title: `${b.name} Logo Colors: HEX, RGB & Brand Palette`.slice(0, 60),
+          description: `The official ${b.name} logo and brand colors: ${b.colors.map((c) => `${c.name} ${c.hex}`).join(", ")}. Copy HEX, RGB and HSL, pick colors from the logo, and download the palette.`,
           path: `/brand-colors/${params.slug}`,
           type: "article",
           follow: true,
