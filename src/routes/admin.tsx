@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import { toast } from "sonner";
-import { LayoutDashboard, Megaphone, FileText, FileCog, Settings, Users, Inbox, LogOut, ExternalLink, Trash2, Plus, Wrench } from "lucide-react";
+import { LayoutDashboard, Megaphone, FileText, FileCog, Settings, Users, Inbox, LogOut, ExternalLink, Trash2, Plus, Wrench, Link2 } from "lucide-react";
+import { ReferralManager } from "@/components/admin/ReferralManager";
 import { supabase } from "@/integrations/supabase/client";
 import { LogoImage } from "@/components/site/Logo";
 import { ThemeToggle } from "@/components/site/SiteHeader";
@@ -61,6 +62,7 @@ const TABS = [
   { id: "subs", label: "Subscribers", icon: Users },
   { id: "msgs", label: "Messages", icon: Inbox },
   { id: "giveaway", label: "Giveaway", icon: Users },
+  { id: "referrals", label: "Referral links", icon: Link2 },
   { id: "team", label: "Admin access", icon: Users },
 ] as const;
 type Tab = (typeof TABS)[number]["id"];
@@ -102,6 +104,7 @@ function Admin() {
         {tab === "subs" && <Subscribers />}
         {tab === "msgs" && <Messages />}
         {tab === "giveaway" && <Giveaway />}
+        {tab === "referrals" && <ReferralManager />}
         {tab === "team" && owner && <TeamPanel />}
       </main>
     </div>
