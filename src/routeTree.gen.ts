@@ -31,6 +31,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as BrandColorsIndexRouteImport } from './routes/brand-colors.index'
 import { Route as BrandColorsSlugRouteImport } from './routes/brand-colors.$slug'
 import { Route as PaletteSlugRouteImport } from './routes/palette.$slug'
+import { Route as RCodeRouteImport } from './routes/r.$code'
 import { Route as ToolsIndexRouteImport } from './routes/tools.index'
 import { Route as ToolsCmsDetectorRouteImport } from './routes/tools.cms-detector'
 import { Route as ToolsContrastCheckerRouteImport } from './routes/tools.contrast-checker'
@@ -154,6 +155,11 @@ const PaletteSlugRoute = PaletteSlugRouteImport.update({
   path: '/palette/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RCodeRoute = RCodeRouteImport.update({
+  id: '/r/$code',
+  path: '/r/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsIndexRoute = ToolsIndexRouteImport.update({
   id: '/tools/',
   path: '/tools/',
@@ -238,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/brand-colors/$slug': typeof BrandColorsSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
+  '/r/$code': typeof RCodeRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
@@ -274,6 +281,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/brand-colors/$slug': typeof BrandColorsSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
+  '/r/$code': typeof RCodeRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
@@ -311,6 +319,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/brand-colors/$slug': typeof BrandColorsSlugRoute
   '/palette/$slug': typeof PaletteSlugRoute
+  '/r/$code': typeof RCodeRoute
   '/tools/cms-detector': typeof ToolsCmsDetectorRoute
   '/tools/contrast-checker': typeof ToolsContrastCheckerRoute
   '/tools/export-center': typeof ToolsExportCenterRoute
@@ -349,6 +358,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/brand-colors/$slug'
     | '/palette/$slug'
+    | '/r/$code'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
@@ -385,6 +395,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/brand-colors/$slug'
     | '/palette/$slug'
+    | '/r/$code'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
@@ -421,6 +432,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/brand-colors/$slug'
     | '/palette/$slug'
+    | '/r/$code'
     | '/tools/cms-detector'
     | '/tools/contrast-checker'
     | '/tools/export-center'
@@ -458,6 +470,7 @@ export interface RootRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
   BrandColorsSlugRoute: typeof BrandColorsSlugRoute
   PaletteSlugRoute: typeof PaletteSlugRoute
+  RCodeRoute: typeof RCodeRoute
   ToolsCmsDetectorRoute: typeof ToolsCmsDetectorRoute
   ToolsContrastCheckerRoute: typeof ToolsContrastCheckerRoute
   ToolsExportCenterRoute: typeof ToolsExportCenterRoute
@@ -630,6 +643,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaletteSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/r/$code': {
+      id: '/r/$code'
+      path: '/r/$code'
+      fullPath: '/r/$code'
+      preLoaderRoute: typeof RCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/': {
       id: '/tools/'
       path: '/tools'
@@ -738,6 +758,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
   BrandColorsSlugRoute: BrandColorsSlugRoute,
   PaletteSlugRoute: PaletteSlugRoute,
+  RCodeRoute: RCodeRoute,
   ToolsCmsDetectorRoute: ToolsCmsDetectorRoute,
   ToolsContrastCheckerRoute: ToolsContrastCheckerRoute,
   ToolsExportCenterRoute: ToolsExportCenterRoute,

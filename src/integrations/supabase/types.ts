@@ -272,6 +272,65 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_clicks: {
+        Row: {
+          created_at: string
+          id: number
+          link_id: string
+          referrer_host: string
+          visitor_hash: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          link_id: string
+          referrer_host?: string
+          visitor_hash?: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          link_id?: string
+          referrer_host?: string
+          visitor_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_clicks_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_links: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          id: string
+          label: string
+          target_path: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          id?: string
+          label: string
+          target_path?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          id?: string
+          label?: string
+          target_path?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           key: string
@@ -359,6 +418,28 @@ export type Database = {
           month: string
           name: string
           wallet: string
+        }[]
+      }
+      record_referral_click: {
+        Args: {
+          _code: string
+          _count?: boolean
+          _referrer: string
+          _visitor: string
+        }
+        Returns: string
+      }
+      referral_stats: {
+        Args: never
+        Returns: {
+          last_30d: number
+          last_7d: number
+          last_click: string
+          link_id: string
+          today: number
+          top_source: string
+          total: number
+          unique_visitors: number
         }[]
       }
     }
