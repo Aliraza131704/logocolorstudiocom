@@ -100,6 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#0F1B3D" },
       { name: "yandex-verification", content: "b25213e4f1866e23" },
+      { name: "google-adsense-account", content: "ca-pub-6808242478186603" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
