@@ -508,7 +508,7 @@ export const TOOL_GUIDES: Record<string, ToolGuideContent> = {
     ]
   },
   "wordpress-theme-detector": {
-    "title": "Free WordPress Theme Detector – Find Themes & Plugins",
+    "title": "Free WordPress Theme Detector & Website Theme Checker",
     "intro": [
       "The WordPress Theme Detector investigates the public files and metadata that reveal how a WordPress website is presented. It can report visible theme folders, readable theme headers, parent-theme information and plugin assets. This helps you begin design research or a client handover with evidence instead of trying to recognize a template from its appearance alone.",
       "WordPress sites can hide, rename or combine their assets, so no public detector can promise a complete inventory. A theme record may be partial and a plugin list may omit tools that only run in the dashboard. Read missing fields as unknowns, then confirm important details with the site owner or original developer when the work depends on them."
