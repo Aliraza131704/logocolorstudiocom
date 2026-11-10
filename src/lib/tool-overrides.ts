@@ -78,8 +78,10 @@ export const EDITABLE_PAGES = [
 ] as const;
 
 /** Applies an owner-edited SEO title/description over route defaults. */
-export const withMeta = <T extends { title: string; description: string }>(o: ToolOverride | null, opts: T): T => ({
+export const withMeta = <T extends { title: string; description: string; ogTitle?: string; ogDescription?: string }>(o: ToolOverride | null, opts: T): T => ({
   ...opts,
   title: o?.metaTitle ?? opts.title,
   description: o?.metaDescription ?? opts.description,
+  ogTitle: o?.metaTitle ?? opts.ogTitle,
+  ogDescription: o?.metaDescription ?? opts.ogDescription,
 });

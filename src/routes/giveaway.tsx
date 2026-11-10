@@ -11,6 +11,7 @@ import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
 import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PageExtras } from "@/components/site/PageExtras";
+import { PAGE_META } from "@/lib/page-meta";
 
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100),
@@ -20,7 +21,7 @@ const schema = z.object({
 
 export const Route = createFileRoute("/giveaway")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-giveaway"), { title: "Free Monthly 50 USDT Giveaway — LogoColorStudio", description: "Enter the free LogoColorStudio monthly giveaway. No payment or purchase needed — one lucky winner receives 50 USDT at the end of every month.", path: "/giveaway" })),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-giveaway"), { ...PAGE_META["/giveaway"], path: "/giveaway" })),
   component: Page,
 });
 

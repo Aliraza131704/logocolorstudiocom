@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { pageHead } from "@/lib/seo";
+import { PAGE_META } from "@/lib/page-meta";
 
 const schema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100),
@@ -20,7 +21,7 @@ const schema = z.object({
 
 export const Route = createFileRoute("/contact")({
   loader: () => getPage({ data: { slug: "contact" } }),
-  head: () => pageHead({ title: "Contact — LogoColorStudio", description: "Questions, feedback or partnership ideas? Contact the LogoColorStudio team by form or at apwebventures01@gmail.com.", path: "/contact" }),
+  head: () => pageHead({ ...PAGE_META["/contact"], path: "/contact" }),
   component: Page,
 });
 

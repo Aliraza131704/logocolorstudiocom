@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { adjust, contrastRatio, hexToHsl, hslToHex, normalizeHex, readableOn } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PAGE_META } from "@/lib/page-meta";
 
 const FAQS: Faq[] = TOOL_GUIDES["theme-generator"].faqs;
 
@@ -18,8 +19,7 @@ export const Route = createFileRoute("/tools/theme-generator")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "theme-generator");
     return pageHead({
-      title: o?.metaTitle ?? "Theme Generator — Light & Dark UI Themes",
-      description: o?.metaDescription ?? "Turn a brand palette into accessible light and dark UI themes with live preview. Copy CSS variables for Tailwind and shadcn/ui.",
+      ...withMeta(o, PAGE_META["/tools/theme-generator"]),
       path: "/tools/theme-generator",
       jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Theme Generator" }], "/tools/theme-generator"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Theme Generator", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
     });

@@ -9,10 +9,11 @@ import { Slider } from "@/components/ui/slider";
 import { extractColors } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import logoExtractImg from "@/assets/guide-logo-extract.jpg";
 import colorWheelImg from "@/assets/guide-color-wheel.jpg";
 import { toast } from "sonner";
+import { PAGE_META } from "@/lib/page-meta";
 
 const FAQS: Faq[] = [
   { q: "Is the Logo Color Extractor free?", a: "Yes. It is free with no account, watermark or usage limit." },
@@ -36,8 +37,7 @@ export const Route = createFileRoute("/tools/logo-extractor")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "logo-extractor");
     return pageHead({
-      title: o?.metaTitle ?? "Logo Color Changer — Change Logo Color Online Free",
-      description: o?.metaDescription ?? "Free logo color changer: upload any logo or photo, extract its exact colors in HEX, RGB & HSL and recolor it online. Export to CSS, Tailwind, SCSS or JSON.",
+      ...withMeta(o, PAGE_META["/tools/logo-extractor"]),
       path: "/tools/logo-extractor",
       jsonLd: [
         { "@context": "https://schema.org", "@type": "WebApplication", name: "Logo Color Extractor", applicationCategory: "DesignApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } },

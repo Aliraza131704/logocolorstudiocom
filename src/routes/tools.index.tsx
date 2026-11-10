@@ -5,10 +5,11 @@ import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
 import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PageExtras } from "@/components/site/PageExtras";
+import { PAGE_META } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/tools/")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-tools"), { title: "All Color & Website Tools — LogoColorStudio", description: "Browse every free LogoColorStudio tool: logo and website color extraction, palettes, contrast, themes, exports, audits and theme detectors.", path: "/tools" })),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-tools"), { ...PAGE_META["/tools"], path: "/tools" })),
   component: ToolsIndex,
 });
 

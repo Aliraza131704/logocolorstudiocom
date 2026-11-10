@@ -14,13 +14,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { COLOR_FAMILIES, brandFamilies, type ColorFamily } from "@/lib/color-names";
+import { PAGE_META } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/brand-colors/")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-brand-colors"), {
-      title: `Brand Color Palettes: Official Logo Colors of ${BRANDS.length}+ Brands`,
-      description: `Brand color palettes and logo colors of ${BRANDS.length}+ famous brands — tech, fashion, luxury and more. Find brand logos by color, copy HEX, RGB and HSL, and download each palette.`,
-      path: "/brand-colors",
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-brand-colors"), { ...PAGE_META["/brand-colors"], path: "/brand-colors",
       jsonLd: [breadcrumbLd([{ label: "Brand Colors" }], "/brand-colors")],
     })),
   component: Page,
