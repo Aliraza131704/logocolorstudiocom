@@ -106,4 +106,8 @@ export function metaContent(html: string, key: string) {
 
 export const abs = (base: string, href: string) => { try { return new URL(href, base).toString(); } catch { return href; } };
 
-export const decode = (s: string) => s.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+export const decode = (s: string) => s.replace(/&#x([0-9a-f]{1,6});/gi, (_, h: string) => safeChar(parseInt(h, 16))).replace(/&#(\d{1,7});/g, (_, d: string) => safeChar(Number(d))).replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
+function safeChar(code: number) {
+  return code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : "";
+}

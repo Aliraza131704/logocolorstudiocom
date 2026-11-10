@@ -2,6 +2,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import LinkExt from "@tiptap/extension-link";
 import ImageExt from "@tiptap/extension-image";
+import { TableKit } from "@tiptap/extension-table";
 import { useEffect, useRef, useState } from "react";
 import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link2, Image as Img, ImagePlus, Code, Quote, Undo, Redo, Megaphone, FileCode } from "lucide-react";
 import { toast } from "sonner";
@@ -13,7 +14,7 @@ export function RichEditor({ value, onChange }: { value: string; onChange: (html
   const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const editor = useEditor({
-    extensions: [StarterKit, LinkExt.configure({ openOnClick: false }), ImageExt],
+    extensions: [StarterKit, LinkExt.configure({ openOnClick: false }), ImageExt, TableKit.configure({ table: { resizable: false } })],
     content: value,
     immediatelyRender: false,
     editorProps: { attributes: { class: "prose-content p-4" } },
