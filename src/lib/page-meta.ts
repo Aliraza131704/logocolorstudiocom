@@ -195,6 +195,8 @@ export function paletteMeta(p: Palette): PageMeta {
       `${intro} Copy HEX and RGB codes or export to CSS. Get your colors.`,
       `${intro} Copy HEX codes or export CSS and Tailwind. Get your colors.`,
       `${intro} Copy the HEX codes or export CSS. Get your colors.`,
+      `${intro} Copy HEX codes or export CSS. Get your colors.`,
+      `${intro} Copy the HEX codes free. Get your colors.`,
       `${intro} Copy HEX codes. Get your colors.`,
     ]),
     ogTitle: `${p.name} Color Palette`,
@@ -208,6 +210,7 @@ export function brandMeta(b: Brand): PageMeta {
   for (let n = named.length; n >= 1; n--) {
     const list = named.slice(0, n).join(", ");
     candidates.push(
+      `Official ${b.name} logo and brand colors: ${list}. Copy HEX, RGB and HSL codes, pick colors from the logo and download the palette. Free. Copy now.`,
       `Official ${b.name} logo colors: ${list}. Copy HEX, RGB and HSL codes, pick colors from the logo and download the palette. Free. Copy now.`,
       `Official ${b.name} logo colors: ${list}. Copy HEX, RGB and HSL codes and download the palette for free. Copy now.`,
       `Official ${b.name} logo colors: ${list}. Copy HEX, RGB and HSL codes for free. Copy now.`,
