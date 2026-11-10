@@ -12,6 +12,9 @@ import cmsDetectImg from "@/assets/guide-cms-detect.jpg";
 import cmsFrameworkImg from "@/assets/guide-cms-vs-framework.jpg";
 
 const FAQS: Faq[] = [
+  { q: "What CMS is this website using?", a: "Paste the address into the CMS checker above and press Detect. It reads the page's public HTML, scripts, asset paths and server headers, then shows the most likely platform with a confidence score and the evidence it matched." },
+  { q: "How can I check a website's CMS without installing software?", a: "Use this online CMS checker in any desktop or mobile browser. There is no extension, download or sign-up, and the addresses you check are not stored." },
+  { q: "Can this CMS finder tell if a site uses WordPress or Shopify?", a: "Yes. WordPress is recognised from signals such as /wp-content/ paths and the wp-json endpoint, and Shopify from cdn.shopify.com assets and Shopify scripts. After a match you can open the matching theme detector to find the theme." },
   { q: "Is this CMS detector free?", a: "Yes. It is completely free, needs no account and has no daily credit system. A fair-use limit of about 20 checks per minute per visitor keeps it fast for everyone." },
   { q: "How do I check what CMS a website uses?", a: "Paste the website address into the box above and press Detect. The tool reads the page's public fingerprints and shows the most likely CMS with a confidence score and the evidence behind it." },
   { q: "Which platforms can be detected?", a: "WordPress, Shopify, Wix, Squarespace, Webflow, Joomla, Drupal, Magento, Ghost, BigCommerce, PrestaShop, WooCommerce, OpenCart, Ecwid, HubSpot CMS, Framer, Weebly, Duda, Tilda, Blogger, TYPO3, headless CMSs like Contentful and Sanity, plus 40+ frameworks, analytics tools, hosts and page builders." },
@@ -32,8 +35,8 @@ export const Route = createFileRoute("/tools/cms-detector")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "cms-detector");
     return pageHead({
-      title: o?.metaTitle ?? "CMS Detector Online — Free Website CMS Checker",
-      description: o?.metaDescription ?? "Free CMS detector online: check what CMS any website uses — WordPress, Shopify, Wix, Squarespace, Webflow, Drupal, Magento, Ghost and 30+ more, with evidence.",
+      title: o?.metaTitle ?? "CMS Checker Online — Check What CMS Any Website Uses",
+      description: o?.metaDescription ?? "Free CMS checker: see if a site runs WordPress, Shopify, Wix, Squarespace or 30+ other platforms, with evidence for every match. Check any website now.",
       path: "/tools/cms-detector",
       jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "CMS Detector" }], "/tools/cms-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "CMS Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
     });
@@ -55,7 +58,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout override={o} slug="cms-detector" title="CMS Detector Online – Check What CMS a Website Uses" intro="Paste any website address to find out which content management system or site builder powers it, with evidence for every match." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="cms-detector" title="CMS Checker: What CMS Is This Website Using?" intro="Use this free CMS checker to find the content management system or site builder behind any website in seconds. Our CMS Detector reads public headers, scripts and file paths, then shows a confidence score and the evidence for every match." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Detect" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}
