@@ -2,7 +2,7 @@ INSERT INTO public.blog_posts (slug, title, excerpt, content, cover_image, categ
 SELECT 'how-to-check-what-cms-a-website-uses', 'How to Check What CMS a Website Uses (5 Free Methods)',
 'Five free ways to check what CMS a website uses: an online CMS checker, page source clues, response headers, known public paths and browser extensions.',
 $article$<p>You find a fast, polished website and wonder: <strong>what CMS is this website using?</strong> Knowing the platform behind a site helps you compare options for your own project, research competitors and find the themes or plugins that make a site work. Websites leave public clues every time they load, and this guide shows five free ways to read them, plus the honest limits of each.</p>
-<p><img src="/images/blog/how-cms-detection-works.webp" alt="Diagram of how CMS detection works: enter a URL, send an HTTP request, analyse headers and HTML, and show detection results" width="1376" height="768"></p>
+<p><img src="/images/blog/how-cms-detection-works.jpg" alt="Diagram of how CMS detection works: enter a URL, send an HTTP request, analyse headers and HTML, and show detection results" width="1376" height="768"></p>
 <h2>The 5 methods at a glance</h2>
 <table><thead><tr><th>Method</th><th>Speed</th><th>Effort</th><th>Best for</th></tr></thead><tbody>
 <tr><td>Online CMS checker</td><td>Seconds</td><td>Paste a URL</td><td>Quick answers with evidence, nothing to install</td></tr>
@@ -73,8 +73,8 @@ $article$<p>You find a fast, polished website and wonder: <strong>what CMS is th
 <h3>How do I find the theme after finding the CMS?</h3>
 <p>Use the <a href="/tools/wordpress-theme-detector">WordPress Theme Detector</a> or the <a href="/tools/shopify-theme-detector">Shopify Theme Detector</a> to see the theme behind the site.</p>
 $article$,
-'/images/blog/how-cms-detection-works.webp', 'Tutorials', ARRAY['cms checker','cms detector','wordpress','shopify'], 'Ali Raza', 'published', '2026-11-10 16:45:00+00'::timestamptz, '2026-11-10 16:45:00+00'::timestamptz,
+'/images/blog/how-cms-detection-works.jpg', 'Tutorials', ARRAY['cms checker','cms detector','wordpress','shopify'], 'Ali Raza', 'published', '2026-11-10 16:45:00+00'::timestamptz, '2026-11-10 16:45:00+00'::timestamptz,
 'How to Check What CMS a Website Uses (5 Free Methods)',
 'Learn 5 free ways to check what CMS a website uses: a CMS checker, page source, headers, public paths and extensions. Try the free CMS Detector.',
-'', '/images/blog/how-cms-detection-works.webp'
+'', '/images/blog/how-cms-detection-works.jpg'
 WHERE NOT EXISTS (SELECT 1 FROM public.blog_posts WHERE slug = 'how-to-check-what-cms-a-website-uses');
