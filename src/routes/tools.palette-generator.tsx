@@ -3,7 +3,7 @@ import { PaletteGeneratorPage, GENERATOR_FAQS } from "@/components/site/PaletteG
 import { faqLd } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PAGE_META } from "@/lib/page-meta";
 export const Route = createFileRoute("/tools/palette-generator")({
  loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
