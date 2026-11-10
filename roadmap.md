@@ -58,3 +58,5 @@
 - [x] Color name pages (/colors and 30 /colors/{slug} pages: burgundy, teal, beige, indigo, periwinkle and more) with codes, shades, palettes, contrast, matching brands and FAQ; in sitemap, footer and site map page.
 - [x] Brand Colors: "brand color palette / logo colors" titles, logo-color filter and "Brand logos by color" section; brand pages titled "{Brand} Logo Colors"; palette generator titled "Color Palette Generator".
 - [ ] Giveaway thank-you email — waiting on the owner to set up the sender email domain (logocolorstudio.com) in email setup.
+- [x] Best CMS Detector blog post at /blog/best-cms-detector (comparison table, real screenshots, article schema)
+- [ ] Publish so the CMS Detector article goes live, then request indexing in Search Console.
