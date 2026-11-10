@@ -78,6 +78,13 @@
       "when": 1794325413035,
       "tag": "0010_add_best_cms_detector_post",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794336300000,
+      "tag": "0011_add_check_cms_post",
+      "breakpoints": true
     }
   ]
 }
