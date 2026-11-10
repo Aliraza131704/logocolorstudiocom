@@ -71,6 +71,13 @@
       "when": 1794138603204,
       "tag": "0009_referral_links",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794325413035,
+      "tag": "0010_add_best_cms_detector_post",
+      "breakpoints": true
     }
   ]
 }

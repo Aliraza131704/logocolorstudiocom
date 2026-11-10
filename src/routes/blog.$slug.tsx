@@ -26,10 +26,27 @@ export const Route = createFileRoute("/blog/$slug")({
       type: "article",
       image: p.og_image || p.cover_image || undefined,
       jsonLd: [
-        { "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.excerpt, datePublished: p.published_at, dateModified: p.updated_at, author: { "@type": "Person", name: editorialAuthorName(p.author), url: absoluteUrl("/about") }, publisher: { "@type": "Organization", name: "LogoColorStudio" }, image: p.og_image || p.cover_image ? absoluteUrl(p.og_image || p.cover_image) : undefined, mainEntityOfPage: absoluteUrl(path) },
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": `${absoluteUrl(path)}#article`,
+          headline: p.title,
+          description: p.meta_description || p.excerpt,
+          datePublished: p.published_at,
+          dateModified: p.updated_at,
+          inLanguage: "en",
+          author: { "@type": "Person", name: editorialAuthorName(p.author), url: absoluteUrl("/about") },
+          publisher: { "@id": `${absoluteUrl("/")}#organization` },
+          image: p.cover_image || p.og_image ? [absoluteUrl(p.cover_image || p.og_image)] : undefined,
+          keywords: p.tags.length ? p.tags.join(", ") : undefined,
+          articleSection: p.category,
+          mainEntityOfPage: { "@id": `${absoluteUrl(path)}#webpage` },
+          isPartOf: { "@id": `${absoluteUrl("/")}#website` },
+        },
         breadcrumbLd([{ label: "Blog", to: "/blog" }, { label: p.title }], path),
       ],
     });
+    h.meta.push({ name: "robots", content: "index, follow, max-image-preview:large" }, { property: "article:published_time", content: p.published_at }, { property: "article:modified_time", content: p.updated_at });
     return h;
   },
   component: Page,
@@ -50,11 +67,17 @@ function Page() {
       <header className="mx-auto max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-widest text-primary">{post.category}</p>
         <h1 className="mt-2 text-3xl font-extrabold leading-tight sm:text-5xl">{post.title}</h1>
-        <p className="mt-4 text-muted-foreground">By {author} · {new Date(post.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {Math.max(1, Math.ceil(words / 220))} min read</p>
+        <p className="mt-4 text-muted-foreground">By <Link to="/about" className="font-medium text-foreground hover:text-primary">{author}</Link> · <time dateTime={post.published_at}>{new Date(post.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })}</time>{post.updated_at && post.updated_at.slice(0, 10) > post.published_at.slice(0, 10) && <> · Updated <time dateTime={post.updated_at}>{new Date(post.updated_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })}</time></>} · {Math.max(1, Math.ceil(words / 220))} min read</p>
       </header>
       {post.cover_image && <img src={post.cover_image} alt={post.title} width={1200} height={630} className="mx-auto mt-8 aspect-[1200/630] w-full max-w-4xl rounded-3xl border object-cover" />}
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_240px]">
         <div className="min-w-0">
+          {toc.length > 0 && (
+            <details className="mx-auto mb-8 max-w-3xl rounded-2xl border bg-card p-4 text-sm lg:hidden">
+              <summary className="cursor-pointer font-semibold">On this page</summary>
+              <ol className="mt-3 space-y-2">{toc.map((t) => <li key={t.id}><a href={`#${t.id}`} className="text-muted-foreground hover:text-primary">{t.text}</a></li>)}</ol>
+            </details>
+          )}
           {splitAdMarkers(html).map((part, i) => "html" in part
             ? <article key={i} className="prose-content mx-auto max-w-3xl" dangerouslySetInnerHTML={{ __html: part.html }} />
             : "ad" in part ? <AdSlot key={i} position={part.ad} className="mx-auto max-w-3xl" /> : <InlineAdCode key={i} code={part.code} />)}
@@ -74,7 +97,7 @@ function Page() {
         </div>
         {toc.length > 0 && (
           <aside className="hidden lg:block">
-            <nav aria-label="Table of contents" className="sticky top-24 rounded-2xl border bg-card p-5 text-sm">
+            <nav aria-label="Table of contents" className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl border bg-card p-5 text-sm">
               <p className="font-semibold">On this page</p>
               <ol className="mt-3 space-y-2">{toc.map((t) => <li key={t.id}><a href={`#${t.id}`} className="text-muted-foreground hover:text-primary">{t.text}</a></li>)}</ol>
             </nav>
