@@ -41,7 +41,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout override={o} slug="wordpress-theme-detector" title={TOOL_GUIDES["wordpress-theme-detector"].title} intro="Reveal the theme, version, author and plugins behind any WordPress website." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="wordpress-theme-detector" title={TOOL_GUIDES["wordpress-theme-detector"].title} intro="Use this free theme detector to reveal the theme, version, author and plugins behind any WordPress website." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Detect theme" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

@@ -58,7 +58,7 @@ function Page() {
     setLoading(false);
   };
   return (
-    <ToolLayout override={o} slug="cms-detector" title="CMS Checker: What CMS Is This Website Using?" intro="Use this free CMS checker to find the content management system or site builder behind any website in seconds. Our CMS Detector reads public headers, scripts and file paths, then shows a confidence score and the evidence for every match." faqs={FAQS} about={<About />}>
+    <ToolLayout override={o} slug="cms-detector" title="CMS Checker: What CMS Is This Website Using?" intro="Use this free CMS checker and CMS finder to detect the content management system or site builder behind any website in seconds. Our CMS Detector reads public headers, scripts and file paths, then shows a confidence score and the evidence for every match." faqs={FAQS} about={<About />}>
       <UrlForm onSubmit={run} loading={loading} cta="Detect" />
       {loading && <ResultSkeleton />}
       {err && <ErrorNote msg={err} />}

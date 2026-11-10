@@ -85,6 +85,13 @@
       "when": 1794336300000,
       "tag": "0011_add_check_cms_post",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1794336300001,
+      "tag": "0012_blog_seo_keywords",
+      "breakpoints": true
     }
   ]
 }

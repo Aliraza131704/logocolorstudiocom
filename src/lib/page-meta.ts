@@ -84,9 +84,9 @@ export const PAGE_META = {
     ogDescription: "Check SEO, accessibility and security issues with evidence and export reports. Free.",
   },
   "/tools/cms-detector": {
-    title: "CMS Checker: Find What CMS a Site Uses | LogoColorStudio",
-    description: "Check if any website runs WordPress, Shopify, Wix, Squarespace or 30+ other platforms, with evidence for every match. Free, no signup. Check a site now.",
-    ogTitle: "CMS Checker: Find What CMS Any Website Uses",
+    title: "What CMS Is This? CMS Checker & Detector | LogoColorStudio",
+    description: "Free CMS checker and CMS finder: detect if any site runs WordPress, Shopify, Wix or 30+ other platforms, with evidence for each match. Check a site now.",
+    ogTitle: "What CMS Is This? Free CMS Checker & Detector",
     ogDescription: "See if a site runs WordPress, Shopify, Wix or 30+ other platforms. Free, no signup.",
   },
   "/tools/shopify-theme-detector": {
@@ -96,9 +96,9 @@ export const PAGE_META = {
     ogDescription: "See any Shopify store's theme name, version and installed apps in seconds. Free.",
   },
   "/tools/wordpress-theme-detector": {
-    title: "WordPress Theme Detector & Plugin Finder | LogoColorStudio",
-    description: "Find the WordPress theme any site uses: name, version, author, parent theme and detected plugins, with the evidence behind each. Free. Check a site now.",
-    ogTitle: "WordPress Theme Detector & Plugin Finder",
+    title: "WordPress & Website Theme Detector | LogoColorStudio",
+    description: "Free WordPress theme detector and website theme checker: find any site's theme name, version, author, parent theme and plugins, with proof. Check it now.",
+    ogTitle: "WordPress & Website Theme Detector",
     ogDescription: "Find any WordPress site's theme, version, author and plugins. Free, no signup.",
   },
   "/palettes": {
