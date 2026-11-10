@@ -7,9 +7,10 @@ import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { detectCms } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import cmsDetectImg from "@/assets/guide-cms-detect.jpg";
 import cmsFrameworkImg from "@/assets/guide-cms-vs-framework.jpg";
+import { PAGE_META } from "@/lib/page-meta";
 
 const FAQS: Faq[] = [
   { q: "What CMS is this website using?", a: "Paste the address into the CMS checker above and press Detect. It reads the page's public HTML, scripts, asset paths and server headers, then shows the most likely platform with a confidence score and the evidence it matched." },
@@ -35,8 +36,7 @@ export const Route = createFileRoute("/tools/cms-detector")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "cms-detector");
     return pageHead({
-      title: o?.metaTitle ?? "CMS Checker Online — Check What CMS Any Website Uses",
-      description: o?.metaDescription ?? "Free CMS checker: see if a site runs WordPress, Shopify, Wix, Squarespace or 30+ other platforms, with evidence for every match. Check any website now.",
+      ...withMeta(o, PAGE_META["/tools/cms-detector"]),
       path: "/tools/cms-detector",
       jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "CMS Detector" }], "/tools/cms-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "CMS Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
     });

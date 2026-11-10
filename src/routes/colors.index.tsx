@@ -3,13 +3,11 @@ import { COLOR_FAMILIES, NAMED_COLORS, colorFamily } from "@/lib/color-names";
 import { readableOn } from "@/lib/color";
 import { breadcrumbLd } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
+import { PAGE_META } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/colors/")({
   head: () =>
-    pageHead({
-      title: "Color Names & HEX Codes: Burgundy, Teal, Beige & More",
-      description: `HEX, RGB, HSL and CMYK codes for ${NAMED_COLORS.length} popular colors — burgundy, teal, beige, indigo, periwinkle and more — with shades, matching palettes and text contrast.`,
-      path: "/colors",
+    pageHead({ ...PAGE_META["/colors"], path: "/colors",
       jsonLd: [breadcrumbLd([{ label: "Color names" }], "/colors")],
     }),
   component: Page,

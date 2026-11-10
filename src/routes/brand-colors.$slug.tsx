@@ -4,6 +4,7 @@ import { BrandDetail } from "@/components/site/BrandDetail";
 import { AdSlot } from "@/components/site/AdSlot";
 import { Breadcrumbs, breadcrumbLd } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
+import { brandMeta } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/brand-colors/$slug")({
   loader: ({ params }) => {
@@ -14,8 +15,7 @@ export const Route = createFileRoute("/brand-colors/$slug")({
   head: ({ loaderData: b, params }) =>
     b
       ? pageHead({
-          title: `${b.name} Logo Colors: HEX, RGB & Brand Palette`.slice(0, 60),
-          description: `The official ${b.name} logo and brand colors: ${b.colors.map((c) => `${c.name} ${c.hex}`).join(", ")}. Copy HEX, RGB and HSL, pick colors from the logo, and download the palette.`,
+          ...brandMeta(b),
           path: `/brand-colors/${params.slug}`,
           type: "article",
           follow: true,

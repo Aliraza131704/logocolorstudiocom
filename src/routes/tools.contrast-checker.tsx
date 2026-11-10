@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import { adjust, contrastRatio, normalizeHex, wcag } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PAGE_META } from "@/lib/page-meta";
 
 const FAQS: Faq[] = TOOL_GUIDES["contrast-checker"].faqs;
 
@@ -19,8 +20,7 @@ export const Route = createFileRoute("/tools/contrast-checker")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "contrast-checker");
     return pageHead({
-      title: o?.metaTitle ?? "Color Contrast Checker — WCAG AA & AAA",
-      description: o?.metaDescription ?? "Check text and background color contrast against WCAG 2.2 AA and AAA. Live preview, ratio score and instant fix suggestions.",
+      ...withMeta(o, PAGE_META["/tools/contrast-checker"]),
       path: "/tools/contrast-checker",
       jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Contrast Checker" }], "/tools/contrast-checker"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Contrast Checker", applicationCategory: "DesignApplication", operatingSystem: "Any" }],
     });

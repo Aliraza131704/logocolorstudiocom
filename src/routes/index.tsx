@@ -12,6 +12,7 @@ import { PageExtras } from "@/components/site/PageExtras";
 import { getFeaturedPalettes } from "@/lib/palette-editorial";
 import { getAllPalettes } from "@/lib/palettes";
 import { MEGA_GROUPS } from "@/lib/tool-groups";
+import { PAGE_META } from "@/lib/page-meta";
 
 /** Detector & audit tools — kept in sync with the header mega menu source. */
 const DETECT = MEGA_GROUPS.find((g) => g.label === "Detect & audit") ?? MEGA_GROUPS[MEGA_GROUPS.length - 1];
@@ -29,10 +30,7 @@ const FAQS: Faq[] = [
 
 export const Route = createFileRoute("/")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-home"), {
-      title: "LogoColorStudio — Extract & Generate Brand Colors",
-      description: "Extract colors from any logo or website, generate palettes, check WCAG contrast and export CSS, Tailwind and JSON. Free brand color tools.",
-      path: "/",
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-home"), { ...PAGE_META["/"], path: "/",
       jsonLd: [faqLd(FAQS)],
     })),
   component: Index,

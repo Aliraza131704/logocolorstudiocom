@@ -8,6 +8,7 @@ import { BrandLogo } from "@/components/site/BrandLogo";
 import { AdSlot } from "@/components/site/AdSlot";
 import { Breadcrumbs, CopyButton, FaqList, breadcrumbLd, faqLd, type Faq } from "@/components/site/ui-bits";
 import { pageHead } from "@/lib/seo";
+import { colorNameMeta } from "@/lib/page-meta";
 
 const cmykText = (hex: string) => {
   const c = toCmyk(hex);
@@ -38,8 +39,7 @@ export const Route = createFileRoute("/colors/$slug")({
   head: ({ loaderData: c, params }) =>
     c
       ? pageHead({
-          title: `${c.name} Color: HEX ${c.hex}, RGB, Palettes & Shades`,
-          description: `${c.name} color code ${c.hex} — ${fmtRgb(c.hex)}, ${fmtHsl(c.hex)}. See ${c.name.toLowerCase()} shades and tints, matching color palettes, text contrast and brands that use it.`,
+          ...colorNameMeta(c),
           path: `/colors/${params.slug}`,
           type: "article",
           follow: true,

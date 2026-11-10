@@ -4,6 +4,7 @@ import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
 import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PageExtras } from "@/components/site/PageExtras";
+import { PAGE_META } from "@/lib/page-meta";
 
 const LOG = [
   { v: "2.0", d: "October 2026", items: ["New Website Auditor with SEO, mobile, security and performance checks", "New CMS Detector, Shopify Theme Detector and WordPress Theme Detector", "1,000-palette gallery with likes, search, tags and sorting", "Palettes generated automatically from your logo colors", "Light and dark mode", "Rewritten blog with table of contents and related articles"] },
@@ -13,7 +14,7 @@ const LOG = [
 
 export const Route = createFileRoute("/changelog")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-changelog"), { title: "Changelog — What's New in LogoColorStudio", description: "Release notes for LogoColorStudio: new tools, features and improvements to our free brand color toolkit.", path: "/changelog" })),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-changelog"), { ...PAGE_META["/changelog"], path: "/changelog" })),
   component: Changelog,
 });
 

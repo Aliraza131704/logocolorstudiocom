@@ -9,14 +9,11 @@ import { PageExtras } from "@/components/site/PageExtras";
 import { TOOLS } from "@/lib/tools";
 import { getIndexablePalettes } from "@/lib/palette-editorial";
 import { BRAND_CATEGORIES, BRANDS } from "@/lib/brands";
+import { PAGE_META } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/sitemap")({
   loader: async () => { const [posts, ov] = await Promise.all([listPosts(), getPublicSetting({ data: { key: TOOL_CONTENT_KEY } })]); return { posts, ov }; },
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData?.ov, "page-sitemap"), {
-      title: "Sitemap — Every Page on LogoColorStudio",
-      description:
-        "Complete sitemap of LogoColorStudio: all free color tools, the 1,000-palette gallery, every guide and article, downloads, giveaway and legal pages in one place.",
-      path: "/sitemap",
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData?.ov, "page-sitemap"), { ...PAGE_META["/sitemap"], path: "/sitemap",
       jsonLd: [breadcrumbLd([{ label: "Sitemap" }], "/sitemap")],
     })),
   component: Page,

@@ -6,9 +6,10 @@ import { getPublicSetting } from "@/lib/content.functions";
 import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PageExtras } from "@/components/site/PageExtras";
 import { getFeaturedPalettes } from "@/lib/palette-editorial";
+import { PAGE_META } from "@/lib/page-meta";
 export const Route = createFileRoute("/palettes")({
   loader: () => getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }),
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-palettes"), { title: "Color Palette Gallery — LogoColorStudio", description: `Browse ${getFeaturedPalettes().length} featured color palettes and the full 1,000-palette library. Filter by style, copy colors and compare contrast.`, path: "/palettes" })),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-palettes"), { ...PAGE_META["/palettes"], path: "/palettes" })),
   component: GalleryPage,
 });
 function GalleryPage() {

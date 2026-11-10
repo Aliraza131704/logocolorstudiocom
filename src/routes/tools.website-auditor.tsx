@@ -14,9 +14,10 @@ import type { AuditReport } from "@/lib/audit-types";
 import { crawlUrl, mergeAuditBatches, SITE_AUDIT_LIMIT } from "@/lib/audit-crawl";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import auditScanImg from "@/assets/guide-audit-scan.jpg";
 import seoReportImg from "@/assets/guide-seo-report.jpg";
+import { PAGE_META } from "@/lib/page-meta";
 
 const FAQS: Faq[] = [
   { q: "What does this website auditor check?", a: "It evaluates publicly fetched HTML and related response details across SEO, content, accessibility, security, performance-related static signals, links, images, forms, navigation, schema and other categories. Each finding includes its status, evidence and recommendation." },
@@ -38,8 +39,7 @@ export const Route = createFileRoute("/tools/website-auditor")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "website-auditor");
     return pageHead({
-      title: o?.metaTitle ?? "Website Auditor — Evidence & Reports | LogoColorStudio",
-      description: o?.metaDescription ?? "Audit public website HTML with real evidence, category scores, coverage, link checks and CMS detection. Compare scans and export PDF, CSV or JSON.",
+      ...withMeta(o, PAGE_META["/tools/website-auditor"]),
       path: "/tools/website-auditor",
       jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Website Auditor" }], "/tools/website-auditor"), { "@context": "https://schema.org", "@type": "WebApplication", name: "Website Auditor", applicationCategory: "BusinessApplication", operatingSystem: "Any" }],
     });

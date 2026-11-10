@@ -16,11 +16,12 @@ import { getPublicSetting } from "@/lib/content.functions";
 import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PageExtras } from "@/components/site/PageExtras";
 import { rewardEarned, watchedProgress, safeSponsorVideo } from '@/lib/download-reward';
+import { PAGE_META } from "@/lib/page-meta";
 const catalogQuery = queryOptions({ queryKey: ['download-catalog'], queryFn: () => listDownloadAssets(), staleTime: 30_000 });
 
 export const Route = createFileRoute('/downloads')({
   loader: async ({ context }) => { await context.queryClient.ensureQueryData(catalogQuery); return getPublicSetting({ data: { key: TOOL_CONTENT_KEY } }); },
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-downloads"), { title: 'Free WordPress Themes Download — WoodMart, Newspaper & More', description: 'Download free WordPress themes and template kits: WooCommerce, magazine, food and portfolio themes like WoodMart, Newspaper, Frutin and Elito.', path: '/downloads' })),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData, "page-downloads"), { ...PAGE_META["/downloads"], path: "/downloads" })),
   component: Downloads,
 });
 

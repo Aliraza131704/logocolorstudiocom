@@ -9,7 +9,8 @@ import { faqLd, breadcrumbLd, type Faq } from "@/components/site/ui-bits";
 import { detectWordpress } from "@/lib/analyze.functions";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PAGE_META } from "@/lib/page-meta";
 
 const FAQS: Faq[] = TOOL_GUIDES["wordpress-theme-detector"].faqs;
 
@@ -18,8 +19,7 @@ export const Route = createFileRoute("/tools/wordpress-theme-detector")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "wordpress-theme-detector");
     return pageHead({
-      title: o?.metaTitle ?? "Free WordPress Theme Detector — Find Theme & Plugins",
-      description: o?.metaDescription ?? "Find the WordPress theme any site uses: name, version, author, theme URI, parent theme and detected plugins. Free WP theme checker.",
+      ...withMeta(o, PAGE_META["/tools/wordpress-theme-detector"]),
       path: "/tools/wordpress-theme-detector",
       jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "WordPress Theme Detector" }], "/tools/wordpress-theme-detector"), { "@context": "https://schema.org", "@type": "WebApplication", name: "WordPress Theme Detector", applicationCategory: "DeveloperApplication", operatingSystem: "Any" }],
     });

@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { normalizeHex, randomHex } from "@/lib/color";
 import { pageHead } from "@/lib/seo";
 import { getPublicSetting } from "@/lib/content.functions";
-import { TOOL_CONTENT_KEY, toolOverride } from "@/lib/tool-overrides";
+import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
+import { PAGE_META } from "@/lib/page-meta";
 
 const FAQS: Faq[] = TOOL_GUIDES["export-center"].faqs;
 
@@ -20,8 +21,7 @@ export const Route = createFileRoute("/tools/export-center")({
   head: ({ loaderData }) => {
     const o = toolOverride(loaderData, "export-center");
     return pageHead({
-      title: o?.metaTitle ?? "Export Center — CSS, Tailwind, SCSS & JSON",
-      description: o?.metaDescription ?? "Export any color palette as CSS variables, Tailwind config, SCSS, JSON or a PNG swatch image. Rename tokens and copy in one click.",
+      ...withMeta(o, PAGE_META["/tools/export-center"]),
       path: "/tools/export-center",
       jsonLd: [faqLd(o?.faqs ?? FAQS), breadcrumbLd([{ label: "Tools", to: "/tools" }, { label: "Export Center" }], "/tools/export-center")],
     });

@@ -10,10 +10,11 @@ import { getPublicSetting } from "@/lib/content.functions";
 import { TOOL_CONTENT_KEY, toolOverride, withMeta } from "@/lib/tool-overrides";
 import { PageExtras } from "@/components/site/PageExtras";
 import { cn } from "@/lib/utils";
+import { PAGE_META } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/blog/")({
   loader: async () => { const [posts, ov] = await Promise.all([listPosts(), getPublicSetting({ data: { key: TOOL_CONTENT_KEY } })]); return { posts, ov }; },
-  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData?.ov, "page-blog"), { title: "Blog — Color, Branding & Web Design Guides", description: "Practical guides on brand colors, color psychology, accessibility, palettes and website themes from the LogoColorStudio team.", path: "/blog", jsonLd: [breadcrumbLd([{ label: "Blog" }], "/blog")] })),
+  head: ({ loaderData }) => pageHead(withMeta(toolOverride(loaderData?.ov, "page-blog"), { ...PAGE_META["/blog"], path: "/blog", jsonLd: [breadcrumbLd([{ label: "Blog" }], "/blog")] })),
   component: Page,
 });
 

@@ -13,6 +13,7 @@ import { paletteTextColor } from "@/lib/palette-presentation";
 import { pageHead } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { AdSlot } from "@/components/site/AdSlot";
+import { paletteMeta } from "@/lib/page-meta";
 
 export const Route = createFileRoute("/palette/$slug")({
   loader: ({ params }) => {
@@ -23,8 +24,7 @@ export const Route = createFileRoute("/palette/$slug")({
   head: ({ loaderData: p, params }) =>
     p
       ? pageHead({
-          title: `${p.name} Color Palette — ${p.colors.slice(0, 3).join(" ")}`.slice(0, 60),
-          description: `${p.name} is a ${p.tags.join(", ").toLowerCase()} palette: ${p.colors.join(", ")}. Copy HEX and RGB or export CSS, Tailwind and JSON.`,
+          ...paletteMeta(p),
           path: `/palette/${params.slug}`,
           follow: true,
           image: hasPaletteShareImage(p.slug) ? `/images/share/palette-${p.slug}.jpg` : undefined,
