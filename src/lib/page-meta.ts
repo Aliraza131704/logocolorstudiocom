@@ -180,19 +180,23 @@ export type MetaPath = keyof typeof PAGE_META;
 /** Picks the first title that fits, so long names fall back to a shorter pattern. */
 const fitTitle = (options: string[]) => options.map((t) => t + BRAND_SUFFIX).find((t) => t.length <= TITLE_MAX) ?? options[options.length - 1].slice(0, TITLE_MAX - BRAND_SUFFIX.length) + BRAND_SUFFIX;
 
-/** Adds optional detail sentences between the core text and the call to action while it fits. */
-function fitDescription(core: string, extras: string[], cta: string, max = DESC_MAX) {
-  let text = core;
-  for (const extra of extras) if (`${text} ${extra} ${cta}`.length <= max) text = `${text} ${extra}`;
-  return `${text} ${cta}`;
-}
+/** Returns the longest candidate that fits the description limit. */
+const fitDescription = (candidates: string[]) => candidates.filter((d) => d.length <= DESC_MAX).sort((a, b) => b.length - a.length)[0] ?? candidates[candidates.length - 1].slice(0, DESC_MAX);
 
 export function paletteMeta(p: Palette): PageMeta {
   const codes = p.colors.join(", ");
   const style = p.tags.join(" and ").toLowerCase();
+  const intro = `${p.name} is a free ${style} color palette: ${codes}.`;
   return {
     title: fitTitle([`${p.name} Color Palette ${p.colors[0]}`, `${p.name} Palette ${p.colors[0]}`]),
-    description: fitDescription(`${p.name} is a free ${style} color palette: ${codes}.`, ["Copy HEX and RGB codes,", "check text contrast", "or export CSS and Tailwind."].reduce<string[]>((a, s, i) => [...a, (i ? a[i - 1] + " " : "") + s], []).reverse().slice(0, 3), "Get your colors."),
+    description: fitDescription([
+      `${intro} Copy HEX and RGB codes, check contrast or export CSS. Get your colors.`,
+      `${intro} Copy HEX and RGB codes or export CSS and Tailwind. Get your colors.`,
+      `${intro} Copy HEX and RGB codes or export to CSS. Get your colors.`,
+      `${intro} Copy HEX codes or export CSS and Tailwind. Get your colors.`,
+      `${intro} Copy the HEX codes or export CSS. Get your colors.`,
+      `${intro} Copy HEX codes. Get your colors.`,
+    ]),
     ogTitle: `${p.name} Color Palette`,
     ogDescription: `${codes}. Copy the HEX codes free.`,
   };
@@ -200,13 +204,19 @@ export function paletteMeta(p: Palette): PageMeta {
 
 export function brandMeta(b: Brand): PageMeta {
   const named = b.colors.map((c) => `${c.name} ${c.hex}`);
-  const lists = named.map((_, i) => named.slice(0, named.length - i).join(", ")).filter(Boolean);
-  const core = `Official ${b.name} logo colors with HEX, RGB and HSL codes`;
-  const desc = lists.map((l) => fitDescription(`${core}: ${l}.`, ["Pick colors from the logo", "and download the palette."].map((s, i, a) => a.slice(0, a.length - i).join(" ") + (i ? "." : "")), "Free. Copy now.")).find((d) => d.length <= DESC_MAX)
-    ?? fitDescription(`${core}.`, ["Pick colors from the logo, copy every code and download the palette for free."], "Copy now.");
+  const candidates: string[] = [];
+  for (let n = named.length; n >= 1; n--) {
+    const list = named.slice(0, n).join(", ");
+    candidates.push(
+      `Official ${b.name} logo colors: ${list}. Copy HEX, RGB and HSL codes, pick colors from the logo and download the palette. Free. Copy now.`,
+      `Official ${b.name} logo colors: ${list}. Copy HEX, RGB and HSL codes and download the palette for free. Copy now.`,
+      `Official ${b.name} logo colors: ${list}. Copy HEX, RGB and HSL codes for free. Copy now.`,
+      `${b.name} logo colors: ${list}. Copy HEX, RGB and HSL codes free. Copy now.`,
+    );
+  }
   return {
     title: fitTitle([`${b.name} Logo Colors & HEX Codes`, `${b.name} Logo Colors`, `${b.name} Colors`]),
-    description: desc,
+    description: fitDescription(candidates),
     ogTitle: `${b.name} Logo Colors & HEX Codes`,
     ogDescription: `Official ${b.name} brand colors with HEX, RGB and HSL codes. Free to copy.`,
   };
@@ -214,9 +224,15 @@ export function brandMeta(b: Brand): PageMeta {
 
 export function colorNameMeta(c: NamedColor): PageMeta {
   const lower = c.name.toLowerCase();
+  const intro = `${c.name} color code ${c.hex}, ${fmtRgb(c.hex)}.`;
   return {
     title: fitTitle([`${c.name} Color Code: HEX ${c.hex} & RGB`, `${c.name} Color: HEX ${c.hex}`]),
-    description: fitDescription(`${c.name} color code ${c.hex}, ${fmtRgb(c.hex)}.`, [`See ${lower} shades and tints, matching palettes and text contrast,`, `See ${lower} shades, matching palettes and text contrast,`, `See ${lower} shades and palettes,`].slice(0, 3), "free. Copy the code.").replace(/, free\./, ", all free.").replace(/(\.) free\./, "$1 Free."),
+    description: fitDescription([
+      `${intro} See ${lower} shades and tints, matching palettes, text contrast and HSL and CMYK values, all free. Copy the code.`,
+      `${intro} See ${lower} shades and tints, matching palettes, text contrast and CMYK values, all free. Copy the code.`,
+      `${intro} See ${lower} shades and tints, matching palettes and text contrast, all free. Copy the code.`,
+      `${intro} See ${lower} shades, matching palettes and text contrast for free. Copy the code.`,
+    ]),
     ogTitle: `${c.name} Color: HEX ${c.hex}`,
     ogDescription: `${c.name} HEX ${c.hex} and ${fmtRgb(c.hex)}, with shades and matching palettes.`,
   };
