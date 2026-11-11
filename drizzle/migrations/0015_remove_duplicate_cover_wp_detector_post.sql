@@ -1,0 +1,1 @@
+UPDATE public.blog_posts SET content = replace(content, E'<p><img src="/images/blog/best-wp-theme-detector-cover.webp" alt="Illustration of a WordPress website being scanned to reveal its theme folder, stylesheet and plugins" width="1200" height="688"></p>\n', '') WHERE slug = 'best-wp-theme-detector';

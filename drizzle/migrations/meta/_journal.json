@@ -92,6 +92,27 @@
       "when": 1794336300001,
       "tag": "0012_blog_seo_keywords",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794422510442,
+      "tag": "0013_add_best_wp_theme_detector_post",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794422582583,
+      "tag": "0014_publish_best_wp_theme_detector_now",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1794422622569,
+      "tag": "0015_remove_duplicate_cover_wp_detector_post",
+      "breakpoints": true
     }
   ]
 }
