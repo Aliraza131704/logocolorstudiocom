@@ -1,0 +1,1 @@
+UPDATE public.blog_posts SET published_at = '2026-11-11 18:40:00+00'::timestamptz, updated_at = '2026-11-11 18:40:00+00'::timestamptz WHERE slug = 'best-wp-theme-detector';
