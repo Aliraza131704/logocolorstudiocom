@@ -56,6 +56,7 @@ export type Database = {
           canonical: string
           category: string
           content: string
+          cover_alt: string
           cover_image: string
           created_at: string
           excerpt: string
@@ -75,6 +76,7 @@ export type Database = {
           canonical?: string
           category?: string
           content?: string
+          cover_alt?: string
           cover_image?: string
           created_at?: string
           excerpt?: string
@@ -94,6 +96,7 @@ export type Database = {
           canonical?: string
           category?: string
           content?: string
+          cover_alt?: string
           cover_image?: string
           created_at?: string
           excerpt?: string

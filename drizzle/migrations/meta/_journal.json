@@ -113,6 +113,13 @@
       "when": 1794422622569,
       "tag": "0015_remove_duplicate_cover_wp_detector_post",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794678700470,
+      "tag": "0016_add_shopify_theme_detector_post",
+      "breakpoints": true
     }
   ]
 }
