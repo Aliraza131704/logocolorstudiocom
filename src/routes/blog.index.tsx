@@ -55,7 +55,7 @@ function Page() {
         {items.map((p, i) => (
           <Reveal key={p.id} delay={(i % 3) * 0.05}>
             <Link to="/blog/$slug" params={{ slug: p.slug }} className="card-hover block h-full overflow-hidden rounded-2xl border bg-card">
-              {p.cover_image && <img src={p.cover_image} alt={`Cover image for ${p.title}`} width={1200} height={630} loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
+              {p.cover_image && <img src={p.cover_image} alt={p.cover_alt || `Cover image for ${p.title}`} width={1200} height={630} loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
               <div className="p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary">{p.category}</p>
                 <h3 className="mt-2 text-lg font-bold leading-snug">{p.title}</h3>

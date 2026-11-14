@@ -236,8 +236,8 @@ function SettingsPanel() {
   );
 }
 
-type Post = { id?: string; slug: string; title: string; excerpt: string; content: string; cover_image: string; category: string; tags: string[]; author: string; status: string; published_at: string; seo_title: string; meta_description: string; canonical: string; og_image: string };
-const EMPTY: Post = { slug: "", title: "", excerpt: "", content: "<p></p>", cover_image: "", category: "Guides", tags: [], author: EDITORIAL_AUTHOR.name, status: "draft", published_at: new Date().toISOString(), seo_title: "", meta_description: "", canonical: "", og_image: "" };
+type Post = { id?: string; slug: string; title: string; excerpt: string; content: string; cover_image: string; cover_alt: string; category: string; tags: string[]; author: string; status: string; published_at: string; seo_title: string; meta_description: string; canonical: string; og_image: string };
+const EMPTY: Post = { slug: "", title: "", excerpt: "", content: "<p></p>", cover_image: "", cover_alt: "", category: "Guides", tags: [], author: EDITORIAL_AUTHOR.name, status: "draft", published_at: new Date().toISOString(), seo_title: "", meta_description: "", canonical: "", og_image: "" };
 
 function ImageUpload({ label, folder, onUploaded }: { label: string; folder: string; onUploaded: (url: string) => void }) {
   const ref = useRef<HTMLInputElement>(null);
@@ -305,6 +305,7 @@ function BlogManager() {
             </div>
           </label>
           {p.cover_image && <img src={p.cover_image} alt="" className="rounded-lg" />}
+          <label className="block">Cover image alt text<Input className="mt-1" maxLength={200} value={p.cover_alt ?? ""} onChange={(e) => set("cover_alt", e.target.value)} placeholder="Describe the cover picture" /></label>
           <label className="block">SEO title<Input className="mt-1" maxLength={60} value={p.seo_title} onChange={(e) => set("seo_title", e.target.value)} /></label>
           <label className="block">Meta description<Textarea className="mt-1" maxLength={160} value={p.meta_description} onChange={(e) => set("meta_description", e.target.value)} /></label>
           <label className="block">Canonical URL<Input className="mt-1" value={p.canonical} onChange={(e) => set("canonical", e.target.value)} /></label>

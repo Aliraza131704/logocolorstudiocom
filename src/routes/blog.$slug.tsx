@@ -69,7 +69,7 @@ function Page() {
         <h1 className="mt-2 text-3xl font-extrabold leading-tight sm:text-5xl">{post.title}</h1>
         <p className="mt-4 text-muted-foreground">By <Link to="/about" className="font-medium text-foreground hover:text-primary">{author}</Link> · <time dateTime={post.published_at}>{new Date(post.published_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })}</time>{post.updated_at && post.updated_at.slice(0, 10) > post.published_at.slice(0, 10) && <> · Updated <time dateTime={post.updated_at}>{new Date(post.updated_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })}</time></>} · {Math.max(1, Math.ceil(words / 220))} min read</p>
       </header>
-      {post.cover_image && <img src={post.cover_image} alt={post.title} width={1200} height={630} className="mx-auto mt-8 aspect-[1200/630] w-full max-w-4xl rounded-3xl border object-cover" />}
+      {post.cover_image && <img src={post.cover_image} alt={post.cover_alt || post.title} width={1200} height={630} className="mx-auto mt-8 aspect-[1200/630] w-full max-w-4xl rounded-3xl border object-cover" />}
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_240px]">
         <div className="min-w-0">
           {toc.length > 0 && (
@@ -110,7 +110,7 @@ function Page() {
           <div className="mt-6 grid gap-6 sm:grid-cols-3">
             {related.map((r) => (
               <Link key={r.slug} to="/blog/$slug" params={{ slug: r.slug }} className="card-hover overflow-hidden rounded-2xl border bg-card">
-                {r.cover_image && <img src={r.cover_image} alt={`Cover image for ${r.title}`} width={1200} height={630} loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
+                {r.cover_image && <img src={r.cover_image} alt={r.cover_alt || `Cover image for ${r.title}`} width={1200} height={630} loading="lazy" className="aspect-[1200/630] w-full object-cover" />}
                 <p className="p-4 font-semibold">{r.title}</p>
               </Link>
             ))}
