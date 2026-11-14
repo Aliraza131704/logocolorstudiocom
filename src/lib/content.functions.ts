@@ -19,7 +19,7 @@ async function pub() {
 }
 
 export type PostRow = {
-  id: string; slug: string; title: string; excerpt: string; content: string; cover_image: string; category: string; tags: string[];
+  id: string; slug: string; title: string; excerpt: string; content: string; cover_image: string; cover_alt?: string; category: string; tags: string[];
   author: string; published_at: string; seo_title: string; meta_description: string; canonical: string; og_image: string; updated_at: string;
 };
 
@@ -27,7 +27,7 @@ export const listPosts = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await pub();
   const rows = [];
   for (let offset = 0; ; offset += 500) {
-    const { data, error } = await sb.from("blog_posts").select("id,slug,title,excerpt,cover_image,category,tags,author,published_at,updated_at,content").eq("status", "published").lte("published_at", new Date().toISOString()).order("published_at", { ascending: false }).order("id").range(offset, offset + 499);
+    const { data, error } = await sb.from("blog_posts").select("id,slug,title,excerpt,cover_image,cover_alt,category,tags,author,published_at,updated_at,content").eq("status", "published").lte("published_at", new Date().toISOString()).order("published_at", { ascending: false }).order("id").range(offset, offset + 499);
     if (error) throw new Error("Could not load published articles");
     rows.push(...(data ?? []));
     if (!data || data.length < 500) break;
