@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { MegaMenu } from "./MegaMenu";
+import { SiteSearch } from "./SiteSearch";
 import { LanguageSwitcher } from "./SiteTranslate";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme";
@@ -47,6 +48,7 @@ export function SiteHeader() {
             ))}
           </nav>
           <div className="flex items-center gap-1">
+            <SiteSearch />
             <LanguageSwitcher />
             <ThemeToggle />
             <Button variant="hero" className="hidden lg:inline-flex" asChild>

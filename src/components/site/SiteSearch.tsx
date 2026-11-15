@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { listDownloadAssets, listPosts } from "@/lib/content.functions";
 import { normalizeHex, searchItems, SEARCH_KINDS, staticIndex, type SearchItem } from "@/lib/site-search";
 
@@ -86,9 +87,14 @@ export function SiteSearch() {
       <Button variant="ghost" size="icon" onClick={() => setOpen(true)} aria-label="Search the site">
         <Search />
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen} shouldFilter={false}>
-        {open && <SearchDialogBody onClose={() => setOpen(false)} />}
-      </CommandDialog>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="overflow-hidden p-0" aria-describedby={undefined}>
+          <DialogTitle className="sr-only">Search LogoColorStudio</DialogTitle>
+          <Command shouldFilter={false} className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3">
+            {open && <SearchDialogBody onClose={() => setOpen(false)} />}
+          </Command>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
