@@ -23,6 +23,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PalettesRouteImport } from './routes/palettes'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapRouteImport } from './routes/sitemap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
@@ -115,6 +116,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapRoute = SitemapRouteImport.update({
@@ -250,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
@@ -289,6 +296,7 @@ export interface FileRoutesByTo {
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
@@ -329,6 +337,7 @@ export interface FileRoutesById {
   '/palettes': typeof PalettesRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/sitemap': typeof SitemapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms-of-service': typeof TermsOfServiceRoute
@@ -370,6 +379,7 @@ export interface FileRouteTypes {
     | '/palettes'
     | '/privacy-policy'
     | '/robots.txt'
+    | '/search'
     | '/sitemap'
     | '/sitemap.xml'
     | '/terms-of-service'
@@ -409,6 +419,7 @@ export interface FileRouteTypes {
     | '/palettes'
     | '/privacy-policy'
     | '/robots.txt'
+    | '/search'
     | '/sitemap'
     | '/sitemap.xml'
     | '/terms-of-service'
@@ -448,6 +459,7 @@ export interface FileRouteTypes {
     | '/palettes'
     | '/privacy-policy'
     | '/robots.txt'
+    | '/search'
     | '/sitemap'
     | '/sitemap.xml'
     | '/terms-of-service'
@@ -488,6 +500,7 @@ export interface RootRouteChildren {
   PalettesRoute: typeof PalettesRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SearchRoute: typeof SearchRoute
   SitemapRoute: typeof SitemapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
@@ -611,6 +624,13 @@ declare module '@tanstack/react-router' {
       path: '/robots.txt'
       fullPath: '/robots.txt'
       preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap': {
@@ -792,6 +812,7 @@ const rootRouteChildren: RootRouteChildren = {
   PalettesRoute: PalettesRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  SearchRoute: SearchRoute,
   SitemapRoute: SitemapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
