@@ -4,7 +4,7 @@ import type { Fetched } from "./analyze.server";
 const MAX_BYTES = 1_000_000;
 const USER_AGENT = "LogoColorStudioBot/2.0 (+https://logocolorstudiocom.lovable.app)";
 
-async function assertPublicHost(url: URL) {
+export async function assertPublicHost(url: URL) {
   const host = url.hostname.replace(/^\[|\]$/g, "");
   if (isPublicAddress(host)) return;
   const answers = await Promise.all(["A", "AAAA"].map(async type => {

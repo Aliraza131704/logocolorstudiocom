@@ -360,9 +360,16 @@ function PageManager() {
   );
 }
 
+/** Quote a CSV cell and neutralize spreadsheet formulas (=, +, -, @). */
+function csvCell(value: unknown) {
+  let text = String(value ?? "");
+  if (/^\s*[=+@\-\t\r]/.test(text)) text = `'${text}`;
+  return `"${text.replace(/"/g, '""')}"`;
+}
+
 function Subscribers() {
   const { data, refetch } = useQuery({ queryKey: ["admin-subs"], queryFn: async () => (await supabase.from("subscribers").select("*").order("created_at", { ascending: false })).data ?? [] });
-  const csv = () => download("subscribers.csv", "email,subscribed_at\n" + (data ?? []).map((s) => `${s.email},${s.created_at}`).join("\n"), "text/csv");
+  const csv = () => download("subscribers.csv", "email,subscribed_at\n" + (data ?? []).map((s) => [s.email, s.created_at].map(csvCell).join(",")).join("\n"), "text/csv");
   return (
     <div className="space-y-4">
       <Button variant="outline" onClick={csv}>Export CSV ({data?.length ?? 0})</Button>

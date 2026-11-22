@@ -1,18 +1,32 @@
 // Server-only helpers for fetching and inspecting public websites.
+import { publicWebsiteUrl } from "./audit-url";
+import { assertPublicHost } from "./audit-fetch.server";
 const UA = "Mozilla/5.0 (compatible; LogoColorStudioBot/1.0; +https://logocolostudio.lovable.app)";
 
 export function validateUrl(raw: string): URL {
-  let s = raw.trim();
-  if (!/^https?:\/\//i.test(s)) s = "https://" + s;
-  let u: URL;
-  try { u = new URL(s); } catch { throw new Error("Please enter a valid website address."); }
-  if (!["http:", "https:"].includes(u.protocol)) throw new Error("Only http and https addresses are supported.");
-  const h = u.hostname.toLowerCase();
-  if (
-    h === "localhost" || h.endsWith(".local") || h.endsWith(".internal") || !h.includes(".") ||
-    /^(127\.|10\.|192\.168\.|169\.254\.|0\.|172\.(1[6-9]|2\d|3[01])\.)/.test(h) || h.startsWith("[")
-  ) throw new Error("That address is not a public website.");
-  return u;
+  return publicWebsiteUrl(raw);
+}
+
+/**
+ * Fetch a public website: every hop (including redirects) must be a public
+ * http(s) address whose DNS answers are all public, so the tools can never be
+ * pointed at private networks or cloud metadata services.
+ */
+export async function safeFetch(raw: URL | string, init: { headers: Record<string, string>; timeout: number }): Promise<Response & { finalUrl: string }> {
+  let url = publicWebsiteUrl(raw.toString());
+  for (let hop = 0; hop <= 5; hop++) {
+    await assertPublicHost(url);
+    const res = await fetch(url.href, { headers: init.headers, redirect: "manual", signal: AbortSignal.timeout(init.timeout) });
+    if ([301, 302, 303, 307, 308].includes(res.status)) {
+      await res.body?.cancel();
+      const location = res.headers.get("location");
+      if (!location) throw new Error("The website returned an incomplete redirect.");
+      url = publicWebsiteUrl(new URL(location, url).href);
+      continue;
+    }
+    return Object.assign(res, { finalUrl: url.href });
+  }
+  throw new Error("Too many website redirects.");
 }
 
 export async function rateLimit(limit = 20) {
@@ -48,9 +62,9 @@ export async function fetchPage(u: URL | string, max = 2_000_000): Promise<Fetch
   ];
   let last: Fetched | null = null;
   for (const h of attempts) {
-    let res: Response;
+    let res: Response & { finalUrl: string };
     try {
-      res = await fetch(u.toString(), { headers: h, redirect: "follow", signal: AbortSignal.timeout(12000) });
+      res = await safeFetch(u, { headers: h, timeout: 12000 });
     } catch {
       continue;
     }
@@ -58,7 +72,7 @@ export async function fetchPage(u: URL | string, max = 2_000_000): Promise<Fetch
     const html = new TextDecoder().decode(buf.slice(0, max));
     const headers: Record<string, string> = {};
     res.headers.forEach((v, k) => (headers[k] = v));
-    last = { url: res.url || u.toString(), status: res.status, html, headers, ms: Date.now() - t, bytes: buf.byteLength };
+    last = { url: res.finalUrl, status: res.status, html, headers, ms: Date.now() - t, bytes: buf.byteLength };
     if (res.status < 400 && html.length > 200) return last;
   }
   if (!last) throw new Error("We couldn't reach that website. Check the address and try again.");
@@ -71,7 +85,7 @@ export function isBlocked(p: Fetched) {
 
 export async function fetchJson<T = unknown>(url: string): Promise<T | null> {
   try {
-    const r = await fetch(url, { headers: { "user-agent": BROWSER_UA, accept: "application/json" }, redirect: "follow", signal: AbortSignal.timeout(7000) });
+    const r = await safeFetch(url, { headers: { "user-agent": BROWSER_UA, accept: "application/json" }, timeout: 7000 });
     if (!r.ok || !(r.headers.get("content-type") ?? "").includes("json")) return null;
     return (await r.json()) as T;
   } catch {
@@ -81,7 +95,7 @@ export async function fetchJson<T = unknown>(url: string): Promise<T | null> {
 
 export async function fetchText(url: string, max = 400_000): Promise<{ ok: boolean; status: number; text: string }> {
   try {
-    const r = await fetch(url, { headers: { "user-agent": BROWSER_UA }, redirect: "follow", signal: AbortSignal.timeout(8000) });
+    const r = await safeFetch(url, { headers: { "user-agent": BROWSER_UA }, timeout: 8000 });
     const text = r.ok ? (await r.text()).slice(0, max) : "";
     return { ok: r.ok, status: r.status, text };
   } catch {
