@@ -218,9 +218,16 @@ export function brandMeta(b: Brand): PageMeta {
     );
   }
   return {
-    title: fitTitle([`${b.name} Logo Colors & HEX Codes`, `${b.name} Logo Colors`, `${b.name} Colors`]),
+    // Lead color + HEX in the title answers "<brand> color code" searches right in the results.
+    title: fitTitle([
+      `${b.name} Brand Colors: ${b.colors[0].name} ${b.colors[0].hex}`,
+      `${b.name} Brand Colors: HEX ${b.colors[0].hex} & RGB`,
+      `${b.name} Brand Colors: HEX ${b.colors[0].hex}`,
+      `${b.name} Colors: HEX ${b.colors[0].hex}`,
+      `${b.name} Logo Colors`,
+    ]),
     description: fitDescription(candidates),
-    ogTitle: `${b.name} Logo Colors & HEX Codes`,
+    ogTitle: [`${b.name} Brand Colors & HEX Codes`, `${b.name} Brand Colors`].find((t) => t.length <= TITLE_MAX) ?? b.name.slice(0, TITLE_MAX),
     ogDescription: `Official ${b.name} brand colors with HEX, RGB and HSL codes. Free to copy.`,
   };
 }

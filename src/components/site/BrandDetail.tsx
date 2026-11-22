@@ -4,6 +4,7 @@ import { Check, Copy, Download, Pipette } from "lucide-react";
 import { toast } from "sonner";
 import { brandPath, brandLogoUrl, categoryLabel, relatedBrands, type Brand } from "@/lib/brands";
 import { brandStory } from "@/lib/brand-text";
+import { toCmyk } from "@/lib/color-names";
 import { exportPalette, fmtHsl, fmtRgb, hexToRgb, readableOn, rgbToHex } from "@/lib/color";
 import { BrandLogo } from "./BrandLogo";
 import { Button } from "@/components/ui/button";
@@ -199,6 +200,30 @@ export function BrandDetail({ brand, headingLevel = 1 }: { brand: Brand; heading
         <h2>About the {brand.name} color palette</h2>
         {story.map((p, i) => <p key={i}>{p}</p>)}
       </article>
+
+      <section className="mt-10" aria-labelledby="codes-heading">
+        <h2 id="codes-heading" className="text-xl font-bold">{brand.name} color codes: quick answers</h2>
+        <dl className="mt-4 space-y-4">
+          {brand.colors.map((c) => {
+            const k = toCmyk(c.hex);
+            return (
+              <div key={c.hex} className="rounded-lg border p-4">
+                <dt className="font-semibold">What is the {brand.name} {c.name.toLowerCase()} color code?</dt>
+                <dd className="mt-1 text-sm text-muted-foreground">
+                  The {brand.name} {c.name.toLowerCase()} HEX code is <span className="font-mono text-foreground">{c.hex}</span>. In RGB it is{" "}
+                  <span className="font-mono">{fmtRgb(c.hex)}</span>, in HSL <span className="font-mono">{fmtHsl(c.hex)}</span> and, as a screen-to-print
+                  conversion, about <span className="font-mono">cmyk({k.c}%, {k.m}%, {k.y}%, {k.k}%)</span>. For printing, confirm the final ink values with your printer.
+                </dd>
+              </div>
+            );
+          })}
+        </dl>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Need the colors of your own logo instead? Upload it to the{" "}
+          <Link to="/tools/logo-extractor" className="text-primary underline">Logo Color Extractor</Link> for exact HEX codes, or turn this
+          palette into a website theme with the <Link to="/tools/theme-generator" className="text-primary underline">Theme Generator</Link>.
+        </p>
+      </section>
 
       {related.length > 0 && (
         <section className="mt-10" aria-labelledby="related-heading">
