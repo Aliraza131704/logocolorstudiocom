@@ -1,43 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { isPublicMediaPath, MEDIA_TYPES } from "@/lib/media-path";
 
 /**
  * Public read-only stream for blog images in the private "media" bucket.
- * Only owner-uploaded image paths are served, read with the publishable
- * client so storage RLS ("Public can view blog images") decides access.
+ * The bucket has no public storage policy: this route validates the path
+ * against the strict blog-image pattern first, then reads that single file
+ * server-side. Nothing else in storage can be reached or listed.
  */
-const MEDIA_PATH = /^(covers|og|posts)\/[a-z0-9][a-z0-9-]{0,120}\.(png|jpe?g|webp|gif|avif|svg)$/;
-const TYPES: Record<string, string> = {
-  png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp",
-  gif: "image/gif", avif: "image/avif", svg: "image/svg+xml",
-};
-
 export const Route = createFileRoute("/api/public/media/$")({
   server: {
     handlers: {
       GET: async ({ params }) => {
         const path = (params._splat ?? "").toLowerCase();
-        if (!MEDIA_PATH.test(path)) return new Response("Not found", { status: 404 });
+        if (!isPublicMediaPath(path)) return new Response("Not found", { status: 404 });
 
-        const { createClient } = await import("@supabase/supabase-js");
-        const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-        const sb = createClient(process.env.SUPABASE_URL!, key, {
-          auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-          global: {
-            fetch: (input, init) => {
-              const h = new Headers(init?.headers);
-              if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
-              h.set("apikey", key);
-              return fetch(input, { ...init, headers: h });
-            },
-          },
-        });
-        const { data, error } = await sb.storage.from("media").download(path);
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { data, error } = await supabaseAdmin.storage.from("media").download(path);
         if (error || !data) return new Response("Not found", { status: 404 });
 
-        const ext = path.split(".").pop()!;
+        const ext = path.split(".").pop() ?? "";
         return new Response(data, {
           headers: {
-            "Content-Type": TYPES[ext] ?? "application/octet-stream",
+            "Content-Type": MEDIA_TYPES[ext] ?? "application/octet-stream",
             "Cache-Control": "public, max-age=31536000, immutable",
             "Access-Control-Allow-Origin": "*",
             "X-Content-Type-Options": "nosniff",
