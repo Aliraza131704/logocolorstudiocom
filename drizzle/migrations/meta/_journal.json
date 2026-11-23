@@ -134,6 +134,13 @@
       "when": 1795456212309,
       "tag": "0018_remove_public_blog_image_storage_read",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1795462243989,
+      "tag": "0019_consume_site_check_limit",
+      "breakpoints": true
     }
   ]
 }

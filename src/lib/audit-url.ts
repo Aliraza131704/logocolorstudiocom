@@ -23,3 +23,7 @@ export function publicWebsiteUrl(raw: string): URL {
   url.hash = "";
   return url;
 }
+/** Website root for detector checks: the tools only ever visit a site's homepage, never caller-chosen paths or queries. */
+export function siteRoot(url: URL): URL {
+  return new URL(`${url.protocol}//${url.host}/`);
+}

@@ -400,6 +400,10 @@ export type Database = {
     }
     Functions: {
       consume_audit_request: { Args: { _ip: string }; Returns: boolean }
+      consume_site_check: {
+        Args: { _host: string; _ip: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

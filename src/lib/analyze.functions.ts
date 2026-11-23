@@ -3,10 +3,13 @@ import { z } from "zod";
 
 const input = z.object({ url: z.string().min(3).max(500) });
 
-async function load(url: string) {
+async function load(url: string, opts: { rootOnly?: boolean } = {}) {
   const m = await import("./analyze.server");
-  await m.rateLimit();
-  const u = m.validateUrl(url);
+  const { siteRoot } = await import("./audit-url");
+  const valid = m.validateUrl(url);
+  // Detectors only need the homepage, so they never visit caller-chosen paths or queries.
+  const u = opts.rootOnly ? siteRoot(valid) : valid;
+  await m.rateLimit(u);
   const page = await m.fetchPage(u);
   return { m, u, page };
 }
@@ -87,7 +90,7 @@ export const auditWebsite = createServerFn({ method: "POST" })
 export const detectCms = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => input.parse(d))
   .handler(async ({ data }) => {
-    const { m, page } = await load(data.url);
+    const { m, page } = await load(data.url, { rootOnly: true });
     const d = await import("./detect.server");
     return d.runCms(m, page);
   });
@@ -95,7 +98,7 @@ export const detectCms = createServerFn({ method: "POST" })
 export const detectShopify = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => input.parse(d))
   .handler(async ({ data }) => {
-    const { m, page } = await load(data.url);
+    const { m, page } = await load(data.url, { rootOnly: true });
     const d = await import("./detect.server");
     return d.runShopify(m, page);
   });
@@ -103,7 +106,7 @@ export const detectShopify = createServerFn({ method: "POST" })
 export const detectWordpress = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => input.parse(d))
   .handler(async ({ data }) => {
-    const { m, page } = await load(data.url);
+    const { m, page } = await load(data.url, { rootOnly: true });
     const d = await import("./detect.server");
     return d.runWordpress(m, page);
   });

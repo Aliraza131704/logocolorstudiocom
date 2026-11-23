@@ -29,19 +29,18 @@ export async function safeFetch(raw: URL | string, init: { headers: Record<strin
   throw new Error("Too many website redirects.");
 }
 
-export async function rateLimit(limit = 20) {
-  try {
-    const { getRequestHeader } = await import("@tanstack/react-start/server");
-    const ip = getRequestHeader("cf-connecting-ip") || getRequestHeader("x-forwarded-for")?.split(",")[0] || "unknown";
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const since = new Date(Date.now() - 60_000).toISOString();
-    const { count } = await supabaseAdmin.from("rate_limits").select("id", { count: "exact", head: true }).eq("ip", ip).gte("created_at", since);
-    if ((count ?? 0) >= limit) throw new Error("RATE");
-    await supabaseAdmin.from("rate_limits").insert({ ip });
-    if (Math.random() < 0.05) await supabaseAdmin.from("rate_limits").delete().lt("created_at", new Date(Date.now() - 3600_000).toISOString());
-  } catch (e) {
-    if (e instanceof Error && e.message === "RATE") throw new Error("Too many requests. Please wait a minute and try again.");
-  }
+/**
+ * Atomic, fail-closed request limit for the public website tools: caps checks
+ * per visitor and visits to any single website, so the tools cannot be used to
+ * flood other sites.
+ */
+export async function rateLimit(target: URL) {
+  const { getRequestHeader } = await import("@tanstack/react-start/server");
+  const ip = (getRequestHeader("cf-connecting-ip") || getRequestHeader("x-forwarded-for")?.split(",")[0] || "unknown").trim().slice(0, 100);
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin.rpc("consume_site_check", { _ip: ip, _host: target.hostname });
+  if (error) throw new Error("Website checks are temporarily unavailable. Please try again later.");
+  if (!data) throw new Error("Too many requests. Please wait a few minutes and try again.");
 }
 
 export type Fetched = { url: string; status: number; html: string; headers: Record<string, string>; ms: number; bytes: number };
