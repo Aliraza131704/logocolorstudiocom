@@ -82,7 +82,7 @@ function GalleryPage() {
         </section>
         <section>
           <h2 className="text-2xl font-bold">Free logo color palettes with HEX codes</h2>
-          <p className="mt-4 text-muted-foreground">Filter the gallery by style, such as pastel, dark, retro or neon, then open a palette to copy each HEX and RGB code with one click. Paste the codes into your design tool or stylesheet, or export them as CSS. For individual shades with names, see our <Link to="/color-names" className={linkCls}>color names</Link> pages.</p>
+          <p className="mt-4 text-muted-foreground">Filter the gallery by style, such as pastel, dark, retro or neon, then open a palette to copy each HEX and RGB code with one click. Paste the codes into your design tool or stylesheet, or export them as CSS. For individual shades with names, see our <Link to="/colors" className={linkCls}>color names</Link> pages.</p>
         </section>
       </div>
       {!o?.faqs && <div className="mt-16"><FaqList faqs={PALETTE_FAQS} /></div>}
