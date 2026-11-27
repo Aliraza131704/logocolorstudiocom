@@ -102,10 +102,10 @@ export const PAGE_META = {
     ogDescription: "Find any WordPress site's theme, version, author and plugins. Free, no signup.",
   },
   "/palettes": {
-    title: "1,000 Color Palette Ideas with HEX Codes | LogoColorStudio",
-    description: "Browse 1,000 free color palettes by style, from pastel to dark. Copy HEX and RGB codes, check text contrast and export CSS. No signup. Find your palette.",
-    ogTitle: "1,000 Color Palette Ideas with HEX Codes",
-    ogDescription: "Pastel, dark, retro and neon palettes with HEX codes you can copy. Free.",
+    title: "1,000+ Logo Color Palettes & Brand Ideas | LogoColorStudio",
+    description: "Discover 1,000+ free logo color palettes with HEX codes. Explore popular brand colors, logo color combinations and modern color schemes for your design.",
+    ogTitle: "1,000+ Logo Color Palettes & Brand Color Ideas",
+    ogDescription: "Free logo color palettes and brand color combinations with HEX codes you can copy.",
   },
   "/brand-colors": {
     title: "Brand Color Palettes & Logo Color Codes | LogoColorStudio",
